@@ -1,18 +1,8 @@
-// api/create-checkout-session.js
-// 
-// Vercel Serverless Function — Stripe Checkout Session Creator
-// Place this file at: /api/create-checkout-session.js in your project root
-//
-// SETUP:
-// 1. Install stripe: npm install stripe
-// 2. In Vercel Dashboard → Settings → Environment Variables, add:
-//    STRIPE_SECRET_KEY = sk_live_your_key_here (or sk_test_ for testing)
-// 3. Deploy. The endpoint will be available at /api/create-checkout-session
+import Stripe from 'stripe';
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
-  // Only accept POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -20,12 +10,10 @@ export default async function handler(req, res) {
   try {
     const { amount } = req.body;
 
-    // Validate amount (minimum $1 = 100 cents, maximum $10,000 = 1000000 cents)
     if (!amount || amount < 100 || amount > 1000000) {
       return res.status(400).json({ error: 'Invalid amount' });
     }
 
-    // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -36,7 +24,7 @@ export default async function handler(req, res) {
               name: 'Support the Universal Primary Directive',
               description: 'Voluntary contribution to keep primedirective.dev open, accessible, and growing.',
             },
-            unit_amount: amount, // amount in cents
+            unit_amount: amount,
           },
           quantity: 1,
         },
@@ -44,14 +32,27 @@ export default async function handler(req, res) {
       mode: 'payment',
       success_url: `${req.headers.origin}/donate?success=true`,
       cancel_url: `${req.headers.origin}/donate?canceled=true`,
-      // Optional: collect email for thank-you / transparency records
-      // customer_email: undefined, // let Stripe collect it
-      billing_address_collection: 'auto',
     });
 
     res.status(200).json({ url: session.url });
   } catch (err) {
     console.error('Stripe error:', err.message);
-    res.status(500).json({ error: 'Failed to create checkout session' });
+    res.status(500).json({ error: err.message });
   }
 }
+```
+
+The key change is `import Stripe from 'stripe'` instead of `require('stripe')` — this uses ES modules which is what your project is configured for (`"type": "module"` in package.json).
+
+Commit that change.
+
+**Issue 2: Remove the fake fallback URL from DonatePage.jsx**
+
+Go to GitHub → `src/DonatePage.jsx` → click pencil to edit. Find this line:
+```
+window.location.href = "https://donate.stripe.com/YOUR_PAYMENT_LINK";
+```
+
+Replace it with:
+```
+alert("Payment system is connecting. Please try again in a moment.");
