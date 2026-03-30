@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/donate", "destination": "/index.html" },
+    { "source": "/governance", "destination": "/index.html" },
+    { "source": "/contribute", "destination": "/index.html" },
+    { "source": "/future-horizons", "destination": "/index.html" }
+  ]
+}
