@@ -964,7 +964,19 @@ function FooterSection() {
 }
 
 // ─── Main App ───
+// Import the donate page
+import DonatePage from './DonatePage.jsx';
+
 export default function App() {
+  // Simple path-based routing (no router library needed)
+  const path = window.location.pathname;
+  
+  // Route to donate page
+  if (path === '/donate') {
+    return <DonatePage />;
+  }
+
+  // Main site
   return (
     <div className="site-wrap">
       <style>{css}</style>
