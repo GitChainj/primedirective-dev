@@ -560,7 +560,7 @@ function Nav() {
         <a href="#pathways">Get Involved</a>
         <a href="#ai">For AI</a>
         <a href="#propose">Propose</a>
-        <a href="https://donate.stripe.com/YOUR_STRIPE_LINK" target="_blank" rel="noopener" className="donate-btn">Donate</a>
+        <a href="/donate" className="donate-btn">Gift</a>
       </div>
     </nav>
   );
@@ -932,14 +932,14 @@ function DonateSection() {
         <h2 className="section-title">This belongs to <strong>everyone</strong>.</h2>
         <p style={{ color: 'var(--text-light)', lineHeight: 1.7, marginBottom: '2rem' }}>
           The Universal Primary Directive will always be free. No ads, no paywalls, no corporate sponsors.
-          A small donation helps keep the website running, the documents accessible, and the project independent.
+          A small contribution helps keep the website running, the documents accessible, and the project independent.
           Every contribution — of any size — is an act of care for the whole.
         </p>
-        <a href="https://donate.stripe.com/YOUR_STRIPE_LINK" target="_blank" rel="noopener noreferrer" className="donate-big-btn">
-          ✦ Support the Covenant via Stripe
+        <a href="/donate" className="donate-big-btn">
+          ✦ Support the Covenant
         </a>
         <p style={{ color: 'var(--text-light)', fontSize: '0.8rem', marginTop: '1rem' }}>
-          Secure payments via Stripe. All donations go directly to hosting, maintenance, and translations.
+          Secure payments via Stripe. All contributions go directly to hosting, maintenance, and translations.
         </p>
       </div>
     </section>
@@ -970,13 +970,12 @@ import DonatePage from './DonatePage.jsx';
 export default function App() {
   // Simple path-based routing (no router library needed)
   const path = window.location.pathname;
-  
+
   // Route to donate page
   if (path === '/donate') {
     return <DonatePage />;
   }
 
-  // Main site
   return (
     <div className="site-wrap">
       <style>{css}</style>
