@@ -500,7 +500,7 @@ export default function DonatePage() {
     } catch (err) {
       // Fallback: direct to Stripe payment link
       // Replace with your actual Stripe payment link
-      window.location.href = "https://donate.stripe.com/YOUR_PAYMENT_LINK";
+      alert("Payment system is connecting. Please try again in a moment.");
     }
 
     setLoading(false);
