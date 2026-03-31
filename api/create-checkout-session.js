@@ -40,19 +40,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: err.message });
   }
 }
-```
-
-The key change is `import Stripe from 'stripe'` instead of `require('stripe')` — this uses ES modules which is what your project is configured for (`"type": "module"` in package.json).
-
-Commit that change.
-
-**Issue 2: Remove the fake fallback URL from DonatePage.jsx**
-
-Go to GitHub → `src/DonatePage.jsx` → click pencil to edit. Find this line:
-```
-window.location.href = "https://donate.stripe.com/YOUR_PAYMENT_LINK";
-```
-
-Replace it with:
-```
-alert("Payment system is connecting. Please try again in a moment.");
