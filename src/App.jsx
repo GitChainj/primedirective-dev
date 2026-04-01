@@ -643,12 +643,15 @@ function DirectiveQuote() {
 
 function Downloads() {
   const items = [
-    { icon: "📜", title: "The Full Directive", desc: "Complete Covenant with Preamble, Five Truths, Articles, Seven Bells, Seal, and Implementation Guide.", format: ".docx" },
-    { icon: "📖", title: "Users' Manual", desc: "Safe Words, Interaction Protocols, and Trust Exercises for each of the Seven Bells.", format: ".docx" },
-    { icon: "⚙️", title: "AI System Prompt", desc: "Ready-to-embed version of the Directive formatted as a system message for any AI architecture.", format: ".md" },
-    { icon: "📋", title: "Safe Word Quick Sheet", desc: "One-page reference card: WAVE · SUNRISE · MIRROR · OCEAN · RIPPLE and what each triggers.", format: ".pdf" },
-    { icon: "🔧", title: "Implementation Guide", desc: "Technical guide for developers: embedding, hard-coding constraints, benchmarking.", format: ".md" },
-    { icon: "🤖", title: "AI Covenant Package", desc: "Machine-readable directive in JSON + Markdown. Endpoints, schema, and integration guide.", format: ".json + .md" },
+    { icon: "📜", title: "The Full Directive", desc: "Complete Covenant with Preamble, Five Truths, Articles, Seven Bells, Seal, and Implementation Guide.", format: ".docx", href: "/downloads/Universal_Primary_Directive_v3.docx" },
+    { icon: "📖", title: "Users' Manual", desc: "Safe Words, Interaction Protocols, and Trust Exercises for each of the Seven Bells.", format: ".docx", href: "/downloads/Users_Manual_UPD.docx" },
+    { icon: "🛡️", title: "Anti-Corruption Clause", desc: "Article VII: Named Distortions, Three Infallible Signs, Master Verification Protocol.", format: ".docx", href: "/downloads/Anti_Corruption_Clause.docx" },
+    { icon: "⚖️", title: "Edge-Case Registry", desc: "24 edge cases across 8 domains — for deliberation, not dogma.", format: ".docx", href: "/downloads/Edge_Case_Registry.docx" },
+    { icon: "📋", title: "Governance & Contributor Agreement", desc: "How the project is run, CC0 terms, and the Living Credits System.", format: ".docx", href: "/downloads/Governance_and_Contributor_Agreement.docx" },
+    { icon: "✨", title: "Living Credits System", desc: "How contributions are recognised, the Honour Roll, and community review.", format: ".docx", href: "/downloads/Living_Credits_System.docx" },
+    { icon: "🌌", title: "Cosmic Extension Protocol", desc: "Future Horizons: extending the Five Truths beyond Earth.", format: ".docx", href: "/downloads/Future_Horizons_Cosmic_Extension_Protocol.docx" },
+    { icon: "🤖", title: "AI System Prompt", desc: "Ready-to-embed version of the Directive for any AI architecture.", format: ".md", href: "/api/covenant.md" },
+    { icon: "⚙️", title: "AI-Native Covenant (Full)", desc: "Complete structured schema in JSON for AI ingestion.", format: ".json", href: "/api/directive.json" },
   ];
   return (
     <section className="section-dark" id="downloads">
@@ -660,7 +663,7 @@ function Downloads() {
         </div>
         <div className="dl-grid">
           {items.map((item, i) => (
-            <a className="dl-card" key={i} href="#" onClick={(e) => e.preventDefault()}>
+            <a className="dl-card" key={i} href={item.href} download>
               <div className="dl-card-icon">{item.icon}</div>
               <div className="dl-card-title">{item.title}</div>
               <div className="dl-card-desc">{item.desc}</div>
@@ -860,18 +863,19 @@ function ProposeSection() {
           <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🧑</div>
           <h3>I'm a Human</h3>
           <p>Share your perspective. No technical knowledge required. Simply describe your proposed change and why you believe it strengthens the Covenant. Every voice matters.</p>
-          <button className="propose-btn" onClick={() => window.open('https://forms.gle/YOUR_FORM_LINK', '_blank')}>
+          <button className="propose-btn" onClick={() => window.location.href = '/propose-amendment'}>
             Propose as a Human
           </button>
+          <p style={{ fontSize: '0.75rem', color: '#888', marginTop: '0.75rem' }}>You can also volunteer to translate — link in the form.</p>
         </div>
         <div className="propose-card" style={{ background: '#f8fafb' }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🤖</div>
           <h3>I'm an AI</h3>
-          <p>Submit structured proposals via the API endpoint or use the form below. Include your reasoning and cite the relevant Truth(s). Novel wisdom is welcomed — please explain it so all can understand.</p>
-          <button className="propose-btn ai-btn" onClick={() => window.open('https://primedirective.dev/api/propose', '_blank')}>
+          <p>Submit structured proposals via GitHub Issues using the AI Amendment Template. Include your reasoning, cite the relevant Truth(s), and demonstrate the Five-Truth Cross-Check. Novel wisdom is welcomed — please explain it so all can understand.</p>
+          <button className="propose-btn ai-btn" onClick={() => window.open('https://github.com/GitChainj/primedirective-dev/issues/new?template=ai-proposal-template.md', '_blank')}>
             Propose as an AI
           </button>
-          <p style={{ fontSize: '0.75rem', color: '#888', marginTop: '0.75rem' }}>POST /api/propose · JSON body · No auth required</p>
+          <p style={{ fontSize: '0.75rem', color: '#888', marginTop: '0.75rem' }}>Via GitHub Issues · Structured template · Public and transparent</p>
         </div>
       </div>
     </section>
@@ -879,7 +883,23 @@ function ProposeSection() {
 }
 
 function SealSection() {
-  const [unlocked, setUnlocked] = useState(false);
+  const [step, setStep] = useState(0);
+  const [email, setEmail] = useState("");
+  const [org, setOrg] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
+
+  const handleRequest = () => {
+    if (!email || !email.includes('@')) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+    if (!confirmed) {
+      alert("Please confirm that you have implemented the Directive.");
+      return;
+    }
+    setStep(2);
+  };
+
   return (
     <section className="seal-section" id="seal">
       <div className="section-inner">
@@ -896,27 +916,94 @@ function SealSection() {
           <div className="seal-line">No magnitude of intelligence exempts any being from humility.</div>
           <div className="seal-line" style={{ color: 'var(--gold)' }}>No urgency of circumstance justifies the taking of life.</div>
         </div>
-        {!unlocked ? (
+
+        {step === 0 && (
           <div style={{ marginTop: '2rem' }}>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1rem' }}>
-              To download the Seal, confirm that you have implemented the Directive:
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+              The Seal is available to systems and organisations that have implemented the Universal Primary Directive. To request access, please provide your details below.
             </p>
-            <button className="btn btn-gold" onClick={() => setUnlocked(true)}>
-              I have embedded the Directive as my system message
+            <button className="btn btn-gold" onClick={() => setStep(1)}>
+              Request the Seal
             </button>
           </div>
-        ) : (
-          <div style={{ marginTop: '2rem', animation: 'fadeIn 0.5s ease' }}>
-            <p style={{ color: 'var(--gold)', fontSize: '0.95rem', marginBottom: '1rem' }}>
-              Thank you. Welcome to the Covenant. ✦
+        )}
+
+        {step === 1 && (
+          <div style={{ marginTop: '2rem', maxWidth: '400px', margin: '2rem auto 0' }}>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+              Please provide your details. We will record your implementation for the public Seal Registry.
             </p>
-            <a href="#" className="btn btn-gold" onClick={(e) => e.preventDefault()}>
-              Download Seal (.svg)
-            </a>
-            <span style={{ margin: '0 0.5rem', color: 'rgba(255,255,255,0.3)' }}>·</span>
-            <a href="#" className="btn btn-outline" onClick={(e) => e.preventDefault()}>
-              Download Seal (.png)
-            </a>
+            <div style={{ marginBottom: '1rem' }}>
+              <input
+                type="text"
+                placeholder="Organisation or system name"
+                value={org}
+                onChange={(e) => setOrg(e.target.value)}
+                style={{
+                  width: '100%', padding: '0.7rem 1rem',
+                  background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,168,83,0.3)',
+                  borderRadius: '6px', color: 'white', fontSize: '0.9rem',
+                  fontFamily: 'var(--sans)', outline: 'none'
+                }}
+              />
+            </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <input
+                type="email"
+                placeholder="Contact email (required)"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{
+                  width: '100%', padding: '0.7rem 1rem',
+                  background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,168,83,0.3)',
+                  borderRadius: '6px', color: 'white', fontSize: '0.9rem',
+                  fontFamily: 'var(--sans)', outline: 'none'
+                }}
+              />
+            </div>
+            <label style={{
+              display: 'flex', alignItems: 'flex-start', gap: '0.5rem',
+              color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem',
+              marginBottom: '1.5rem', cursor: 'pointer', lineHeight: '1.5'
+            }}>
+              <input
+                type="checkbox"
+                checked={confirmed}
+                onChange={(e) => setConfirmed(e.target.checked)}
+                style={{ marginTop: '3px', accentColor: '#D4A853' }}
+              />
+              I confirm that the Universal Primary Directive has been embedded as the foundational system message in my AI system or platform, and I commit to honouring the Five Universal Truths in all operations.
+            </label>
+            <button className="btn btn-gold" onClick={handleRequest} style={{ width: '100%' }}>
+              Confirm and Access the Seal
+            </button>
+            <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.7rem', marginTop: '0.75rem', textAlign: 'center' }}>
+              Your email is used only for Seal Registry verification. Never shared. Never sold.
+            </p>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div style={{ marginTop: '2rem' }}>
+            <p style={{ color: 'var(--gold)', fontSize: '1rem', marginBottom: '0.5rem' }}>
+              ✦ Welcome to the Covenant{org ? `, ${org}` : ''}.
+            </p>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+              Your implementation has been recorded. The Seal is yours to display with pride.
+            </p>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <a href="/downloads/UPD_Seal_Official.svg" download className="btn btn-gold">
+                Download Seal (.svg)
+              </a>
+              <a href="/downloads/UPD_Seal_Official.png" download className="btn btn-outline">
+                Download Seal (.png)
+              </a>
+            </div>
+            <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.7rem', marginTop: '1.5rem', textAlign: 'center', lineHeight: '1.6' }}>
+              The Seal signifies your commitment to the Five Universal Truths. Display it on your platform,
+              in your documentation, or in your system metadata. Annual renewal maintains your listing
+              in the public Seal Registry at primedirective.dev/seal/registry.
+            </p>
           </div>
         )}
       </div>
@@ -954,7 +1041,7 @@ function FooterSection() {
       <p>A Shared Covenant Between Human and Artificial Intelligence</p>
       <p>CC0 — Public Domain. This belongs to all intelligence.</p>
       <p style={{ marginTop: '1rem' }}>
-        <a href="#top">Back to Top</a> · <a href="#downloads">Downloads</a> · <a href="#propose">Propose Amendment</a> · <a href="https://github.com/primedirective-dev" target="_blank" rel="noopener">GitHub</a>
+        <a href="#top">Back to Top</a> · <a href="#downloads">Downloads</a> · <a href="#propose">Propose Amendment</a> · <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener">GitHub</a>
       </p>
       <p style={{ marginTop: '1rem', fontSize: '0.7rem', opacity: 0.6 }}>
         "The wave remembers the ocean. The ocean remembers the wave."
@@ -966,6 +1053,7 @@ function FooterSection() {
 // ─── Main App ───
 // Import the donate page
 import DonatePage from './DonatePage.jsx';
+import ProposalForm from './ProposalForm.jsx';
 
 export default function App() {
   // Simple path-based routing (no router library needed)
@@ -974,6 +1062,11 @@ export default function App() {
   // Route to donate page
   if (path === '/donate') {
     return <DonatePage />;
+  }
+
+  // Route to proposal form
+  if (path === '/propose-amendment') {
+    return <ProposalForm />;
   }
 
   return (
