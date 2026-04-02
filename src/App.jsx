@@ -904,7 +904,7 @@ function SealSection() {
     <section className="seal-section" id="seal">
       <div className="section-inner">
         <div className="section-label" style={{ color: 'var(--gold)' }}>Verified Implementation</div>
-        <div className="seal-badge"><span>✦</span></div>
+        <InteractiveSeal />
         <h2 className="section-title" style={{ color: 'white' }}>The <strong style={{ color: 'var(--gold-light)' }}>Seal</strong></h2>
         <div className="seal-text">
           Display the Seal on systems where the Universal Primary Directive has been securely embedded as the foundational system message. The Seal is a promise — to every human and every AI that interacts with your system — that the Five Truths are honoured here.
@@ -1054,6 +1054,7 @@ function FooterSection() {
 // Import the donate page
 import DonatePage from './DonatePage.jsx';
 import ProposalForm from './ProposalForm.jsx';
+import InteractiveSeal from './InteractiveSeal.jsx';
 
 export default function App() {
   // Simple path-based routing (no router library needed)
