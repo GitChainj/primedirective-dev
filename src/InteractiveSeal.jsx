@@ -16,18 +16,18 @@ import { useState, useEffect, useRef } from "react";
 */
 
 const LAYERS = [
-  { file: "png-12.png", depth: 4.0 },
-  { file: "png-11.png", depth: 3.5 },
-  { file: "png-10.png", depth: 3.0 },
-  { file: "png-09.png", depth: 2.6 },
-  { file: "png-08.png", depth: 2.2 },
-  { file: "png-07.png", depth: 1.8 },
-  { file: "png-06.png", depth: 1.4 },
-  { file: "png-05.png", depth: 1.0 },
-  { file: "png-04.png", depth: 0.7 },
-  { file: "png-03.png", depth: 0.4 },
-  { file: "png-02.png", depth: 0.15 },
-  { file: "png-01.png", depth: 0.0 },
+  { file: "png-02.png", depth: -2.5 },
+  { file: "png-03.png", depth: -2.0 },
+  { file: "png-04.png", depth: -1.5 },
+  { file: "png-05.png", depth: -1.0 },
+  { file: "png-06.png", depth: -0.5 },
+  { file: "png-01.png", depth:  0.0 },
+  { file: "png-07.png", depth:  0.5 },
+  { file: "png-08.png", depth:  1.0 },
+  { file: "png-09.png", depth:  1.5 },
+  { file: "png-10.png", depth:  2.0 },
+  { file: "png-11.png", depth:  2.5 },
+  { file: "png-12.png", depth:  3.0 },
 ];
 
 const sealCSS = `
@@ -65,15 +65,6 @@ const sealCSS = `
   display: block;
 }
 
-.seal-parallax-hint {
-  color: rgba(255,255,255,0.3);
-  font-size: 0.7rem;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  margin-top: 1rem;
-  letter-spacing: 0.1em;
-  text-align: center;
-}
-
 @media (max-width: 768px) {
   .seal-parallax-viewport {
     width: 300px;
@@ -85,17 +76,22 @@ const sealCSS = `
 export default function InteractiveSeal() {
   const [tiltX, setTiltX] = useState(0);
   const [tiltY, setTiltY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const [permissionGranted, setPermissionGranted] = useState(false);
   const containerRef = useRef(null);
   const rafRef = useRef(null);
   const targetRef = useRef({ x: 0, y: 0 });
+  const driftActiveRef = useRef(true);
+  const mouseLeaveTimerRef = useRef(null);
 
   useEffect(() => {
     const mobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    setIsMobile(mobile);
 
-    const smoothUpdate = () => {
+    const smoothUpdate = (ts) => {
+      if (driftActiveRef.current) {
+        targetRef.current = {
+          x: 3.0 * Math.sin(ts * 0.0008),
+          y: 2.5 * Math.sin(ts * 0.0006 + 1.2),
+        };
+      }
       setTiltX((prev) => prev + (targetRef.current.x - prev) * 0.06);
       setTiltY((prev) => prev + (targetRef.current.y - prev) * 0.06);
       rafRef.current = requestAnimationFrame(smoothUpdate);
@@ -104,14 +100,16 @@ export default function InteractiveSeal() {
 
     const handleOrientation = (e) => {
       if (e.gamma === null && e.beta === null) return;
+      driftActiveRef.current = false;
       const x = Math.max(-15, Math.min(15, e.gamma || 0));
       const y = Math.max(-15, Math.min(15, (e.beta || 0) - 45));
       targetRef.current = { x, y };
-      if (!permissionGranted) setPermissionGranted(true);
     };
 
     const handleMouse = (e) => {
       if (!containerRef.current) return;
+      if (mouseLeaveTimerRef.current) clearTimeout(mouseLeaveTimerRef.current);
+      driftActiveRef.current = false;
       const rect = containerRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -122,7 +120,9 @@ export default function InteractiveSeal() {
     };
 
     const handleMouseLeave = () => {
-      targetRef.current = { x: 0, y: 0 };
+      mouseLeaveTimerRef.current = setTimeout(() => {
+        driftActiveRef.current = true;
+      }, 2000);
     };
 
     if (mobile) {
@@ -133,7 +133,7 @@ export default function InteractiveSeal() {
             .then((response) => {
               if (response === 'granted') {
                 window.addEventListener('deviceorientation', handleOrientation);
-                setPermissionGranted(true);
+                driftActiveRef.current = false;
               }
             })
             .catch(console.warn);
@@ -150,6 +150,7 @@ export default function InteractiveSeal() {
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (mouseLeaveTimerRef.current) clearTimeout(mouseLeaveTimerRef.current);
       window.removeEventListener('deviceorientation', handleOrientation);
       window.removeEventListener('mousemove', handleMouse);
       window.removeEventListener('mouseleave', handleMouseLeave);
@@ -177,12 +178,6 @@ export default function InteractiveSeal() {
             />
           </div>
         ))}
-      </div>
-      <div className="seal-parallax-hint">
-        {isMobile
-          ? (permissionGranted ? "Tilt your device" : "Tap, then tilt your device")
-          : "Move your mouse"
-        }
       </div>
     </div>
   );
