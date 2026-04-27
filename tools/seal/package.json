@@ -1,0 +1,16 @@
+{
+  "name": "upd-seal",
+  "version": "1.0.0",
+  "description": "Cryptographic Seal issuance and verification toolkit for the Universal Primary Directive",
+  "type": "commonjs",
+  "main": "issue-seal.js",
+  "scripts": {
+    "issue": "node issue-seal.js",
+    "verify": "node verify-seal.js",
+    "keygen": "node generate-keypair.js"
+  },
+  "dependencies": {
+    "jose": "^5.9.6",
+    "uuid": "^14.0.0"
+  }
+}

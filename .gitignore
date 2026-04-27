@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Private keys — never commit these under any circumstances
+private_*.pem
+tools/seal/private_ed25519.pem
+
+# Seal ledger — sensitive issuance records, stored on encrypted volume only
+tools/seal/seal_ledger.jsonl
+
+# Recipient input files — one-time use, may contain personal details
+tools/seal/inaugural_recipient.json
+
+# Vite build output
+dist/
