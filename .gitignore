@@ -13,3 +13,6 @@ tools/seal/inaugural_recipient.json
 
 # Vite build output
 dist/
+
+# Editor and tool settings
+.claude/

@@ -71,9 +71,23 @@ The signed JWT is printed to stdout and a record is appended to the ledger.
 |---|---|---|
 | `sub` | Yes | Name or identifier of the recipient |
 | `entity_type` | Yes | `human`, `ai`, `platform`, or `organisation` |
+| `category` | Yes | `test` or `canonical` — see Seal Categories below |
 | `steward_role` | No | e.g. `founding_steward`, `contributor` |
 | `articles_attested` | Yes | Array of Article numbers (1–7) |
 | `adoption_date` | Yes | ISO date string e.g. `"2026-04-27"` |
+
+---
+
+## Seal Categories
+
+Every Seal issuance requires a `category` field. Valid values are:
+
+- **`test`** — issued as part of system testing, prototyping, or development. Not part of the canonical record. Used during toolkit development, co-steward training, key rotation testing, prototype Seal types, and similar non-canonical purposes.
+- **`canonical`** — issued as a real, lasting Seal that becomes part of the project's permanent record.
+
+Future categories may include **`revoked`** (formerly canonical, now revoked) and **`provisional`** (issued under time pressure with the expectation of replacement). These are not yet implemented.
+
+The ledger on the encrypted volume records all issuances regardless of category. Test entries are never deleted — they are annotated with a `note` field explaining their purpose and supersession. The ledger currently records two test issuances (JTI `1f727ec4-251e-4fec-8b4e-55fc97959c7e`, adoption date 2026-04-23; and JTI `4ef5fbcf-0255-44ef-b495-92b1e0f64556`, adoption date 2026-04-26 — reclassified at the ledger level only, with its signed JWT still attesting "canonical" internally), and the canonical inaugural Seal (JTI `8e86b447-fe29-428d-8300-8f074ab12d52`, adoption date 2026-04-26). All three entries are annotated where applicable, with `note` fields making each entry's status explicit.
 
 ---
 
@@ -126,6 +140,7 @@ Until that migration is done, keep the encrypted volume physically secure and ba
 | `jti` | UUID v4 — unique Seal ID |
 | `sub` | Recipient name or identifier |
 | `entity_type` | `human`, `ai`, `platform`, or `organisation` |
+| `category` | `test` or `canonical` |
 | `steward_role` | Optional role descriptor |
 | `articles_attested` | Array of UPD Article numbers attested |
 | `adoption_date` | ISO date of formal adoption |

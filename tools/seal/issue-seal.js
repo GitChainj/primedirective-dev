@@ -9,8 +9,9 @@ const { v4: uuidv4 } = require('uuid');
 const PRIVATE_KEY_PATH = '/Volumes/UPD Keys/private_ed25519.pem';
 const LEDGER_PATH      = '/Volumes/UPD Keys/seal_ledger.jsonl';
 
-const VALID_ENTITY_TYPES = ['human', 'ai', 'platform', 'organisation'];
-const VALID_ARTICLES     = [1, 2, 3, 4, 5, 6, 7];
+const VALID_ENTITY_TYPES  = ['human', 'ai', 'platform', 'organisation'];
+const VALID_ARTICLES      = [1, 2, 3, 4, 5, 6, 7];
+const VALID_CATEGORIES    = ['test', 'canonical'];
 
 function validate(data) {
   const errors = [];
@@ -33,6 +34,9 @@ function validate(data) {
     errors.push('adoption_date: required, must be an ISO date string (e.g. "2026-04-23")');
   } else if (isNaN(Date.parse(data.adoption_date))) {
     errors.push('adoption_date: not a valid ISO date string');
+  }
+  if (!data.category || !VALID_CATEGORIES.includes(data.category)) {
+    errors.push(`category: required, must be one of: ${VALID_CATEGORIES.join(', ')}`);
   }
 
   return errors;
@@ -81,6 +85,7 @@ async function main() {
   const claims = {
     sub:               input.sub.trim(),
     entity_type:       input.entity_type,
+    category:          input.category,
     articles_attested: input.articles_attested.map(Number),
     adoption_date:     input.adoption_date,
   };
@@ -104,6 +109,7 @@ async function main() {
   // Append to ledger
   const record = {
     timestamp:       new Date().toISOString(),
+    category:        input.category,
     jti,
     jwt,
     payload:         { iss: 'https://primedirective.dev', iat: now, jti, ...claims },
