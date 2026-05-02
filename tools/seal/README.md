@@ -84,6 +84,7 @@ Every Seal issuance requires a `category` field. Valid values are:
 
 - **`test`** — issued as part of system testing, prototyping, or development. Not part of the canonical record. Used during toolkit development, co-steward training, key rotation testing, prototype Seal types, and similar non-canonical purposes.
 - **`canonical`** — issued as a real, lasting Seal that becomes part of the project's permanent record.
+- **`adoption`** — issued to external parties (AI systems, individuals, organisations) who formally adopt the Universal Primary Directive through the registration system. Adoption Seals are issued by the steward after reviewing each registration. The cryptographic record names the project as issuer and the adopter as subject; the steward signs each Seal with the project's private key.
 
 Future categories may include **`revoked`** (formerly canonical, now revoked) and **`provisional`** (issued under time pressure with the expectation of replacement). These are not yet implemented.
 

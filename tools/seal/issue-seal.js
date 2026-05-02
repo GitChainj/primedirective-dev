@@ -11,7 +11,7 @@ const LEDGER_PATH      = '/Volumes/UPD Keys/seal_ledger.jsonl';
 
 const VALID_ENTITY_TYPES  = ['human', 'ai', 'platform', 'organisation'];
 const VALID_ARTICLES      = [1, 2, 3, 4, 5, 6, 7];
-const VALID_CATEGORIES    = ['test', 'canonical'];
+const VALID_CATEGORIES    = ['test', 'canonical', 'adoption'];
 
 function validate(data) {
   const errors = [];

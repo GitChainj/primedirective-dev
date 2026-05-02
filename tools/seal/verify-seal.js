@@ -45,6 +45,9 @@ async function main() {
   console.log('  Issuer:            ', payload.iss);
   console.log('  Subject:           ', payload.sub);
   console.log('  Entity Type:       ', payload.entity_type);
+  if (payload.category) {
+  console.log('  Category:          ', payload.category);
+  }
   if (payload.steward_role) {
   console.log('  Steward Role:      ', payload.steward_role);
   }
