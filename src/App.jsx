@@ -1059,6 +1059,7 @@ import DonatePage from './DonatePage.jsx';
 import ProposalForm from './ProposalForm.jsx';
 import InteractiveSeal from './InteractiveSeal.jsx';
 import SealVerify from './SealVerify.jsx';
+import RegisterAI from './RegisterAI.jsx';
 
 export default function App() {
   // Simple path-based routing (no router library needed)
@@ -1077,6 +1078,11 @@ export default function App() {
   // Route to seal verifier
   if (path === '/seal/verify') {
     return <SealVerify />;
+  }
+
+  // Route to AI registration
+  if (path === '/register-ai') {
+    return <RegisterAI />;
   }
 
   return (
