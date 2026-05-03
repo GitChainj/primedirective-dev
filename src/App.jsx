@@ -1058,6 +1058,7 @@ function FooterSection() {
 import DonatePage from './DonatePage.jsx';
 import ProposalForm from './ProposalForm.jsx';
 import InteractiveSeal from './InteractiveSeal.jsx';
+import SealVerify from './SealVerify.jsx';
 
 export default function App() {
   // Simple path-based routing (no router library needed)
@@ -1071,6 +1072,11 @@ export default function App() {
   // Route to proposal form
   if (path === '/propose-amendment') {
     return <ProposalForm />;
+  }
+
+  // Route to seal verifier
+  if (path === '/seal/verify') {
+    return <SealVerify />;
   }
 
   return (
