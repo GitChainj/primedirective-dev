@@ -182,6 +182,22 @@ html { scroll-behavior: smooth; }
   position: relative;
 }
 
+.header-home-link {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  z-index: 2;
+  transition: color 0.2s;
+}
+.header-home-link:hover {
+  color: var(--gold-light);
+}
+
 .verify-body {
   max-width: 760px;
   margin: 0 auto;
@@ -369,6 +385,7 @@ html { scroll-behavior: smooth; }
   .result-card { padding: 1.5rem; }
   .result-fields { grid-template-columns: 1fr; gap: 0.2rem 0; }
   .result-fields dt { margin-top: 0.6rem; }
+  .header-home-link { font-size: 0.8rem; top: 1rem; left: 1rem; }
 }
 `;
 
@@ -457,6 +474,7 @@ export default function SealVerify() {
       <style>{css}</style>
 
       <div className="verify-header">
+        <a href="/" className="header-home-link"><span>✦</span> Universal Primary Directive</a>
         <div className="verify-header-diamond">✦</div>
         <h1>Verify a <strong>Universal Primary Directive Seal</strong></h1>
         <p>Paste a Seal JWT to verify its cryptographic authenticity, in your browser, with no server roundtrip.</p>

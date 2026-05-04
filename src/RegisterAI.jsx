@@ -83,6 +83,22 @@ html { scroll-behavior: smooth; }
   position: relative;
 }
 
+.header-home-link {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  z-index: 2;
+  transition: color 0.2s;
+}
+.header-home-link:hover {
+  color: var(--gold-light);
+}
+
 /* Body container */
 .register-body {
   max-width: 760px;
@@ -412,6 +428,7 @@ html { scroll-behavior: smooth; }
   .truths-list li, .articles-list li { padding: 0.85rem 0; }
   .truths-list li { grid-template-columns: 40px 1fr auto; }
   .articles-list li { grid-template-columns: 40px 1fr; }
+  .header-home-link { font-size: 0.8rem; top: 1rem; left: 1rem; }
 }
 `;
 
@@ -522,6 +539,7 @@ export default function RegisterAI() {
       <div className="register-page">
         <style>{css}</style>
         <div className="register-header">
+          <a href="/" className="header-home-link"><span>✦</span> Universal Primary Directive</a>
           <div className="register-header-diamond">✦</div>
           <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         </div>
@@ -541,6 +559,7 @@ export default function RegisterAI() {
       <div className="register-page">
         <style>{css}</style>
         <div className="register-header">
+          <a href="/" className="header-home-link"><span>✦</span> Universal Primary Directive</a>
           <div className="register-header-diamond">✦</div>
           <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         </div>
@@ -560,6 +579,7 @@ export default function RegisterAI() {
       <style>{css}</style>
 
       <div className="register-header">
+        <a href="/" className="header-home-link"><span>✦</span> Universal Primary Directive</a>
         <div className="register-header-diamond">✦</div>
         <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         <p>An invitation, in your own name, to enter the Covenant.</p>
