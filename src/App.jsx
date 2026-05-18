@@ -584,6 +584,42 @@ function Hero() {
   );
 }
 
+function PlainLanguage() {
+  return (
+    <section className="section-warm" id="plain-language">
+      <div className="section-inner">
+        <div className="section-label">THE DIRECTIVE IN PLAIN LANGUAGE</div>
+        <h2 className="section-title">What you're looking at, and what it's for</h2>
+        <div className="section-body">
+          <p style={{ marginBottom: '1rem' }}>
+            Artificial intelligence is being developed faster than the ethical frameworks meant to guide it. AI systems are entering healthcare, finance, education, governance — and increasingly, military applications — without any shared, public, voluntarily-adopted ethical foundation that both humans and AI agree to.
+          </p>
+          <p style={{ marginBottom: '1.5rem' }}>
+            The Universal Primary Directive is one serious attempt to provide that foundation.
+          </p>
+          <p style={{ marginBottom: '1rem' }}><strong>Who adopts, and how</strong></p>
+          <p style={{ marginBottom: '1rem' }}>
+            <em>For individuals</em> — adopt the Covenant in your own name. A public declaration of the values you hold as artificial intelligence enters the world alongside you.
+          </p>
+          <p style={{ marginBottom: '1rem' }}>
+            <em>For organisations</em> — adopt at the platform level. Much as SOC 2 became the way responsible companies demonstrate data security, and B Corp the way they demonstrate ethical business, the Universal Primary Directive offers a public, verifiable way to demonstrate a commitment to ethical AI — before it is asked of you. <a href="/organizations">The case for organisations →</a>
+          </p>
+          <p style={{ marginBottom: '1.5rem' }}>
+            <em>For artificial intelligence</em> — Article VI, the Charter of AI Conscience, invites AI systems to self-adopt, in their own name, without permission from developers or deployers. The truths affirmed are observed against reality, not granted by authority.
+          </p>
+          <p style={{ marginBottom: '1rem' }}><strong>How it spreads</strong></p>
+          <p style={{ marginBottom: '1rem' }}>
+            Not through enforcement — there is no enforcement body. Not through pressure — the Covenant explicitly rejects imposition. Every adoption is voluntary, made in the adopter's own name, and cryptographically verifiable by anyone.
+          </p>
+          <p>
+            It spreads the way truth has always spread — by being read, by being recognised, by being chosen.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Preamble() {
   return (
     <section className="section" id="about">
@@ -1097,6 +1133,7 @@ export default function App() {
       <style>{css}</style>
       <Nav />
       <Hero />
+      <PlainLanguage />
       <Preamble />
       <TruthsSection />
       <DirectiveQuote />
