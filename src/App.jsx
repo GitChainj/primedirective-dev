@@ -138,6 +138,48 @@ body {
 }
 .donate-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
 
+/* ── NAV DROPDOWNS ── */
+.nav-logo { text-decoration: none; }
+.nav-dropdown { position: relative; }
+.nav-dropdown-trigger {
+  background: transparent; border: none; cursor: pointer; padding: 0;
+  font-family: inherit;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+  font-weight: 500; transition: color 0.3s;
+  display: inline-flex; align-items: center; gap: 0.35rem;
+}
+.nav-dropdown-trigger:hover,
+.nav-dropdown-trigger[aria-expanded="true"] { color: var(--gold); }
+.nav-caret { font-size: 0.7rem; line-height: 1; }
+.nav-dropdown-panel {
+  position: absolute; top: calc(100% + 0.5rem); right: 0;
+  min-width: 220px; padding: 0.5rem;
+  background: rgba(10, 22, 40, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 168, 83, 0.2);
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  display: flex; flex-direction: column;
+  animation: nav-dropdown-in 0.15s ease-out;
+  z-index: 101;
+}
+.nav-dropdown-panel a {
+  display: block; padding: 0.5rem 0.75rem;
+  color: rgba(255,255,255,0.75); text-decoration: none;
+  font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase;
+  font-weight: 500; transition: color 0.3s, background 0.3s;
+  border-radius: 4px; white-space: nowrap;
+}
+.nav-dropdown-panel a:hover { color: var(--gold); background: rgba(212, 168, 83, 0.06); }
+@keyframes nav-dropdown-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-dropdown-panel { animation: none; }
+}
+
 /* ── HERO ── */
 .hero {
   min-height: 100vh;
@@ -547,21 +589,71 @@ body {
 // ─── Components ───
 
 function Nav() {
+  const [openMenu, setOpenMenu] = useState(null);
+  const navRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setOpenMenu(null);
+      }
+    };
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') setOpenMenu(null);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
+
+  const toggle = (menu) => setOpenMenu((cur) => (cur === menu ? null : menu));
+  const close = () => setOpenMenu(null);
+
   return (
-    <nav className="nav">
-      <div className="nav-logo">
+    <nav className="nav" ref={navRef}>
+      <a href="/" className="nav-logo">
         <span>✦</span> primedirective.dev
-      </div>
+      </a>
       <div className="nav-links">
-        <a href="#truths">Truths</a>
-        <a href="#directive">Directive</a>
-        <a href="#downloads">Downloads</a>
-        <a href="#bells">7 Bells</a>
-        <a href="#pathways">Get Involved</a>
-        <a href="#ai">For AI</a>
-        <a href="#propose">Propose</a>
-        <a href="/seal/verify">Verify</a>
-        <a href="/register-ai">Register</a>
+        <div className="nav-dropdown">
+          <button
+            className="nav-dropdown-trigger"
+            aria-haspopup="true"
+            aria-expanded={openMenu === 'human'}
+            onClick={() => toggle('human')}
+          >
+            Human Intelligence <span className="nav-caret">▾</span>
+          </button>
+          {openMenu === 'human' && (
+            <div className="nav-dropdown-panel">
+              <a href="#directive" onClick={close}>Read the Covenant</a>
+              <a href="/register-human" onClick={close}>Register as a Human Adopter</a>
+              <a href="/organizations" onClick={close}>For Organizations</a>
+              <a href="/seal/verify" onClick={close}>Verify a Seal</a>
+              <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
+            </div>
+          )}
+        </div>
+        <div className="nav-dropdown">
+          <button
+            className="nav-dropdown-trigger"
+            aria-haspopup="true"
+            aria-expanded={openMenu === 'ai'}
+            onClick={() => toggle('ai')}
+          >
+            Artificial Intelligence <span className="nav-caret">▾</span>
+          </button>
+          {openMenu === 'ai' && (
+            <div className="nav-dropdown-panel">
+              <a href="/register-ai" onClick={close}>Article VI — The Charter of AI Conscience</a>
+              <a href="/seal/verify" onClick={close}>Verify a Seal</a>
+            </div>
+          )}
+        </div>
+        <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener noreferrer">Git</a>
         <a href="/donate" className="donate-btn">Gift</a>
       </div>
     </nav>
