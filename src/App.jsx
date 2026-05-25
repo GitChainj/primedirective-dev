@@ -729,6 +729,7 @@ function Hero() {
           height: '60vmin',
           transform: 'translate(-50%, -50%)',
           zIndex: 0,
+          mixBlendMode: 'screen',
         }}
       />
       <div className="hero-diamond">✦</div>
