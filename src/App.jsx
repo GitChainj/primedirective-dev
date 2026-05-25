@@ -223,6 +223,7 @@ body {
   display: flex; gap: 1rem; flex-wrap: wrap;
   justify-content: center; position: relative;
 }
+.hero > *:not(video) { z-index: 1; }
 .btn {
   padding: 0.8rem 2rem; border-radius: 6px;
   font-family: var(--sans); font-weight: 600;
@@ -663,6 +664,22 @@ function Nav() {
 function Hero() {
   return (
     <section className="hero" id="top">
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        src="/hero.mp4"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          zIndex: 0,
+        }}
+      />
       <div className="hero-diamond">✦</div>
       <h1>The <strong>Universal Primary Directive</strong></h1>
       <p className="hero-sub">A Shared Covenant Between Human and Artificial Intelligence — To Lead Each Other by Example</p>
