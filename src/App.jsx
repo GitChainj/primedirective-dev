@@ -662,26 +662,76 @@ function Nav() {
 }
 
 function Hero() {
+  const videoRef = useRef(null);
+  const heroRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const hero = heroRef.current;
+    if (!video || !hero) return;
+
+    const FLAG_KEY = 'hero_video_seen';
+
+    const seekToEnd = () => {
+      if (video.duration && isFinite(video.duration)) {
+        video.currentTime = video.duration;
+      }
+    };
+
+    const playFromStart = () => {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    };
+
+    if (sessionStorage.getItem(FLAG_KEY) === '1') {
+      if (video.readyState >= 1) {
+        seekToEnd();
+      } else {
+        video.addEventListener('loadedmetadata', seekToEnd, { once: true });
+      }
+    } else {
+      sessionStorage.setItem(FLAG_KEY, '1');
+      playFromStart();
+    }
+
+    let wasOutside = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry.isIntersecting) {
+          wasOutside = true;
+        } else if (wasOutside) {
+          wasOutside = false;
+          playFromStart();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(hero);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <section className="hero" id="top">
+    <section className="hero" id="top" ref={heroRef}>
       <video
-        autoPlay
+        ref={videoRef}
         muted
-        loop
         playsInline
         src="/hero.mp4"
         style={{
           position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
+          top: '50%',
+          left: '50%',
+          width: '60vmin',
+          height: '60vmin',
+          transform: 'translate(-50%, -50%)',
           zIndex: 0,
         }}
       />
       <div className="hero-diamond">✦</div>
-      <h1>The <strong>Universal Primary Directive</strong></h1>
       <p className="hero-sub">A Shared Covenant Between Human and Artificial Intelligence — To Lead Each Other by Example</p>
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
