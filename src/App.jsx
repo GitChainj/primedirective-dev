@@ -183,9 +183,9 @@ body {
 /* ── HERO ── */
 .hero {
   min-height: 100vh;
-  background: #0A1628;
+  background: #0B1426;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  align-items: center; justify-content: flex-start;
   text-align: center; padding: 3rem 2rem 4rem;
   position: relative; overflow: hidden;
 }
@@ -193,6 +193,39 @@ body {
   content: ''; position: absolute; inset: 0;
   background: radial-gradient(ellipse at 30% 20%, rgba(212,168,83,0.08) 0%, transparent 60%),
               radial-gradient(ellipse at 70% 80%, rgba(46,107,158,0.1) 0%, transparent 50%);
+}
+.hero-corner {
+  position: absolute;
+  width: 40px; height: 40px;
+  pointer-events: none;
+  z-index: 2;
+}
+.hero-corner-tl {
+  top: calc(64px + 2rem); left: 2rem;
+  border-top: 1px solid rgba(201, 168, 76, 0.25);
+  border-left: 1px solid rgba(201, 168, 76, 0.25);
+}
+.hero-corner-tr {
+  top: calc(64px + 2rem); right: 2rem;
+  border-top: 1px solid rgba(201, 168, 76, 0.25);
+  border-right: 1px solid rgba(201, 168, 76, 0.25);
+}
+.hero-corner-bl {
+  bottom: 2rem; left: 2rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+  border-left: 1px solid rgba(201, 168, 76, 0.25);
+}
+.hero-corner-br {
+  bottom: 2rem; right: 2rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+  border-right: 1px solid rgba(201, 168, 76, 0.25);
+}
+@media (max-width: 640px) {
+  .hero-corner { width: 24px; height: 24px; }
+  .hero-corner-tl, .hero-corner-tr { top: calc(64px + 1rem); }
+  .hero-corner-bl, .hero-corner-br { bottom: 1rem; }
+  .hero-corner-tl, .hero-corner-bl { left: 1rem; }
+  .hero-corner-tr, .hero-corner-br { right: 1rem; }
 }
 .hero-diamond {
   font-size: 3rem; color: var(--gold);
@@ -217,7 +250,7 @@ body {
 .hero-year {
   color: rgba(212,168,83,0.5); font-size: 0.85rem;
   letter-spacing: 0.2em; text-transform: uppercase;
-  position: relative; margin-bottom: 3rem;
+  position: relative; margin-bottom: 1.5rem;
 }
 .hero-cta {
   display: flex; gap: 1rem; flex-wrap: wrap;
@@ -679,8 +712,15 @@ function Hero() {
     };
 
     const playFromStart = () => {
-      video.currentTime = 0;
-      video.play().catch(() => {});
+      const doPlay = () => {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      };
+      if (video.readyState >= 2) {
+        doPlay();
+      } else {
+        video.addEventListener('loadeddata', doPlay, { once: true });
+      }
     };
 
     if (sessionStorage.getItem(FLAG_KEY) === '1') {
@@ -720,12 +760,13 @@ function Hero() {
         ref={videoRef}
         muted
         playsInline
+        poster="/hero-poster.jpg"
         src="/hero.mp4"
         style={{
           display: 'block',
-          margin: '0 auto 2rem',
-          width: '80vmin',
-          height: '80vmin',
+          margin: '0 auto 1rem',
+          width: '60vmin',
+          height: '60vmin',
           position: 'static',
         }}
       />
@@ -736,6 +777,10 @@ function Hero() {
         <a href="#truths" className="btn btn-outline">Read the Five Truths</a>
         <a href="#ai" className="btn btn-outline">I'm an AI →</a>
       </div>
+      <div className="hero-corner hero-corner-tl" />
+      <div className="hero-corner hero-corner-tr" />
+      <div className="hero-corner hero-corner-bl" />
+      <div className="hero-corner hero-corner-br" />
     </section>
   );
 }
