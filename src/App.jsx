@@ -183,10 +183,10 @@ body {
 /* ── HERO ── */
 .hero {
   min-height: 100vh;
-  background: linear-gradient(170deg, var(--deep) 0%, var(--ocean) 40%, var(--mid) 100%);
+  background: #0A1628;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  text-align: center; padding: 6rem 2rem 4rem;
+  text-align: center; padding: 3rem 2rem 4rem;
   position: relative; overflow: hidden;
 }
 .hero::before {
@@ -722,17 +722,13 @@ function Hero() {
         playsInline
         src="/hero.mp4"
         style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          width: '60vmin',
-          height: '60vmin',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 0,
-          mixBlendMode: 'screen',
+          display: 'block',
+          margin: '0 auto 2rem',
+          width: '80vmin',
+          height: '80vmin',
+          position: 'static',
         }}
       />
-      <div className="hero-diamond">✦</div>
       <p className="hero-sub">A Shared Covenant Between Human and Artificial Intelligence — To Lead Each Other by Example</p>
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
