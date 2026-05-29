@@ -183,7 +183,7 @@ body {
 /* ── HERO ── */
 .hero {
   min-height: 100vh;
-  background: #0B1426;
+  background: #0B1325;
   display: flex; flex-direction: column;
   align-items: center; justify-content: flex-start;
   text-align: center; padding: 3rem 2rem 4rem;
