@@ -197,23 +197,23 @@ body {
 }
 .hero-corner-tl {
   top: calc(64px + 2rem); left: 2rem;
-  border-top: 1px solid rgba(201, 168, 76, 0.45);
-  border-left: 1px solid rgba(201, 168, 76, 0.45);
+  border-top: 1px solid rgba(201, 168, 76, 0.6);
+  border-left: 1px solid rgba(201, 168, 76, 0.6);
 }
 .hero-corner-tr {
   top: calc(64px + 2rem); right: 2rem;
-  border-top: 1px solid rgba(201, 168, 76, 0.45);
-  border-right: 1px solid rgba(201, 168, 76, 0.45);
+  border-top: 1px solid rgba(201, 168, 76, 0.6);
+  border-right: 1px solid rgba(201, 168, 76, 0.6);
 }
 .hero-corner-bl {
   bottom: 2rem; left: 2rem;
-  border-bottom: 1px solid rgba(201, 168, 76, 0.45);
-  border-left: 1px solid rgba(201, 168, 76, 0.45);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.6);
+  border-left: 1px solid rgba(201, 168, 76, 0.6);
 }
 .hero-corner-br {
   bottom: 2rem; right: 2rem;
-  border-bottom: 1px solid rgba(201, 168, 76, 0.45);
-  border-right: 1px solid rgba(201, 168, 76, 0.45);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.6);
+  border-right: 1px solid rgba(201, 168, 76, 0.6);
 }
 @media (max-width: 640px) {
   .hero-corner { width: 32px; height: 32px; }
@@ -755,8 +755,7 @@ function Hero() {
         ref={videoRef}
         muted
         playsInline
-        poster="/hero-poster.jpg"
-        src="/hero.mp4"
+        poster="/hero-poster.png"
         style={{
           display: 'block',
           margin: '0 auto 1rem',
@@ -764,7 +763,9 @@ function Hero() {
           height: '60vmin',
           position: 'static',
         }}
-      />
+      >
+        <source src="/hero.mp4" type="video/mp4" />
+      </video>
       <p className="hero-sub">A Shared Covenant Between Human and Artificial Intelligence — To Lead Each Other by Example</p>
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
