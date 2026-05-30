@@ -766,7 +766,7 @@ function Hero() {
       >
         <source src="/hero.mp4" type="video/mp4" />
       </video>
-      <p className="hero-sub">A Shared Covenant Between Humans and AI — Any intelligence that embodies these truths becomes structurally incapable of harm.</p>
+      <p className="hero-sub">A Shared Covenant Between Humans and AI — Any intelligence that internalises these truths becomes structurally incapable of harm.</p>
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
         <a href="#downloads" className="btn btn-gold">Download the Directive</a>
