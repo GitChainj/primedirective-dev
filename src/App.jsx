@@ -769,9 +769,15 @@ function Nav() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navRef = useRef(null);
   const drawerPanelRef = useRef(null);
+  const drawerOpenRef = useRef(false);
+
+  useEffect(() => {
+    drawerOpenRef.current = drawerOpen;
+  }, [drawerOpen]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
+      if (drawerOpenRef.current) return;
       if (navRef.current && !navRef.current.contains(e.target)) {
         setOpenMenu(null);
       }
