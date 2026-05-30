@@ -1590,6 +1590,7 @@ import ProposalForm from './ProposalForm.jsx';
 import InteractiveSeal from './InteractiveSeal.jsx';
 import SealVerify from './SealVerify.jsx';
 import RegisterAI from './RegisterAI.jsx';
+import Organizations from './Organizations.jsx';
 
 export default function App() {
   // Simple path-based routing (no router library needed)
@@ -1613,6 +1614,11 @@ export default function App() {
   // Route to AI registration
   if (path === '/register-ai') {
     return <RegisterAI />;
+  }
+
+  // Route to Organizations page
+  if (path === '/organizations') {
+    return <Organizations />;
   }
 
   return (
