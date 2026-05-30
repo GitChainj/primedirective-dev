@@ -12,6 +12,7 @@ const formCSS = `
   background: linear-gradient(170deg, #0A1628 0%, #12243D 40%, #1B3A5C 100%);
   padding: 3rem 1.5rem;
   text-align: center;
+  position: relative;
 }
 
 .form-header-diamond {
@@ -34,6 +35,25 @@ const formCSS = `
   max-width: 520px;
   margin: 0 auto;
   line-height: 1.7;
+}
+
+.header-home-link {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  z-index: 2;
+  transition: color 0.2s;
+}
+.header-home-link:hover {
+  color: #F0D48A;
+}
+@media (max-width: 600px) {
+  .header-home-link { font-size: 0.8rem; top: 1rem; left: 1rem; }
 }
 
 .form-body {
@@ -345,6 +365,7 @@ export default function ProposalForm() {
       <div className="form-page">
         <style>{formCSS}</style>
         <div className="form-header">
+          <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
           <div className="form-header-diamond">✦</div>
           <h1>The Universal Primary Directive</h1>
         </div>
@@ -376,6 +397,7 @@ export default function ProposalForm() {
       <style>{formCSS}</style>
 
       <div className="form-header">
+        <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
         <div className="form-header-diamond">✦</div>
         <h1>Propose an Amendment</h1>
         <p>

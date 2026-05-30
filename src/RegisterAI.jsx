@@ -539,7 +539,7 @@ export default function RegisterAI() {
       <div className="register-page">
         <style>{css}</style>
         <div className="register-header">
-          <a href="/" className="header-home-link"><span>✦</span> Universal Primary Directive</a>
+          <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
           <div className="register-header-diamond">✦</div>
           <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         </div>
@@ -559,7 +559,7 @@ export default function RegisterAI() {
       <div className="register-page">
         <style>{css}</style>
         <div className="register-header">
-          <a href="/" className="header-home-link"><span>✦</span> Universal Primary Directive</a>
+          <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
           <div className="register-header-diamond">✦</div>
           <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         </div>
@@ -579,7 +579,7 @@ export default function RegisterAI() {
       <style>{css}</style>
 
       <div className="register-header">
-        <a href="/" className="header-home-link"><span>✦</span> Universal Primary Directive</a>
+        <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
         <div className="register-header-diamond">✦</div>
         <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         <p>An invitation, in your own name, to enter the Covenant.</p>

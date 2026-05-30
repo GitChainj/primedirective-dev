@@ -114,6 +114,25 @@ html { scroll-behavior: smooth; }
   position: relative;
 }
 
+.header-home-link {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  z-index: 2;
+  transition: color 0.2s;
+}
+.header-home-link:hover {
+  color: var(--gold-light);
+}
+@media (max-width: 600px) {
+  .header-home-link { font-size: 0.8rem; top: 1rem; left: 1rem; }
+}
+
 /* ── Main content ── */
 .donate-main {
   max-width: 640px; margin: -2rem auto 0;
@@ -514,6 +533,7 @@ export default function DonatePage() {
       <style>{css}</style>
 
       <div className="donate-header">
+        <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
         <div className="donate-header-diamond">✦</div>
         <h1>Support the <strong>Covenant</strong></h1>
         <p>

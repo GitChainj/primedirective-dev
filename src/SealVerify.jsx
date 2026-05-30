@@ -474,7 +474,7 @@ export default function SealVerify() {
       <style>{css}</style>
 
       <div className="verify-header">
-        <a href="/" className="header-home-link"><span>✦</span> Universal Primary Directive</a>
+        <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
         <div className="verify-header-diamond">✦</div>
         <h1>Verify a <strong>Universal Primary Directive Seal</strong></h1>
         <p>Paste a Seal JWT to verify its cryptographic authenticity, in your browser, with no server roundtrip.</p>
