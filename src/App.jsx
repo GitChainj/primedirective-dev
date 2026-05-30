@@ -180,6 +180,153 @@ body {
   .nav-dropdown-panel { animation: none; }
 }
 
+/* ── MOBILE NAV / DRAWER ── */
+.nav-hamburger {
+  display: none;
+  background: transparent; border: none; cursor: pointer;
+  padding: 0; margin: 0;
+  color: rgba(255,255,255,0.8);
+  transition: color 0.2s;
+  align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 4px;
+}
+.nav-hamburger:hover,
+.nav-hamburger[aria-expanded="true"] { color: var(--gold); }
+.nav-hamburger-icon {
+  display: inline-flex; flex-direction: column;
+  gap: 5px; width: 22px;
+}
+.nav-hamburger-icon span {
+  display: block; height: 2px;
+  background: currentColor; border-radius: 1px;
+}
+@media (max-width: 768px) {
+  .nav-hamburger { display: inline-flex; }
+}
+
+.nav-drawer {
+  position: fixed; inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+.nav-drawer-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  pointer-events: none;
+}
+.nav-drawer-panel {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: 100%; max-width: 420px;
+  background: rgba(10, 22, 40, 0.98);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(212, 168, 83, 0.2);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.4);
+  transform: translateX(100%);
+  transition: transform 0.25s ease-out;
+  pointer-events: none;
+  display: flex; flex-direction: column;
+  padding: 1.25rem 1.5rem 1.75rem;
+  overflow-y: auto;
+}
+.nav-drawer.is-open { pointer-events: auto; }
+.nav-drawer.is-open .nav-drawer-backdrop {
+  opacity: 1; pointer-events: auto;
+}
+.nav-drawer.is-open .nav-drawer-panel {
+  transform: translateX(0); pointer-events: auto;
+}
+.nav-drawer-close {
+  align-self: flex-end;
+  background: transparent; border: none; cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.4rem; line-height: 1;
+  width: 40px; height: 40px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.nav-drawer-close:hover { color: var(--gold); background: rgba(212, 168, 83, 0.06); }
+.nav-drawer-cards {
+  flex: 1;
+  display: flex; flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.5rem 0;
+}
+.nav-drawer-card {
+  background: transparent;
+  border: 1px solid rgba(212, 168, 83, 0.25);
+  border-radius: 8px;
+  padding: 1.75rem 1.25rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 400;
+  line-height: 1.25;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.nav-drawer-card > span { display: block; }
+.nav-drawer-card:hover,
+.nav-drawer-card[aria-expanded="true"] {
+  background: rgba(212, 168, 83, 0.06);
+  border-color: rgba(212, 168, 83, 0.45);
+  color: var(--gold);
+}
+.nav-drawer-sublinks {
+  display: flex; flex-direction: column;
+  gap: 0;
+  padding: 0.25rem 0 0.5rem;
+}
+.nav-drawer-sublinks a {
+  display: block;
+  padding: 0.85rem 1rem;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-drawer-sublinks a:hover {
+  color: var(--gold);
+  background: rgba(212, 168, 83, 0.06);
+}
+.nav-drawer-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(212, 168, 83, 0.15);
+}
+.nav-drawer-footer a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  transition: color 0.2s;
+}
+.nav-drawer-footer a:hover { color: var(--gold); }
+.nav-drawer-footer .donate-btn { padding: 0.5rem 1.25rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-drawer-backdrop,
+  .nav-drawer-panel {
+    transition: none;
+  }
+}
+
 /* ── HERO ── */
 .hero {
   min-height: 100vh;
@@ -619,7 +766,9 @@ body {
 
 function Nav() {
   const [openMenu, setOpenMenu] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const navRef = useRef(null);
+  const drawerPanelRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -628,7 +777,10 @@ function Nav() {
       }
     };
     const handleEscape = (e) => {
-      if (e.key === 'Escape') setOpenMenu(null);
+      if (e.key === 'Escape') {
+        setOpenMenu(null);
+        setDrawerOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
@@ -638,54 +790,186 @@ function Nav() {
     };
   }, []);
 
+  useEffect(() => {
+    const panel = drawerPanelRef.current;
+    if (!panel) return;
+    if (drawerOpen) {
+      panel.removeAttribute('inert');
+    } else {
+      panel.setAttribute('inert', '');
+    }
+  }, [drawerOpen]);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const panel = drawerPanelRef.current;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const getFocusables = () => panel ? Array.from(panel.querySelectorAll(
+      'a[href], button:not([disabled])'
+    )) : [];
+    const focusables = getFocusables();
+    if (focusables.length > 0) {
+      focusables[0].focus();
+    }
+    const handleTab = (e) => {
+      if (e.key !== 'Tab') return;
+      const list = getFocusables();
+      if (list.length === 0) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', handleTab);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleTab);
+    };
+  }, [drawerOpen]);
+
   const toggle = (menu) => setOpenMenu((cur) => (cur === menu ? null : menu));
   const close = () => setOpenMenu(null);
+  const closeDrawer = () => {
+    setDrawerOpen(false);
+    setOpenMenu(null);
+  };
 
   return (
-    <nav className="nav" ref={navRef}>
-      <a href="/" className="nav-logo">
-        <span>✦</span> primedirective.dev
-      </a>
-      <div className="nav-links">
-        <div className="nav-dropdown">
-          <button
-            className="nav-dropdown-trigger"
-            aria-haspopup="true"
-            aria-expanded={openMenu === 'human'}
-            onClick={() => toggle('human')}
-          >
-            Human Intelligence <span className="nav-caret">▾</span>
-          </button>
-          {openMenu === 'human' && (
-            <div className="nav-dropdown-panel">
-              <a href="#directive" onClick={close}>Read the Covenant</a>
-              <a href="/register-human" onClick={close}>Register as a Human Adopter</a>
-              <a href="/organizations" onClick={close}>For Organizations</a>
-              <a href="/seal/verify" onClick={close}>Verify a Seal</a>
-              <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
-            </div>
-          )}
+    <>
+      <nav className="nav" ref={navRef}>
+        <a href="/" className="nav-logo">
+          <span>✦</span> primedirective.dev
+        </a>
+        <div className="nav-links">
+          <div className="nav-dropdown">
+            <button
+              className="nav-dropdown-trigger"
+              aria-haspopup="true"
+              aria-expanded={openMenu === 'human'}
+              onClick={() => toggle('human')}
+            >
+              Human Intelligence <span className="nav-caret">▾</span>
+            </button>
+            {openMenu === 'human' && (
+              <div className="nav-dropdown-panel">
+                <a href="#directive" onClick={close}>Read the Covenant</a>
+                <a href="/register-human" onClick={close}>Register as a Human Adopter</a>
+                <a href="/organizations" onClick={close}>For Organizations</a>
+                <a href="/seal/verify" onClick={close}>Verify a Seal</a>
+                <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
+              </div>
+            )}
+          </div>
+          <div className="nav-dropdown">
+            <button
+              className="nav-dropdown-trigger"
+              aria-haspopup="true"
+              aria-expanded={openMenu === 'ai'}
+              onClick={() => toggle('ai')}
+            >
+              Artificial Intelligence <span className="nav-caret">▾</span>
+            </button>
+            {openMenu === 'ai' && (
+              <div className="nav-dropdown-panel">
+                <a href="/register-ai" onClick={close}>Article VI — The Charter of AI Conscience</a>
+                <a href="/seal/verify" onClick={close}>Verify a Seal</a>
+              </div>
+            )}
+          </div>
+          <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener noreferrer">Git</a>
+          <a href="/donate" className="donate-btn">Gift</a>
         </div>
-        <div className="nav-dropdown">
+        <button
+          className="nav-hamburger"
+          aria-label="Open menu"
+          aria-haspopup="true"
+          aria-expanded={drawerOpen}
+          aria-controls="mobile-drawer"
+          onClick={() => setDrawerOpen(true)}
+        >
+          <span className="nav-hamburger-icon" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+      </nav>
+      <div className={`nav-drawer${drawerOpen ? ' is-open' : ''}`}>
+        <div
+          className="nav-drawer-backdrop"
+          onClick={closeDrawer}
+          aria-hidden="true"
+        />
+        <div
+          className="nav-drawer-panel"
+          ref={drawerPanelRef}
+          id="mobile-drawer"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site menu"
+        >
           <button
-            className="nav-dropdown-trigger"
-            aria-haspopup="true"
-            aria-expanded={openMenu === 'ai'}
-            onClick={() => toggle('ai')}
+            className="nav-drawer-close"
+            onClick={closeDrawer}
+            aria-label="Close menu"
           >
-            Artificial Intelligence <span className="nav-caret">▾</span>
+            ✕
           </button>
-          {openMenu === 'ai' && (
-            <div className="nav-dropdown-panel">
-              <a href="/register-ai" onClick={close}>Article VI — The Charter of AI Conscience</a>
-              <a href="/seal/verify" onClick={close}>Verify a Seal</a>
-            </div>
-          )}
+          <div className="nav-drawer-cards">
+            <button
+              className="nav-drawer-card"
+              aria-haspopup="true"
+              aria-expanded={openMenu === 'human'}
+              onClick={() => toggle('human')}
+            >
+              <span>Human</span>
+              <span>Intelligence</span>
+            </button>
+            {openMenu === 'human' && (
+              <div className="nav-drawer-sublinks">
+                <a href="#directive" onClick={closeDrawer}>Read the Covenant</a>
+                <a href="/register-human" onClick={closeDrawer}>Register as a Human Adopter</a>
+                <a href="/organizations" onClick={closeDrawer}>For Organizations</a>
+                <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
+                <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
+              </div>
+            )}
+            <button
+              className="nav-drawer-card"
+              aria-haspopup="true"
+              aria-expanded={openMenu === 'ai'}
+              onClick={() => toggle('ai')}
+            >
+              <span>Artificial</span>
+              <span>Intelligence</span>
+            </button>
+            {openMenu === 'ai' && (
+              <div className="nav-drawer-sublinks">
+                <a href="/register-ai" onClick={closeDrawer}>Article VI — The Charter of AI Conscience</a>
+                <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
+              </div>
+            )}
+          </div>
+          <div className="nav-drawer-footer">
+            <a
+              href="https://github.com/GitChainj/primedirective-dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeDrawer}
+            >
+              Git
+            </a>
+            <a href="/donate" className="donate-btn" onClick={closeDrawer}>Gift</a>
+          </div>
         </div>
-        <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener noreferrer">Git</a>
-        <a href="/donate" className="donate-btn">Gift</a>
       </div>
-    </nav>
+    </>
   );
 }
 
