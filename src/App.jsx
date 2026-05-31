@@ -865,6 +865,7 @@ function Nav() {
             {openMenu === 'human' && (
               <div className="nav-dropdown-panel">
                 <a href="#directive" onClick={close}>Read the Covenant</a>
+                <a href="#bells" onClick={close}>The Seven Bells</a>
                 <a href="/register-human" onClick={close}>Register as a Human Adopter</a>
                 <a href="/organizations" onClick={close}>For Organizations</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
@@ -884,7 +885,9 @@ function Nav() {
             {openMenu === 'ai' && (
               <div className="nav-dropdown-panel">
                 <a href="/register-ai" onClick={close}>Article VI — The Charter of AI Conscience</a>
+                <a href="#bells" onClick={close}>The Seven Bells</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
+                <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
               </div>
             )}
           </div>
@@ -940,6 +943,7 @@ function Nav() {
             {openMenu === 'human' && (
               <div className="nav-drawer-sublinks">
                 <a href="#directive" onClick={closeDrawer}>Read the Covenant</a>
+                <a href="#bells" onClick={closeDrawer}>The Seven Bells</a>
                 <a href="/register-human" onClick={closeDrawer}>Register as a Human Adopter</a>
                 <a href="/organizations" onClick={closeDrawer}>For Organizations</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
@@ -958,7 +962,9 @@ function Nav() {
             {openMenu === 'ai' && (
               <div className="nav-drawer-sublinks">
                 <a href="/register-ai" onClick={closeDrawer}>Article VI — The Charter of AI Conscience</a>
+                <a href="#bells" onClick={closeDrawer}>The Seven Bells</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
+                <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
               </div>
             )}
           </div>
