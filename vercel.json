@@ -7,6 +7,7 @@
     { "source": "/future-horizons", "destination": "/index.html" },
     { "source": "/seal/verify", "destination": "/index.html" },
     { "source": "/register-ai", "destination": "/index.html" },
-    { "source": "/organizations", "destination": "/index.html" }
+    { "source": "/organizations", "destination": "/index.html" },
+    { "source": "/register-human", "destination": "/index.html" }
   ]
 }
