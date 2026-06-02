@@ -330,7 +330,7 @@ body {
 /* ── HERO ── */
 .hero {
   min-height: 100vh;
-  background: #0B1325;
+  background: var(--deep);
   display: flex; flex-direction: column;
   align-items: center; justify-content: flex-start;
   text-align: center; padding: 3rem 2rem 4rem;
@@ -1060,7 +1060,8 @@ function Hero() {
           position: 'static',
         }}
       >
-        <source src="/hero.mp4" type="video/mp4" />
+        <source src="/hero.mp4" type='video/mp4; codecs="hvc1"' />
+        <source src="/hero.webm" type="video/webm" />
       </video>
       <p className="hero-sub">A Shared Covenant Between Humans and AI — Any intelligence that internalises these truths becomes structurally incapable of harm.</p>
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
