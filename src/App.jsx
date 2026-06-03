@@ -333,7 +333,7 @@ body {
   background: var(--deep);
   display: flex; flex-direction: column;
   align-items: center; justify-content: flex-start;
-  text-align: center; padding: 3rem 2rem 4rem;
+  text-align: center; padding: 7rem 2rem 4rem;
   position: relative; overflow: hidden;
 }
 .hero-corner {
@@ -1003,15 +1003,8 @@ function Hero() {
     };
 
     const playFromStart = () => {
-      const doPlay = () => {
-        video.currentTime = 0;
-        video.play().catch(() => {});
-      };
-      if (video.readyState >= 2) {
-        doPlay();
-      } else {
-        video.addEventListener('loadeddata', doPlay, { once: true });
-      }
+      video.currentTime = 0;
+      video.play().catch(() => {});
     };
 
     if (sessionStorage.getItem(FLAG_KEY) === '1') {
@@ -1051,16 +1044,18 @@ function Hero() {
         ref={videoRef}
         muted
         playsInline
+        preload="metadata"
         poster="/hero-poster.png"
         style={{
           display: 'block',
           margin: '0 auto 1rem',
-          width: '60vmin',
-          height: '60vmin',
+          width: '55vmin',
+          height: '55vmin',
           position: 'static',
         }}
       >
-        <source src="/hero.mp4" type='video/mp4; codecs="hvc1"' />
+        <source src="/hero-mobile.mp4" type='video/mp4; codecs="hvc1"' media="(max-width: 767px)" />
+        <source src="/hero.mp4" type='video/mp4; codecs="hvc1"' media="(min-width: 768px)" />
         <source src="/hero.webm" type="video/webm" />
       </video>
       <p className="hero-sub">A Shared Covenant Between Humans and AI — Any intelligence that internalises these truths becomes structurally incapable of harm.</p>
