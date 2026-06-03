@@ -991,60 +991,19 @@ function Hero() {
 
   useEffect(() => {
     const video = videoRef.current;
-    const hero = heroRef.current;
-    if (!video || !hero) return;
-
-    const FLAG_KEY = 'hero_video_seen';
-
-    const seekToEnd = () => {
-      if (video.duration && isFinite(video.duration)) {
-        video.currentTime = video.duration;
-      }
-    };
-
-    const playFromStart = () => {
-      video.currentTime = 0;
-      video.play().catch(() => {});
-    };
-
-    if (sessionStorage.getItem(FLAG_KEY) === '1') {
-      if (video.readyState >= 1) {
-        seekToEnd();
-      } else {
-        video.addEventListener('loadedmetadata', seekToEnd, { once: true });
-      }
-    } else {
-      sessionStorage.setItem(FLAG_KEY, '1');
-      playFromStart();
-    }
-
-    let wasOutside = false;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (!entry.isIntersecting) {
-          wasOutside = true;
-        } else if (wasOutside) {
-          wasOutside = false;
-          playFromStart();
-        }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(hero);
-
-    return () => {
-      observer.disconnect();
-    };
+    if (!video) return;
+    video.play().catch(() => {});
   }, []);
 
   return (
     <section className="hero" id="top" ref={heroRef}>
       <video
         ref={videoRef}
+        autoPlay
+        loop
         muted
         playsInline
-        preload="metadata"
+        preload="auto"
         poster="/hero-poster.png"
         style={{
           display: 'block',
