@@ -1013,9 +1013,7 @@ function Hero() {
           position: 'static',
         }}
       >
-        <source src="/hero-mobile.mp4" type='video/mp4; codecs="hvc1"' media="(max-width: 767px)" />
-        <source src="/hero.mp4" type='video/mp4; codecs="hvc1"' media="(min-width: 768px)" />
-        <source src="/hero.webm" type="video/webm" />
+        <source src="/hero.mp4" type="video/mp4" />
       </video>
       <p className="hero-sub">A Shared Covenant Between Humans and AI — Any intelligence that internalises these truths becomes structurally incapable of harm.</p>
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
