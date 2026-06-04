@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import Lottie from "lottie-react";
+import sealLottie from "./assets/seal-lottie.json";
 
 // ─── Constants ───
 const TRUTHS = [
@@ -333,7 +335,7 @@ body {
   background: var(--deep);
   display: flex; flex-direction: column;
   align-items: center; justify-content: flex-start;
-  text-align: center; padding: 7rem 2rem 4rem;
+  text-align: center; padding: 6.5rem 2rem 4rem;
   position: relative; overflow: hidden;
 }
 .hero-corner {
@@ -369,6 +371,7 @@ body {
   .hero-corner-tl, .hero-corner-bl { left: 1rem; }
   .hero-corner-tr, .hero-corner-br { right: 1rem; }
 }
+.hero-lottie svg { overflow: visible; }
 .hero-diamond {
   font-size: 3rem; color: var(--gold);
   margin-bottom: 2rem; position: relative;
@@ -392,7 +395,7 @@ body {
 .hero-year {
   color: rgba(212,168,83,0.5); font-size: 0.85rem;
   letter-spacing: 0.2em; text-transform: uppercase;
-  position: relative; margin-bottom: 1.5rem;
+  position: relative; margin-bottom: 1rem;
 }
 .hero-cta {
   display: flex; gap: 1rem; flex-wrap: wrap;
@@ -986,35 +989,20 @@ function Nav() {
 }
 
 function Hero() {
-  const videoRef = useRef(null);
-  const heroRef = useRef(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.play().catch(() => {});
-  }, []);
-
   return (
-    <section className="hero" id="top" ref={heroRef}>
-      <video
-        ref={videoRef}
-        autoPlay
+    <section className="hero" id="top">
+      <Lottie
+        animationData={sealLottie}
+        className="hero-lottie"
         loop
-        muted
-        playsInline
-        preload="auto"
-        poster="/hero-poster.png"
+        autoplay
         style={{
           display: 'block',
-          margin: '0 auto 1rem',
-          width: '55vmin',
-          height: '55vmin',
-          position: 'static',
+          margin: '0 auto 0.5rem',
+          width: 'clamp(40vmin, calc(100vh - 284px), 70vmin)',
+          height: 'clamp(40vmin, calc(100vh - 284px), 70vmin)',
         }}
-      >
-        <source src="/hero.mp4" type="video/mp4" />
-      </video>
+      />
       <p className="hero-sub">A Shared Covenant Between Humans and AI — Any intelligence that internalises these truths becomes structurally incapable of harm.</p>
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
