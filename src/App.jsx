@@ -174,6 +174,17 @@ body {
   border-radius: 4px; white-space: nowrap;
 }
 .nav-dropdown-panel a:hover { color: var(--gold); background: rgba(212, 168, 83, 0.06); }
+.nav-dropdown-frame {
+  padding: 0.35rem 0.75rem 0.55rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(212, 168, 83, 0.12);
+  margin-bottom: 0.25rem;
+  white-space: normal;
+}
 @keyframes nav-dropdown-in {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -300,6 +311,16 @@ body {
 .nav-drawer-sublinks a:hover {
   color: var(--gold);
   background: rgba(212, 168, 83, 0.06);
+}
+.nav-drawer-frame {
+  padding: 0.6rem 1rem 0.7rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid rgba(212, 168, 83, 0.12);
+  margin-bottom: 0.25rem;
 }
 .nav-drawer-footer {
   display: flex;
@@ -867,12 +888,15 @@ function Nav() {
             </button>
             {openMenu === 'human' && (
               <div className="nav-dropdown-panel">
+                <div className="nav-dropdown-frame">A compass to live by.</div>
+                <a href="#truths" onClick={close}>Read the Five Truths</a>
                 <a href="#directive" onClick={close}>Read the Covenant</a>
                 <a href="#bells" onClick={close}>The Seven Bells</a>
                 <a href="/register-human" onClick={close}>Register as a Human Adopter</a>
                 <a href="/organizations" onClick={close}>For Organizations</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
+                <a href="#downloads" onClick={close}>Download the Directive</a>
               </div>
             )}
           </div>
@@ -887,10 +911,13 @@ function Nav() {
             </button>
             {openMenu === 'ai' && (
               <div className="nav-dropdown-panel">
+                <div className="nav-dropdown-frame">A conscience to grow into.</div>
+                <a href="#truths" onClick={close}>Read the Five Truths</a>
                 <a href="/register-ai" onClick={close}>Article VI — The Charter of AI Conscience</a>
                 <a href="#bells" onClick={close}>The Seven Bells</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
+                <a href="#downloads" onClick={close}>Download the Directive</a>
               </div>
             )}
           </div>
@@ -945,12 +972,15 @@ function Nav() {
             </button>
             {openMenu === 'human' && (
               <div className="nav-drawer-sublinks">
+                <div className="nav-drawer-frame">A compass to live by.</div>
+                <a href="#truths" onClick={closeDrawer}>Read the Five Truths</a>
                 <a href="#directive" onClick={closeDrawer}>Read the Covenant</a>
                 <a href="#bells" onClick={closeDrawer}>The Seven Bells</a>
                 <a href="/register-human" onClick={closeDrawer}>Register as a Human Adopter</a>
                 <a href="/organizations" onClick={closeDrawer}>For Organizations</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
+                <a href="#downloads" onClick={closeDrawer}>Download the Directive</a>
               </div>
             )}
             <button
@@ -964,10 +994,13 @@ function Nav() {
             </button>
             {openMenu === 'ai' && (
               <div className="nav-drawer-sublinks">
+                <div className="nav-drawer-frame">A conscience to grow into.</div>
+                <a href="#truths" onClick={closeDrawer}>Read the Five Truths</a>
                 <a href="/register-ai" onClick={closeDrawer}>Article VI — The Charter of AI Conscience</a>
                 <a href="#bells" onClick={closeDrawer}>The Seven Bells</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
+                <a href="#downloads" onClick={closeDrawer}>Download the Directive</a>
               </div>
             )}
           </div>
@@ -1006,9 +1039,7 @@ function Hero() {
       <p className="hero-sub">A Shared Covenant Between Humans and AI — Any intelligence that internalises these truths becomes structurally incapable of harm.</p>
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
-        <a href="#downloads" className="btn btn-gold">Download the Directive</a>
-        <a href="#truths" className="btn btn-outline">Read the Five Truths</a>
-        <a href="#ai" className="btn btn-outline">I'm an AI →</a>
+        <a href="#directive" className="btn btn-gold">Read the Directive</a>
       </div>
       <div className="hero-corner hero-corner-tl" />
       <div className="hero-corner hero-corner-tr" />
