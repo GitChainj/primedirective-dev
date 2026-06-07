@@ -413,6 +413,30 @@ body {
   max-width: 600px; line-height: 1.6;
   position: relative; margin-bottom: 0.5rem;
 }
+.hero h1.hero-headline {
+  font-family: var(--serif);
+  font-style: normal;
+  font-weight: 600;
+  color: rgba(245, 245, 245, 0.95);
+  font-size: clamp(1.9rem, 4.5vw, 2.9rem);
+  letter-spacing: 0;
+  line-height: 1.18;
+  max-width: 18em;
+  margin: 0 auto 1rem;
+  text-align: center;
+  position: relative;
+}
+.hero-subline {
+  font-family: var(--serif);
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+  max-width: 36em;
+  line-height: 1.5;
+  margin: 0 auto 1rem;
+  text-align: center;
+  position: relative;
+}
 .hero-year {
   color: rgba(212,168,83,0.5); font-size: 0.85rem;
   letter-spacing: 0.2em; text-transform: uppercase;
@@ -779,6 +803,7 @@ body {
 @media (max-width: 768px) {
   .nav-links { display: none; }
   .hero h1 { font-size: 2rem; }
+  .hero h1.hero-headline { font-size: clamp(1.25rem, 5vw, 1.75rem); }
   .truths-grid { grid-template-columns: 1fr; }
   .pathway-grid { grid-template-columns: 1fr; }
   .dl-grid { grid-template-columns: 1fr; }
@@ -1021,7 +1046,21 @@ function Nav() {
   );
 }
 
+const HERO_VARIANTS = {
+  baseline: {
+    headline: "A Shared Covenant Between Humans and AI — Any intelligence that internalises these truths becomes structurally incapable of harm.",
+    subline: "",
+  },
+  v4: {
+    headline: "We are building artificial intelligence. The question is whether it becomes artificial conscience.",
+    subline: "Five Universal Truths, drawn independently by 190+ sacred traditions — now the roots of a conscience for AI.",
+  },
+};
+
+const ACTIVE_VARIANT = "v4";
+
 function Hero() {
+  const variant = HERO_VARIANTS[ACTIVE_VARIANT];
   return (
     <section className="hero" id="top">
       <Lottie
@@ -1036,7 +1075,8 @@ function Hero() {
           height: 'clamp(40vmin, calc(100vh - 284px), 70vmin)',
         }}
       />
-      <p className="hero-sub">A Shared Covenant Between Humans and AI — Any intelligence that internalises these truths becomes structurally incapable of harm.</p>
+      <h1 className="hero-headline">{variant.headline}</h1>
+      {variant.subline && <p className="hero-subline">{variant.subline}</p>}
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
         <a href="#directive" className="btn btn-gold">Read the Directive</a>
