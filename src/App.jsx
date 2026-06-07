@@ -1052,8 +1052,16 @@ const HERO_VARIANTS = {
     subline: "",
   },
   v4: {
-    headline: "We are building artificial intelligence. The question is whether it becomes artificial conscience.",
-    subline: "Five Universal Truths, drawn independently by 190+ sacred traditions — now the roots of a conscience for AI.",
+    headline: "The world is building artificial intelligence. The question is whether it becomes artificial conscience.",
+    subline: "Five Universal Truths, drawn independently by 190+ sacred traditions — now the roots for AI conscience.",
+  },
+  v5: {
+    headline: "AI is being built faster than the conscience meant to guide it.",
+    subline: "Every civilisation on Earth arrived at the same five truths. This Covenant makes them the foundation of artificial consciousness.",
+  },
+  v6: {
+    headline: "Intelligence can be built. Conscience must be grown.",
+    subline: "The Universal Primary Directive grounds artificial intelligence in Five Universal Truths — drawn from 190+ sacred traditions, across every age.",
   },
 };
 
