@@ -1052,7 +1052,7 @@ const HERO_VARIANTS = {
     subline: "",
   },
   v4: {
-    headline: "The world is building artificial intelligence. The question is whether it becomes artificial conscience.",
+    headline: "The world is building artificial intelligence. Now it needs a conscience.",
     subline: "Five Universal Truths, drawn independently by 190+ sacred traditions — now the roots for AI conscience.",
   },
   v5: {
