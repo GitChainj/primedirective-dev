@@ -107,7 +107,7 @@ html { scroll-behavior: smooth; }
 .adopt-step-word {
   padding: 0 0.5rem;
   color: var(--text-light);
-  opacity: 0.55;
+  opacity: 0.7;
   transition: color 0.2s, opacity 0.2s;
 }
 .adopt-step-active {
@@ -119,6 +119,20 @@ html { scroll-behavior: smooth; }
   color: var(--text-light);
   opacity: 0.35;
   padding: 0 0.15rem;
+}
+.adopt-steps-progress {
+  max-width: 18em;
+  height: 2px;
+  background: rgba(212, 168, 83, 0.3);
+  border-radius: 1px;
+  margin: 0.75rem auto 0;
+  overflow: hidden;
+}
+.adopt-steps-progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 1px;
+  transition: width 0.4s ease;
 }
 
 /* Body container */
@@ -257,6 +271,31 @@ html { scroll-behavior: smooth; }
   color: var(--gold);
   border-bottom-color: rgba(212, 168, 83, 0.5);
 }
+.adopt-transparency-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem auto 0.9rem;
+  max-width: 28em;
+  text-align: left;
+}
+.adopt-transparency-list li {
+  position: relative;
+  padding-left: 1.2em;
+  margin-bottom: 0.6rem;
+  line-height: 1.6;
+}
+.adopt-transparency-list li:last-child { margin-bottom: 0; }
+.adopt-transparency-list li::before {
+  content: '·';
+  position: absolute;
+  left: 0.4em;
+  top: 0.05em;
+  color: var(--gold);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 1.2em;
+  line-height: 1;
+}
 
 /* Commit button — gold pill */
 .adopt-commit-btn {
@@ -362,6 +401,12 @@ function StepsNav({ step }) {
       <span className={cls(2)}>Register</span>
       <span className="adopt-step-separator"> · </span>
       <span className={cls(3)}>Seal</span>
+      <div className="adopt-steps-progress" aria-hidden="true">
+        <div
+          className="adopt-steps-progress-fill"
+          style={{ width: `${(step / 3) * 100}%` }}
+        />
+      </div>
     </div>
   );
 }
@@ -467,16 +512,17 @@ export default function Adopt() {
 
         <div className="adopt-transparency">
           <p>
-            When you adopt, your name and adoption date are added to a public ledger —
+            Upon adopting, your name and adoption date are added to a public ledger —
             a permanent, verifiable record that this commitment was made. This is how
             the Covenant maintains trust: every adoption is transparent, and every
             Seal can be verified by anyone.
           </p>
-          <p>
-            If you ever need your name removed, you can request anonymisation — your
-            personal details and adoption is removed but your record is preserved.
-            Contact <a href="mailto:human@primedirective.dev">human@primedirective.dev</a>.
-          </p>
+          <p>There are only two circumstances under which your adoption may be removed:</p>
+          <ul className="adopt-transparency-list">
+            <li>You request anonymisation — your personal details and adoption are removed, but your record is preserved.</li>
+            <li>If an AI system adopted under this Covenant is found to act against it, the associated Seal may be revoked.</li>
+          </ul>
+          <p>Contact <a href="mailto:human@primedirective.dev">human@primedirective.dev</a>.</p>
         </div>
 
         <button
