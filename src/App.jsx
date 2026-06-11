@@ -917,7 +917,7 @@ function Nav() {
                 <a href="#truths" onClick={close}>Read the Five Truths</a>
                 <a href="#directive" onClick={close}>Read the Covenant</a>
                 <a href="#bells" onClick={close}>The Seven Bells</a>
-                <a href="/register-human" onClick={close}>Register as a Human Adopter</a>
+                <a href="/adopt" onClick={close}>Register as a Human Adopter</a>
                 <a href="/organizations" onClick={close}>For Organizations</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
@@ -1001,7 +1001,7 @@ function Nav() {
                 <a href="#truths" onClick={closeDrawer}>Read the Five Truths</a>
                 <a href="#directive" onClick={closeDrawer}>Read the Covenant</a>
                 <a href="#bells" onClick={closeDrawer}>The Seven Bells</a>
-                <a href="/register-human" onClick={closeDrawer}>Register as a Human Adopter</a>
+                <a href="/adopt" onClick={closeDrawer}>Register as a Human Adopter</a>
                 <a href="/organizations" onClick={closeDrawer}>For Organizations</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
