@@ -16,3 +16,6 @@ dist/
 
 # Editor and tool settings
 .claude/
+
+# macOS Finder metadata
+.DS_Store
