@@ -1618,6 +1618,7 @@ import SealVerify from './SealVerify.jsx';
 import RegisterAI from './RegisterAI.jsx';
 import Organizations from './Organizations.jsx';
 import RegisterHuman from './RegisterHuman.jsx';
+import Adopt from './Adopt.jsx';
 
 export default function App() {
   // Simple path-based routing (no router library needed)
@@ -1651,6 +1652,11 @@ export default function App() {
   // Route to Human registration page
   if (path === '/register-human') {
     return <RegisterHuman />;
+  }
+
+  // Route to unified Adoption page
+  if (path === '/adopt') {
+    return <Adopt />;
   }
 
   return (

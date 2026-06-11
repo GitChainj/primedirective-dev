@@ -8,6 +8,7 @@
     { "source": "/seal/verify", "destination": "/index.html" },
     { "source": "/register-ai", "destination": "/index.html" },
     { "source": "/organizations", "destination": "/index.html" },
-    { "source": "/register-human", "destination": "/index.html" }
+    { "source": "/register-human", "destination": "/index.html" },
+    { "source": "/adopt", "destination": "/index.html" }
   ]
 }
