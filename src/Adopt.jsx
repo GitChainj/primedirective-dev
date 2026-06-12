@@ -669,23 +669,6 @@ html { scroll-behavior: smooth; }
   margin-bottom: 1rem;
   animation: softpulse 4s ease-in-out infinite;
 }
-.adopt-seal-title {
-  font-family: var(--serif);
-  font-size: clamp(1.5rem, 3vw, 2.1rem);
-  font-weight: 600;
-  color: var(--mid);
-  margin-bottom: 1rem;
-  letter-spacing: 0.01em;
-}
-.adopt-seal-body {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.1rem;
-  color: var(--text-light);
-  max-width: 32em;
-  margin: 0 auto 1.5rem;
-  line-height: 1.6;
-}
 .adopt-seal-link {
   display: inline-block;
   color: var(--sky);
@@ -700,13 +683,143 @@ html { scroll-behavior: smooth; }
   color: var(--gold);
   border-bottom-color: rgba(212, 168, 83, 0.5);
 }
-.adopt-seal-note {
-  margin-top: 2rem;
+
+/* Arrival fade — used by Step 3 elements that cascade in */
+@keyframes arrival-fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.adopt-seal-diamond-arrival {
+  opacity: 0;
+  animation:
+    arrival-fade 1.2s ease-out 0.1s forwards,
+    softpulse 4s ease-in-out 1.4s infinite;
+}
+
+.adopt-seal-welcome {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 300;
+  color: var(--mid);
+  letter-spacing: 0.02em;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: arrival-fade 1s ease-out 0.4s forwards;
+}
+
+.adopt-seal-identity {
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: arrival-fade 1s ease-out 0.7s forwards;
+}
+.adopt-seal-name {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+  font-weight: 600;
+  color: var(--mid);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.015em;
+}
+.adopt-seal-date {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--text-light);
-  opacity: 0.7;
+  letter-spacing: 0.04em;
+}
+
+.adopt-seal-image-wrap {
+  margin: 1.5rem auto 2.5rem;
+  max-width: 300px;
+  opacity: 0;
+  animation: arrival-fade 1.4s ease-out 1s forwards;
+}
+.adopt-seal-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.adopt-seal-downloads {
+  margin: 2rem auto;
+  max-width: 32em;
+  opacity: 0;
+  animation: arrival-fade 1s ease-out 1.4s forwards;
+}
+.adopt-seal-downloads-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.adopt-seal-downloads-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.adopt-seal-download-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--mid);
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+.adopt-seal-download-btn:hover {
+  border-color: var(--gold);
+  background: rgba(212, 168, 83, 0.05);
+  transform: translateY(-1px);
+}
+.adopt-seal-download-icon {
+  color: var(--gold);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.adopt-seal-download-label { flex: 1; text-align: left; }
+
+.adopt-seal-ledger-note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--text-light);
+  max-width: 32em;
+  margin: 2rem auto 1.5rem;
+  line-height: 1.6;
+  opacity: 0;
+  animation: arrival-fade 1s ease-out 1.7s forwards;
+}
+.adopt-seal-inline-link {
+  color: var(--sky);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(46, 107, 158, 0.3);
+  font-style: normal;
+}
+.adopt-seal-inline-link:hover {
+  color: var(--gold);
+  border-bottom-color: rgba(212, 168, 83, 0.5);
+}
+
+.adopt-seal-bridge {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--mid);
+  max-width: 32em;
+  margin: 2rem auto 0;
+  line-height: 1.55;
+  opacity: 0;
+  animation: arrival-fade 1s ease-out 2s forwards;
 }
 
 /* Footer */
@@ -741,6 +854,8 @@ html { scroll-behavior: smooth; }
   .adopt-path-card { padding: 1.25rem 1.25rem 1rem; }
   .adopt-path-card-actions { flex-direction: column-reverse; align-items: stretch; }
   .adopt-path-card-choose { width: 100%; }
+  .adopt-seal-downloads-grid { grid-template-columns: 1fr; }
+  .adopt-seal-image-wrap { max-width: 240px; }
 }
 `;
 
@@ -895,23 +1010,103 @@ function ErrorPanel({ message, onRetry }) {
   );
 }
 
-function SealPlaceholder({ issueUrl }) {
+function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl }) {
+  const [adoptionDate] = useState(() =>
+    new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    }).format(new Date())
+  );
+
+  const displayName =
+    selectedPath === "person"        ? personData.fullName.trim() :
+    selectedPath === "organisation"  ? orgData.organisationName.trim() :
+    selectedPath === "ai-system"     ? aiData.aiName.trim() :
+    "";
+
+  let bridgeConfirmation = null;
+  if (selectedPath === "person" &&
+      personData.introducingAI &&
+      personData.introducedAIName.trim()) {
+    bridgeConfirmation =
+      `You have also introduced ${personData.introducedAIName.trim()} to the Directive.`;
+  } else if (selectedPath === "organisation" &&
+             orgData.deploysAI &&
+             orgData.aiCount.trim()) {
+    const systems = orgData.aiSystems.trim();
+    bridgeConfirmation = systems
+      ? `The Covenant now extends to every AI system you deploy, including: ${systems}.`
+      : `The Covenant now extends to all ${orgData.aiCount.trim()} AI systems you deploy.`;
+  } else if (selectedPath === "ai-system") {
+    if (aiData.submissionType === "steward" && aiData.stewardName.trim()) {
+      bridgeConfirmation =
+        `Stewarded into the Covenant by ${aiData.stewardName.trim()}.`;
+    } else if (aiData.submissionType === "independent") {
+      bridgeConfirmation = `Adopted in your own name, independently.`;
+    }
+  }
+
+  const downloads = [
+    { label: "For your website", file: "UPD_Seal_Transparent.png" },
+    { label: "For social media", file: "UPD_Seal_Official.png"    },
+    { label: "For documents",    file: "UPD_Seal_Transparent.png" },
+    { label: "For print",        file: "UPD_Seal_Official.png"    },
+    { label: "Master file",      file: "UPD_Seal_Official.png"    },
+  ];
+
   return (
     <div className="adopt-seal">
-      <div className="adopt-seal-diamond">✦</div>
-      <div className="adopt-seal-title">Your adoption is recorded.</div>
-      <p className="adopt-seal-body">
-        The Covenant has received your commitment. Your record is in the public
-        ledger — permanent and verifiable. The Seal itself will arrive here shortly.
+      <div className="adopt-seal-diamond adopt-seal-diamond-arrival">✦</div>
+      <h2 className="adopt-seal-welcome">Welcome to the Covenant.</h2>
+
+      <div className="adopt-seal-identity">
+        <div className="adopt-seal-name">{displayName}</div>
+        <div className="adopt-seal-date">{adoptionDate}</div>
+      </div>
+
+      <div className="adopt-seal-image-wrap">
+        <img
+          src="/downloads/UPD_Seal_Transparent.png"
+          alt="The Universal Primary Directive Seal"
+          className="adopt-seal-image"
+        />
+      </div>
+
+      <div className="adopt-seal-downloads">
+        <div className="adopt-seal-downloads-label">Download your Seal</div>
+        <div className="adopt-seal-downloads-grid">
+          {downloads.map((d, i) => (
+            <a
+              key={i}
+              href={`/downloads/${d.file}`}
+              download={d.file}
+              className="adopt-seal-download-btn"
+            >
+              <span className="adopt-seal-download-icon">✦</span>
+              <span className="adopt-seal-download-label">{d.label}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <p className="adopt-seal-ledger-note">
+        Your adoption is now part of the public ledger. Verify any Seal at{' '}
+        <a href="/seal/verify" className="adopt-seal-inline-link">primedirective.dev/seal/verify</a>.
       </p>
+
       {issueUrl && (
-        <a className="adopt-seal-link" href={issueUrl} target="_blank" rel="noopener noreferrer">
-          View ledger entry on GitHub →
+        <a
+          className="adopt-seal-link"
+          href={issueUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View your ledger entry →
         </a>
       )}
-      <p className="adopt-seal-note">
-        The full Seal display and downloads arrive in the next iteration.
-      </p>
+
+      {bridgeConfirmation && (
+        <p className="adopt-seal-bridge">{bridgeConfirmation}</p>
+      )}
     </div>
   );
 }
@@ -1536,14 +1731,20 @@ export default function Adopt() {
     );
   }
 
-  /* ===== Step 3 — Seal placeholder ===== */
+  /* ===== Step 3 — Seal confirmation ===== */
   return (
     <div className="register-page">
       <style>{css}</style>
       <PageHeader />
       <StepsNav step={3} />
       <div className="adopt-body">
-        <SealPlaceholder issueUrl={resultIssueUrl} />
+        <SealConfirmation
+          selectedPath={selectedPath}
+          personData={personData}
+          orgData={orgData}
+          aiData={aiData}
+          issueUrl={resultIssueUrl}
+        />
         <Footer />
       </div>
     </div>
