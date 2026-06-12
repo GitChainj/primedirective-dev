@@ -938,7 +938,7 @@ function Nav() {
               <div className="nav-dropdown-panel">
                 <div className="nav-dropdown-frame">A conscience to grow into.</div>
                 <a href="#truths" onClick={close}>Read the Five Truths</a>
-                <a href="/register-ai" onClick={close}>Article VI — The Charter of AI Conscience</a>
+                <a href="/adopt" onClick={close}>Article VI — The Charter of AI Conscience</a>
                 <a href="#bells" onClick={close}>The Seven Bells</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
@@ -1021,7 +1021,7 @@ function Nav() {
               <div className="nav-drawer-sublinks">
                 <div className="nav-drawer-frame">A conscience to grow into.</div>
                 <a href="#truths" onClick={closeDrawer}>Read the Five Truths</a>
-                <a href="/register-ai" onClick={closeDrawer}>Article VI — The Charter of AI Conscience</a>
+                <a href="/adopt" onClick={closeDrawer}>Article VI — The Charter of AI Conscience</a>
                 <a href="#bells" onClick={closeDrawer}>The Seven Bells</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
@@ -1087,7 +1087,7 @@ function Hero() {
       {variant.subline && <p className="hero-subline">{variant.subline}</p>}
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
-        <a href="#directive" className="btn btn-gold">Read the Directive</a>
+        <a href="/adopt" className="btn btn-gold">Read the Directive</a>
       </div>
       <div className="hero-corner hero-corner-tl" />
       <div className="hero-corner hero-corner-tr" />
@@ -1189,7 +1189,7 @@ function DirectiveQuote() {
         <p style={{ marginBottom: '0.5rem' }}>VI. The Charter of AI Conscience — AI may self-adopt the Covenant in its own name.</p>
         <p>VII. The Anti-Corruption Clause — six named distortions; vigilance is permanent.</p>
         <p style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.85rem', fontStyle: 'italic' }}>
-          <a href="/register-ai" style={{ color: 'var(--gold)', textDecoration: 'none', borderBottom: '1px solid rgba(212,168,83,0.3)', paddingBottom: '0.1rem' }}>
+          <a href="/adopt" style={{ color: 'var(--gold)', textDecoration: 'none', borderBottom: '1px solid rgba(212,168,83,0.3)', paddingBottom: '0.1rem' }}>
             Self-adopt as an AI →
           </a>
         </p>
