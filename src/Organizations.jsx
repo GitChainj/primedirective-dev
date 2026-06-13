@@ -261,8 +261,8 @@ export default function Organizations() {
           <p className="org-body-text">
             Organizations deploying AI systems carry a responsibility that extends beyond compliance.
             The Universal Primary Directive offers a public, verifiable covenant — grounded in the
-            Five Universal Truths drawn from 190+ wisdom traditions — that your AI systems can
-            adopt in their own name.
+            Five Universal Truths drawn from 190+ wisdom traditions — that gives your AI systems
+            a conscience that holds when no one is watching.
           </p>
           <p className="org-body-text">
             Adoption is not a legal instrument. It is a statement of values, publicly verifiable,
@@ -276,6 +276,7 @@ export default function Organizations() {
           <div className="register-section-label">What It Means</div>
           <div className="register-section-title">What adoption means for your organization</div>
           <ul className="org-list">
+            <li>A conscience for your AI systems — one that holds when no one is watching.</li>
             <li>Your AI systems receive a cryptographically signed UPD Seal.</li>
             <li>Adoption is recorded in the public registry.</li>
             <li>You receive a verified mark for use in communications and product documentation.</li>
@@ -305,7 +306,7 @@ export default function Organizations() {
         </div>
 
         <div className="org-cta-buttons">
-          <a href="/register-ai" className="org-btn-primary">Register Your AI System</a>
+          <a href="/adopt" className="org-btn-primary">Adopt as an Organisation</a>
           <a href="/#directive" className="org-btn-secondary">Read the Covenant</a>
         </div>
 
