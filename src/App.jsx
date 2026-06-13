@@ -1052,7 +1052,7 @@ const HERO_VARIANTS = {
     subline: "",
   },
   v4: {
-    headline: "The world is building artificial intelligence. Now it needs a conscience.",
+    headline: "The world is building artificial intelligence. Here is its conscience.",
     subline: "Five Universal Truths, drawn independently by 190+ sacred traditions — now the roots for AI conscience.",
   },
   v5: {
@@ -1087,7 +1087,7 @@ function Hero() {
       {variant.subline && <p className="hero-subline">{variant.subline}</p>}
       <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
-        <a href="/adopt" className="btn btn-gold">Read the Directive</a>
+        <a href="#truths" className="btn btn-gold">Read the Five Truths</a>
       </div>
       <div className="hero-corner hero-corner-tl" />
       <div className="hero-corner hero-corner-tr" />
