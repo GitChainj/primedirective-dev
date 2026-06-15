@@ -51,7 +51,7 @@ const PRESETS = [
   { amount: 200, label: "$2", note: "Keeps the lights on" },
   { amount: 500, label: "$5", note: "A week of hosting" },
   { amount: 1000, label: "$10", note: "Supports a translation review" },
-  { amount: 2500, label: "$25", note: "Funds a new language" },
+  { amount: 2500, label: "$25", note: "Helps reach a new language" },
 ];
 
 const css = `
@@ -135,13 +135,13 @@ html { scroll-behavior: smooth; }
 
 /* ── Main content ── */
 .donate-main {
-  max-width: 640px; margin: -2rem auto 0;
+  max-width: 640px; margin: 0 auto 0;
   padding: 0 1.5rem 4rem; position: relative; z-index: 2;
 }
 
 /* ── Intro section (above the donation card) ── */
 .donate-intro {
-  padding-top: 1.5rem;
+  padding-top: 3rem;
   margin-bottom: 2.5rem;
 }
 .donate-intro p {
@@ -569,7 +569,7 @@ export default function DonatePage() {
         <div className="donate-header-diamond">✦</div>
         <h1>Keep the <strong>Covenant</strong> Free and Uncaptured</h1>
         <p>
-          Kept free by many small gifts — never by a few large ones.
+          Kept free by many small gifts — never bought by a powerful few.
         </p>
       </div>
 
@@ -583,9 +583,9 @@ export default function DonatePage() {
             <section className="donate-intro">
               <p>
                 The Universal Primary Directive belongs to no one. It is public
-                domain — CC0 — owned by no company, backed by no advertiser,
-                sold to no one. There is no fee to adopt it, no certification
-                to buy, no enforcement body to fund.
+                domain — CC0 — owned by no company and backed by no advertiser.
+                There is no fee to adopt it, no certification to buy, no
+                enforcement body to fund.
               </p>
               <p>
                 That independence is not an accident. It is the whole point. A
@@ -694,10 +694,10 @@ export default function DonatePage() {
                 and we will help you arrange it.
               </p>
               <p className="bequests-note">
-                Wikipedia's experience is instructive here: legacy giving,
-                small at first, can become a primary source of long-term
-                independence. For a 343-year covenant, the people who give
-                across generations are the ones who make endurance real.
+                Legacy giving, small at first, can become a primary source of
+                long-term independence. For a 343-year covenant, the people
+                who give across generations are the ones who make endurance
+                real.
               </p>
             </div>
           </>
