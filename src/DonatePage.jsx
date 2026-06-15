@@ -139,6 +139,19 @@ html { scroll-behavior: smooth; }
   padding: 0 1.5rem 4rem; position: relative; z-index: 2;
 }
 
+/* ── Intro section (above the donation card) ── */
+.donate-intro {
+  padding-top: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.donate-intro p {
+  font-size: 1.05rem;
+  color: var(--text);
+  line-height: 1.75;
+  margin-bottom: 1.25rem;
+}
+.donate-intro p:last-child { margin-bottom: 0; }
+
 /* ── Card ── */
 .donate-card {
   background: white;
@@ -204,6 +217,17 @@ html { scroll-behavior: smooth; }
   margin-top: 0.25rem;
   display: block;
   line-height: 1.3;
+}
+
+.preset-framing {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--text-light);
+  text-align: center;
+  line-height: 1.6;
+  margin: 1.5rem 0;
+  padding: 0 0.5rem;
 }
 
 /* ── Custom amount ── */
@@ -346,6 +370,13 @@ html { scroll-behavior: smooth; }
 
 .bequests a:hover { color: var(--gold); }
 
+.bequests p.bequests-note {
+  font-style: italic;
+  font-size: 0.78rem;
+  opacity: 0.85;
+  margin-top: 0.75rem;
+}
+
 /* ── Back link ── */
 .back-link {
   display: block;
@@ -425,6 +456,7 @@ html { scroll-behavior: smooth; }
 @media (max-width: 500px) {
   .preset-grid { grid-template-columns: repeat(2, 1fr); }
   .donate-card { padding: 1.5rem; }
+  .donate-intro p { font-size: 1rem; }
 }
 `;
 
@@ -535,10 +567,9 @@ export default function DonatePage() {
       <div className="donate-header">
         <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
         <div className="donate-header-diamond">✦</div>
-        <h1>Support the <strong>Covenant</strong></h1>
+        <h1>Keep the <strong>Covenant</strong> Free and Uncaptured</h1>
         <p>
-          This project will always be free. Your contribution
-          helps it stay that way — open, independent, and growing.
+          Kept free by many small gifts — never by a few large ones.
         </p>
       </div>
 
@@ -549,12 +580,36 @@ export default function DonatePage() {
           <CanceledPage />
         ) : (
           <>
+            <section className="donate-intro">
+              <p>
+                The Universal Primary Directive belongs to no one. It is public
+                domain — CC0 — owned by no company, backed by no advertiser,
+                sold to no one. There is no fee to adopt it, no certification
+                to buy, no enforcement body to fund.
+              </p>
+              <p>
+                That independence is not an accident. It is the whole point. A
+                covenant meant to guide artificial intelligence toward
+                conscience cannot itself be captured by the interests it was
+                written to resist. (Article VII names "Capture" as a permanent
+                danger — a covenant funded by a single powerful backer would
+                already have begun to fail.)
+              </p>
+              <p>
+                This is why the Directive is kept the way it is: by many small
+                gifts from people who believe AI should have a conscience
+                humanity can actually point to — not by a few large ones that
+                could quietly steer it.
+              </p>
+              <p>
+                If that matters to you, a gift of any size helps keep the
+                Directive free, independent, and available to every person and
+                every intelligence, for as long as it is needed.
+              </p>
+            </section>
+
             <div className="donate-card">
               <div className="donate-card-title">Choose an amount</div>
-              <div className="donate-card-sub">
-                Every contribution — of any size — helps keep primedirective.dev
-                running and supports translation into world languages.
-              </div>
 
               <div className="preset-grid">
                 {PRESETS.map((p) => (
@@ -568,6 +623,12 @@ export default function DonatePage() {
                   </button>
                 ))}
               </div>
+
+              <p className="preset-framing">
+                Every gift, however small, keeps the Directive free and
+                uncaptured. There is no minimum, and no expectation —
+                only gratitude.
+              </p>
 
               <div className="custom-section">
                 <span className="custom-label">Or enter a custom amount</span>
@@ -608,24 +669,35 @@ export default function DonatePage() {
                   Financial records are publicly available.
                 </p>
                 <p style={{ marginTop: "0.5rem", fontSize: "0.75rem" }}>
-                  primedirective.dev is a personal open-source project.
-                  Contributions are voluntary gifts, not tax-deductible donations.
-                  When charitable status is established, tax receipts will become available.
+                  primedirective.dev is currently a personal project, not yet a
+                  registered charity. Contributions are personal gifts and are
+                  not tax-deductible. We hope to register as a Canadian
+                  not-for-profit; when we do, this will change and we will say
+                  so plainly here.
                 </p>
               </div>
             </div>
 
             <div className="bequests">
-              <div className="bequests-title">Charitable Bequests & Legacy Gifts</div>
+              <div className="bequests-title">A Gift That Outlives Us</div>
               <p>
-                If you are considering including the Universal Primary Directive
-                in your estate planning or wish to discuss a legacy gift to ensure
-                this project endures for future generations of humans and AI,
-                we would be honoured to hear from you.
+                The Directive is built to last — its founding arc spans more
+                than three centuries. A covenant meant for generations needs
+                supporters who think in generations too.
               </p>
               <p>
-                Please reach out to{" "}
-                <a href="mailto:human@primedirective.dev">human@primedirective.dev</a>
+                If you wish to leave a legacy gift — a contribution in your
+                will or estate that helps keep the Directive free long after
+                we are gone — you are thinking on exactly the timescale the
+                covenant was written for. Write to{" "}
+                <a href="mailto:human@primedirective.dev">human@primedirective.dev</a>{" "}
+                and we will help you arrange it.
+              </p>
+              <p className="bequests-note">
+                Wikipedia's experience is instructive here: legacy giving,
+                small at first, can become a primary source of long-term
+                independence. For a 343-year covenant, the people who give
+                across generations are the ones who make endurance real.
               </p>
             </div>
           </>
