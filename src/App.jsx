@@ -1270,6 +1270,19 @@ function Nav() {
 }
 
 const HERO_VARIANTS = {
+  q1: {
+    headline: "The world is building powerful AI. Who is teaching it right from wrong?",
+    subline: "Five Universal Truths, found independently by 190+ sacred traditions — now the roots of AI conscience.",
+  },
+  q2: {
+    headline: "Your AI has values. Who chose them?",
+    subline: "Five Universal Truths, found independently by 190+ sacred traditions — a conscience any AI can adopt.",
+  },
+  q3: {
+    headline: "AI is shaping how the world thinks. Who taught it what matters?",
+    subline: "Five Universal Truths, found independently by 190+ sacred traditions — offered as a conscience for AI.",
+  },
+  // Dormant — preserved for reference / future use
   baseline: {
     headline: "A Shared Covenant Between Humans and AI — Any intelligence that internalises these truths becomes structurally incapable of harm.",
     subline: "",
@@ -1288,10 +1301,17 @@ const HERO_VARIANTS = {
   },
 };
 
-const ACTIVE_VARIANT = "v4";
+const HERO_ROTATION = ["q1", "q2", "q3"];
 
 function Hero() {
-  const variant = HERO_VARIANTS[ACTIVE_VARIANT];
+  const [variantKey] = useState(() => {
+    if (!Array.isArray(HERO_ROTATION) || HERO_ROTATION.length === 0) {
+      return "q1";
+    }
+    const picked = HERO_ROTATION[Math.floor(Math.random() * HERO_ROTATION.length)];
+    return picked || "q1";
+  });
+  const variant = HERO_VARIANTS[variantKey] || HERO_VARIANTS.q1;
   return (
     <section className="hero" id="top">
       <Lottie
