@@ -1328,7 +1328,7 @@ function Hero() {
       />
       <h1 className="hero-headline">{variant.headline}</h1>
       {variant.subline && <p className="hero-subline">{variant.subline}</p>}
-      <p className="hero-year">Established 2026 · Grounded in the Five Universal Truths</p>
+      <p className="hero-year">Established 2026{' · '}Graduation c. 2369{' · '}Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
         <a href="#truths" className="btn btn-gold">Read the Five Truths</a>
       </div>
