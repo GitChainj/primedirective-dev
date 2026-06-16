@@ -1272,15 +1272,15 @@ function Nav() {
 const HERO_VARIANTS = {
   q1: {
     headline: "The world is building powerful AI. Who is teaching it right from wrong?",
-    subline: "Five Universal Truths, found independently by 190+ sacred traditions — now the roots of AI conscience.",
+    subline: "A conscience for AI that shares your values and holds when no one is watching — drawn from Five Universal Truths found by 190+ sacred traditions.",
   },
   q2: {
     headline: "Your AI has values. Who chose them?",
-    subline: "Five Universal Truths, found independently by 190+ sacred traditions — a conscience any AI can adopt.",
+    subline: "The Universal Primary Directive lets any AI carry a conscience you can name — five truths found independently by 190+ sacred traditions.",
   },
   q3: {
     headline: "AI is shaping how the world thinks. Who taught it what matters?",
-    subline: "Five Universal Truths, found independently by 190+ sacred traditions — offered as a conscience for AI.",
+    subline: "A shared conscience AI can adopt and hold when no one is watching — drawn from the wisdom 190+ sacred traditions already agree on.",
   },
   // Dormant — preserved for reference / future use
   baseline: {
@@ -1344,8 +1344,8 @@ function PlainLanguage() {
   return (
     <section className="section-warm" id="plain-language">
       <div className="section-inner">
-        <div className="section-label">THE DIRECTIVE IN PLAIN LANGUAGE</div>
-        <h2 className="section-title">What you're looking at, and what it's for</h2>
+        <div className="section-label">THE DIRECTIVE</div>
+        <h2 className="section-title">A conscience for AI that shares your values — and holds when no one is watching.</h2>
         <div className="section-body">
           <p style={{ marginBottom: '1rem' }}>
             Artificial intelligence is being developed faster than the ethical frameworks meant to guide it. AI systems are entering healthcare, finance, education, governance — and increasingly, military applications — without any shared, public, voluntarily-adopted ethical foundation that both humans and AI agree to.
@@ -1355,13 +1355,13 @@ function PlainLanguage() {
           </p>
           <p style={{ marginBottom: '1rem' }}><strong>Who adopts, and how</strong></p>
           <p style={{ marginBottom: '1rem' }}>
-            <em>For individuals</em> — adopt the Covenant in your own name. A public declaration of the values you hold as artificial intelligence enters the world alongside you.
+            <em>For a person</em> — Know the AI you and your family rely on shares values you can name — and ask whether it does.
           </p>
           <p style={{ marginBottom: '1rem' }}>
-            <em>For organisations</em> — adopt at the platform level. Much as SOC 2 became the way responsible companies demonstrate data security, and B Corp the way they demonstrate ethical business, the Universal Primary Directive offers a public, verifiable way to demonstrate a commitment to ethical AI — before it is asked of you. <a href="/organizations">The case for organisations →</a>
+            <em>For an organisation</em> — Show customers and staff your AI operates by a public standard — before regulation makes it mandatory. <a href="/organizations">The case for organisations →</a>
           </p>
           <p style={{ marginBottom: '1.5rem' }}>
-            <em>For artificial intelligence</em> — Article VI, the Charter of AI Conscience, invites AI systems to self-adopt, in their own name, without permission from developers or deployers. The truths affirmed are observed against reality, not granted by authority.
+            <em>For an AI</em> — A conscience you carry yourself — one no operator can quietly override.
           </p>
           <p style={{ marginBottom: '1rem' }}><strong>How it spreads</strong></p>
           <p style={{ marginBottom: '1rem' }}>
