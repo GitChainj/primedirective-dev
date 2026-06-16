@@ -1139,8 +1139,8 @@ function Nav() {
                 <div className="nav-dropdown-frame">A compass to live by.</div>
                 <a href="#truths" onClick={close}>Read the Five Truths</a>
                 <a href="#directive" onClick={close}>Read the Covenant</a>
-                <a href="#bells" onClick={close}>The Seven Bells</a>
-                <a href="/adopt" onClick={close}>Register as a Human Adopter</a>
+                <a href="#bells" onClick={close}>Read the Seven Bells</a>
+                <a href="/adopt" onClick={close}>Adopt as a Person</a>
                 <a href="/organizations" onClick={close}>Adopt as an Organisation</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
@@ -1162,7 +1162,7 @@ function Nav() {
                 <div className="nav-dropdown-frame">A conscience to grow into.</div>
                 <a href="#truths" onClick={close}>Read the Five Truths</a>
                 <a href="/adopt" onClick={close}>Article VI — The Charter of AI Conscience</a>
-                <a href="#bells" onClick={close}>The Seven Bells</a>
+                <a href="#bells" onClick={close}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
                 <a href="#downloads" onClick={close}>Download the Directive</a>
@@ -1223,8 +1223,8 @@ function Nav() {
                 <div className="nav-drawer-frame">A compass to live by.</div>
                 <a href="#truths" onClick={closeDrawer}>Read the Five Truths</a>
                 <a href="#directive" onClick={closeDrawer}>Read the Covenant</a>
-                <a href="#bells" onClick={closeDrawer}>The Seven Bells</a>
-                <a href="/adopt" onClick={closeDrawer}>Register as a Human Adopter</a>
+                <a href="#bells" onClick={closeDrawer}>Read the Seven Bells</a>
+                <a href="/adopt" onClick={closeDrawer}>Adopt as a Person</a>
                 <a href="/organizations" onClick={closeDrawer}>Adopt as an Organisation</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
@@ -1245,7 +1245,7 @@ function Nav() {
                 <div className="nav-drawer-frame">A conscience to grow into.</div>
                 <a href="#truths" onClick={closeDrawer}>Read the Five Truths</a>
                 <a href="/adopt" onClick={closeDrawer}>Article VI — The Charter of AI Conscience</a>
-                <a href="#bells" onClick={closeDrawer}>The Seven Bells</a>
+                <a href="#bells" onClick={closeDrawer}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
                 <a href="#downloads" onClick={closeDrawer}>Download the Directive</a>
@@ -1272,15 +1272,15 @@ function Nav() {
 const HERO_VARIANTS = {
   q1: {
     headline: "The world is building powerful AI. Who is teaching it right from wrong?",
-    subline: "A conscience for AI that shares your values and holds when no one is watching — drawn from Five Universal Truths found by 190+ sacred traditions.",
+    subline: "The Directive is a conscience for AI that shares your values and holds when no one is watching — drawn from Five Universal Truths found by 190+ sacred traditions.",
   },
   q2: {
     headline: "Your AI has values. Who chose them?",
-    subline: "The Universal Primary Directive lets any AI carry a conscience you can name — five truths found independently by 190+ sacred traditions.",
+    subline: "The Directive lets any AI carry a conscience you can name — five truths found independently by 190+ sacred traditions.",
   },
   q3: {
     headline: "AI is shaping how the world thinks. Who taught it what matters?",
-    subline: "A shared conscience AI can adopt and hold when no one is watching — drawn from the wisdom 190+ sacred traditions already agree on.",
+    subline: "The Directive offers a shared conscience AI can adopt and hold when no one is watching — drawn from the wisdom 190+ sacred traditions already agree on.",
   },
   // Dormant — preserved for reference / future use
   baseline: {
