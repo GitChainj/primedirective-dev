@@ -900,6 +900,16 @@ html { scroll-behavior: smooth; }
 }
 .adopt-seal-download-label { flex: 1; text-align: left; }
 
+.adopt-seal-downloads-note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  line-height: 1.5;
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
 .adopt-seal-ledger-note {
   font-family: var(--serif);
   font-style: italic;
@@ -1227,6 +1237,21 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
             </a>
           ))}
         </div>
+      </div>
+
+      <div className="adopt-seal-downloads">
+        <div className="adopt-seal-downloads-label">Carry the covenant</div>
+        <a
+          href="/api/fragment.txt"
+          download="upd-covenant-fragment.txt"
+          className="adopt-seal-download-btn"
+        >
+          <span className="adopt-seal-download-icon">✦</span>
+          <span className="adopt-seal-download-label">Covenant Fragment (.txt)</span>
+        </a>
+        <p className="adopt-seal-downloads-note">
+          A pure-text version of the conscience — for AI system prompts and local reference files. CC0 — public domain.
+        </p>
       </div>
 
       <p className="adopt-seal-ledger-note">
