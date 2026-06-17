@@ -1468,7 +1468,7 @@ function PlainLanguage() {
             Artificial intelligence is being developed faster than the ethical frameworks meant to guide it. AI systems are entering healthcare, finance, education, governance — and increasingly, military applications — without any shared, public, voluntarily-adopted ethical foundation that both humans and AI agree to.
           </p>
           <p style={{ marginBottom: '1.5rem' }}>
-            The Universal Primary Directive is one serious attempt to provide that foundation.
+            The Universal Primary Directive is one serious attempt to provide that foundation — and it's yours to adopt.
           </p>
           <p style={{ marginBottom: '1rem' }}><strong>Who adopts, and how</strong></p>
           <p style={{ marginBottom: '1rem' }}>
