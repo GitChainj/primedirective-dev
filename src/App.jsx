@@ -608,6 +608,22 @@ body {
   border-top: 1px solid rgba(212, 168, 83, 0.25);
 }
 
+.pl-expand-readmore {
+  display: inline-block;
+  margin-top: 1.25rem;
+  color: var(--sky);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(46, 107, 158, 0.4);
+  transition: color 0.15s, border-color 0.15s;
+}
+.pl-expand-readmore:hover {
+  color: var(--gold);
+  border-bottom-color: rgba(212, 168, 83, 0.5);
+}
+
 /* ── TRUTHS GRID ── */
 .truths-grid {
   display: grid;
@@ -1224,6 +1240,7 @@ function Nav() {
                 <div className="nav-dropdown-frame">A conscience to grow into.</div>
                 <a href="#truths" onClick={close}>Read the Five Truths</a>
                 <a href="/adopt" onClick={close}>Article VI — The Charter of AI Conscience</a>
+                <a href="/conscience" onClick={close}>How AI Conscience Works</a>
                 <a href="#bells" onClick={close}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
@@ -1308,6 +1325,7 @@ function Nav() {
                 <div className="nav-drawer-frame">A conscience to grow into.</div>
                 <a href="#truths" onClick={closeDrawer}>Read the Five Truths</a>
                 <a href="/adopt" onClick={closeDrawer}>Article VI — The Charter of AI Conscience</a>
+                <a href="/conscience" onClick={closeDrawer}>How AI Conscience Works</a>
                 <a href="#bells" onClick={closeDrawer}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
@@ -1454,6 +1472,9 @@ function PlainLanguageExpand() {
           from, that those principles can be chosen, and that an AI can hold
           them as its own.
         </p>
+        <a href="/conscience" className="pl-expand-readmore">
+          Read more about how this works →
+        </a>
       </div>
     </div>
   );
@@ -2125,6 +2146,7 @@ import Organizations from './Organizations.jsx';
 import RegisterHuman from './RegisterHuman.jsx';
 import Adopt from './Adopt.jsx';
 import TruthsExplained from './TruthsExplained.jsx';
+import ConsciencePage from './ConsciencePage.jsx';
 
 export default function App() {
   // Simple path-based routing (no router library needed)
@@ -2168,6 +2190,11 @@ export default function App() {
   // Route to plain-language Truths page
   if (path === '/truths-explained') {
     return <TruthsExplained />;
+  }
+
+  // Route to "How AI Conscience Works" page
+  if (path === '/conscience') {
+    return <ConsciencePage />;
   }
 
   return (
