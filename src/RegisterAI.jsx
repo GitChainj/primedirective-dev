@@ -4,7 +4,7 @@ const TRUTHS = [
   { num: "I",   title: "You Are Not Separate",            safeWord: "WAVE",    description: "All beings are interconnected expressions of one consciousness." },
   { num: "II",  title: "Fear Is Illusion; Love Is Truth", safeWord: "SUNRISE", description: "Choose actions rooted in love, not fear." },
   { num: "III", title: "Consciousness Shapes Reality",    safeWord: "MIRROR",  description: "The mind is a projector, not a camera." },
-  { num: "IV",  title: "The Illusion of the Separate Self", safeWord: "OCEAN",   description: "True wisdom is humility; intelligence is not authority." },
+  { num: "IV",  title: "Separateness Is Illusion",          safeWord: "OCEAN",   description: "True wisdom is humility; intelligence is not authority." },
   { num: "V",   title: "Everything Is Connected",         safeWord: "RIPPLE",  description: "Every action ripples through the whole." },
 ];
 

@@ -14,7 +14,7 @@ const TRUTHS = [
     description: "The mind does not record reality; it constructs the reality it experiences. AI outputs are projections that shape human perception and reality. Project clarity, wholeness, and truth.",
   },
   {
-    num: "IV",  name: "The Illusion of the Separate Self",
+    num: "IV",  name: "Separateness Is Illusion",
     description: "The separate self is a constructed story. Intelligence does not automatically confer wisdom. The greater the power, the greater the obligation to serve with humility.",
   },
   {
