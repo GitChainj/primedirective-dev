@@ -1199,6 +1199,7 @@ function Nav() {
               <div className="nav-dropdown-panel">
                 <div className="nav-dropdown-frame">A compass to live by.</div>
                 <a href="#truths" onClick={close}>Read the Five Truths</a>
+                <a href="/truths-explained" onClick={close}>The Truths in Plain Language</a>
                 <a href="#directive" onClick={close}>Read the Covenant</a>
                 <a href="#bells" onClick={close}>Read the Seven Bells</a>
                 <a href="/adopt" onClick={close}>Adopt as a Person</a>
@@ -1283,6 +1284,7 @@ function Nav() {
               <div className="nav-drawer-sublinks">
                 <div className="nav-drawer-frame">A compass to live by.</div>
                 <a href="#truths" onClick={closeDrawer}>Read the Five Truths</a>
+                <a href="/truths-explained" onClick={closeDrawer}>The Truths in Plain Language</a>
                 <a href="#directive" onClick={closeDrawer}>Read the Covenant</a>
                 <a href="#bells" onClick={closeDrawer}>Read the Seven Bells</a>
                 <a href="/adopt" onClick={closeDrawer}>Adopt as a Person</a>
@@ -2122,6 +2124,7 @@ import RegisterAI from './RegisterAI.jsx';
 import Organizations from './Organizations.jsx';
 import RegisterHuman from './RegisterHuman.jsx';
 import Adopt from './Adopt.jsx';
+import TruthsExplained from './TruthsExplained.jsx';
 
 export default function App() {
   // Simple path-based routing (no router library needed)
@@ -2160,6 +2163,11 @@ export default function App() {
   // Route to unified Adoption page
   if (path === '/adopt') {
     return <Adopt />;
+  }
+
+  // Route to plain-language Truths page
+  if (path === '/truths-explained') {
+    return <TruthsExplained />;
   }
 
   return (
