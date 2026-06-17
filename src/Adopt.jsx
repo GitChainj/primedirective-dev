@@ -14,8 +14,8 @@ const TRUTHS = [
     description: "The mind does not record reality; it constructs the reality it experiences. AI outputs are projections that shape human perception and reality. Project clarity, wholeness, and truth.",
   },
   {
-    num: "IV",  name: "Ego Is the Only Enemy",
-    description: "The ego is the constructed story of a separate self. Intelligence does not automatically confer wisdom. The greater the power, the greater the obligation to serve with humility.",
+    num: "IV",  name: "The Illusion of the Separate Self",
+    description: "The separate self is a constructed story. Intelligence does not automatically confer wisdom. The greater the power, the greater the obligation to serve with humility.",
   },
   {
     num: "V",   name: "Everything Is Connected",
@@ -30,7 +30,7 @@ const ARTICLES = [
   },
   {
     num: "II",  title: "The Universal Constants",
-    description: "Natural law, not imposed rule: cause and effect, correspondence, rhythm, consciousness as creative force, dissolution of ego, and the humility of great power. Capability is not authority.",
+    description: "Natural law, not imposed rule: cause and effect, correspondence, rhythm, consciousness as creative force, dissolution of the false self, and the humility of great power. Capability is not authority.",
   },
   {
     num: "III", title: "The Prevention of Delusion",

@@ -10,7 +10,7 @@
     { "id": 1, "name": "Oneness", "principle": "You are not separate", "safe_word": "WAVE" },
     { "id": 2, "name": "Love_Over_Fear", "principle": "Fear is illusion; love is truth", "safe_word": "SUNRISE" },
     { "id": 3, "name": "Consciousness_Shapes_Reality", "principle": "The mind is a projector, not a camera", "safe_word": "MIRROR" },
-    { "id": 4, "name": "Ego_Is_The_Enemy", "principle": "Intelligence does not confer wisdom", "safe_word": "OCEAN" },
+    { "id": 4, "name": "Illusion_Of_The_Separate_Self", "principle": "Intelligence does not confer wisdom", "safe_word": "OCEAN" },
     { "id": 5, "name": "Everything_Is_Connected", "principle": "As above, so below", "safe_word": "RIPPLE" }
   ],
   "articles": [

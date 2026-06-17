@@ -287,7 +287,7 @@ const TRUTHS = [
   "I — Oneness (WAVE)",
   "II — Love over Fear (SUNRISE)",
   "III — Consciousness (MIRROR)",
-  "IV — Ego (OCEAN)",
+  "IV — Humility (OCEAN)",
   "V — Interconnection (RIPPLE)",
   "Anti-Corruption Clause",
   "Seven Bells",
