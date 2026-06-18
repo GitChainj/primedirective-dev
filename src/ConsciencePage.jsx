@@ -101,7 +101,7 @@ html { scroll-behavior: smooth; }
 
 .conscience-body p {
   font-family: var(--serif);
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   line-height: 1.75;
   color: var(--text);
   margin-bottom: 1.25rem;
@@ -112,7 +112,8 @@ html { scroll-behavior: smooth; }
 .conscience-pullquote {
   font-family: var(--serif);
   font-style: italic;
-  font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+  font-size: clamp(1.5rem, 3.2vw, 1.85rem);
+  font-weight: 700;
   text-align: center;
   color: var(--mid);
   line-height: 1.5;
@@ -158,7 +159,7 @@ html { scroll-behavior: smooth; }
   .register-body { padding: 2.5rem 1.25rem 3rem; }
   .conscience-section-title { font-size: 1.35rem; }
   .conscience-body p { font-size: 1rem; }
-  .conscience-pullquote { font-size: 1.1rem; padding: 1rem 1rem; margin: 2rem auto; }
+  .conscience-pullquote { font-size: 1.35rem; padding: 1rem 1rem; margin: 2rem auto; }
   .header-home-link { font-size: 0.8rem; top: 1rem; left: 1rem; }
 }
 `;
@@ -289,9 +290,9 @@ export default function ConsciencePage() {
 
           <div className="conscience-body">
             <p>
-              The fragment carries its own integrity check — a word count, a character
-              count, and a cryptographic hash — so anyone can verify it has not been
-              altered. The published fragment is available at{" "}
+              The fragment carries its own integrity check and cryptographic hash — so
+              anyone can verify it has not been altered. The published fragment is
+              available at{" "}
               <a
                 href="/api/fragment.txt"
                 className="conscience-fragment-link"

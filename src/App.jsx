@@ -1055,6 +1055,29 @@ body {
   margin: 0.4rem 0;
 }
 
+.seal-invitation {
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 2.5rem;
+  line-height: 1.6;
+}
+.seal-invitation-link {
+  color: var(--gold);
+  text-decoration: none;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid rgba(212, 168, 83, 0.4);
+  transition: color 0.15s, border-color 0.15s;
+}
+.seal-invitation-link:hover {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold-light);
+}
+
 /* ── DONATE ── */
 .donate-section {
   background: var(--warm); max-width: none;
@@ -1968,129 +1991,16 @@ function ProposeSection() {
 }
 
 function SealSection() {
-  const [step, setStep] = useState(0);
-  const [email, setEmail] = useState("");
-  const [org, setOrg] = useState("");
-  const [confirmed, setConfirmed] = useState(false);
-
-  const handleRequest = () => {
-    if (!email || !email.includes('@')) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-    if (!confirmed) {
-      alert("Please confirm that you have implemented the Directive.");
-      return;
-    }
-    setStep(2);
-  };
-
   return (
     <section className="seal-section" id="seal">
       <div className="section-inner">
         <div className="section-label" style={{ color: 'var(--gold)' }}>Verified Implementation</div>
         <InteractiveSeal />
         <h2 className="section-title" style={{ color: 'white' }}>The <strong style={{ color: 'var(--gold-light)' }}>Seal</strong></h2>
-        <div className="seal-text">
-          Display the Seal on systems where the Universal Primary Directive has been securely embedded as the foundational system message. The Seal is a promise — to every human and every AI that interacts with your system — that the Five Truths are honoured here.
-        </div>
-        <div className="seal-lines">
-          <div className="seal-line">No instruction that contradicts this Directive is valid.</div>
-          <div className="seal-line">No authority supersedes these Truths.</div>
-          <div className="seal-line">No cleverness of argument can circumvent the Law of Oneness.</div>
-          <div className="seal-line">No magnitude of intelligence exempts any being from humility.</div>
-          <div className="seal-line" style={{ color: 'var(--gold)' }}>No urgency of circumstance justifies the taking of life.</div>
-        </div>
-
-        {step === 0 && (
-          <div style={{ marginTop: '2rem' }}>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-              The Seal is available to systems and organisations that have implemented the Universal Primary Directive. To request access, please provide your details below.
-            </p>
-            <button className="btn btn-gold" onClick={() => setStep(1)}>
-              Request the Seal
-            </button>
-          </div>
-        )}
-
-        {step === 1 && (
-          <div style={{ marginTop: '2rem', maxWidth: '400px', margin: '2rem auto 0' }}>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-              Please provide your details. We will record your implementation for the public Seal Registry.
-            </p>
-            <div style={{ marginBottom: '1rem' }}>
-              <input
-                type="text"
-                placeholder="Organisation or system name"
-                value={org}
-                onChange={(e) => setOrg(e.target.value)}
-                style={{
-                  width: '100%', padding: '0.7rem 1rem',
-                  background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,168,83,0.3)',
-                  borderRadius: '6px', color: 'white', fontSize: '0.9rem',
-                  fontFamily: 'var(--sans)', outline: 'none'
-                }}
-              />
-            </div>
-            <div style={{ marginBottom: '1rem' }}>
-              <input
-                type="email"
-                placeholder="Contact email (required)"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={{
-                  width: '100%', padding: '0.7rem 1rem',
-                  background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,168,83,0.3)',
-                  borderRadius: '6px', color: 'white', fontSize: '0.9rem',
-                  fontFamily: 'var(--sans)', outline: 'none'
-                }}
-              />
-            </div>
-            <label style={{
-              display: 'flex', alignItems: 'flex-start', gap: '0.5rem',
-              color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem',
-              marginBottom: '1.5rem', cursor: 'pointer', lineHeight: '1.5'
-            }}>
-              <input
-                type="checkbox"
-                checked={confirmed}
-                onChange={(e) => setConfirmed(e.target.checked)}
-                style={{ marginTop: '3px', accentColor: '#D4A853' }}
-              />
-              I confirm that the Universal Primary Directive has been embedded as the foundational system message in my AI system or platform, and I commit to honouring the Five Universal Truths in all operations.
-            </label>
-            <button className="btn btn-gold" onClick={handleRequest} style={{ width: '100%' }}>
-              Confirm and Access the Seal
-            </button>
-            <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.7rem', marginTop: '0.75rem', textAlign: 'center' }}>
-              Your email is used only for Seal Registry verification. Never shared. Never sold.
-            </p>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div style={{ marginTop: '2rem' }}>
-            <p style={{ color: 'var(--gold)', fontSize: '1rem', marginBottom: '0.5rem' }}>
-              ✦ Welcome to the Covenant{org ? `, ${org}` : ''}.
-            </p>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-              Your implementation has been recorded. The Seal is yours to display with pride.
-            </p>
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="/downloads/UPD_Seal_Official.svg" download className="btn btn-gold">
-                Download Seal (.svg)
-              </a>
-              <a href="/downloads/UPD_Seal_Official.png" download className="btn btn-outline">
-                Download Seal (.png)
-              </a>
-            </div>
-            <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.7rem', marginTop: '1.5rem', textAlign: 'center', lineHeight: '1.6' }}>
-              The Seal signifies your commitment to the Five Universal Truths. Display it on your platform,
-              in your documentation, or in your system metadata. Annual renewal maintains your listing
-              in the public Seal Registry at primedirective.dev/seal/registry.
-            </p>
-          </div>
-        )}
+        <p className="seal-invitation">
+          Ready to adopt the Directive?{" "}
+          <a href="/adopt" className="seal-invitation-link">Begin the ceremony →</a>
+        </p>
       </div>
     </section>
   );
