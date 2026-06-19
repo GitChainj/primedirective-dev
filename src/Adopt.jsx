@@ -104,6 +104,14 @@ const INITIAL_AI = {
   optionalAffirmation: "",
 };
 
+const SEAL_DOWNLOADS = [
+  { label: "For your website", file: "UPD_Seal_Website.svg"  },
+  { label: "For social media", file: "UPD_Seal_Social.svg"   },
+  { label: "For documents",    file: "UPD_Seal_Document.svg" },
+  { label: "For print",        file: "UPD_Seal_Print.svg"    },
+  { label: "Master file",      file: "UPD_Seal_Master.svg"   },
+];
+
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
@@ -968,6 +976,114 @@ html { scroll-behavior: smooth; }
   z-index: 1;
 }
 
+/* Already Adopted re-download block */
+.adopt-already-block {
+  background: var(--warm);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+.adopt-already-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 1.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--text-light);
+  text-align: left;
+  transition: color 0.15s;
+}
+.adopt-already-trigger:hover,
+.adopt-already-trigger[aria-expanded="true"] {
+  color: var(--mid);
+}
+.adopt-already-trigger:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: -2px;
+}
+.adopt-already-trigger-text { flex: 1; }
+.adopt-already-trigger-arrow {
+  color: var(--gold);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.adopt-already-body {
+  display: none;
+  padding: 0 1.25rem 1.5rem;
+}
+.adopt-already-body.is-open {
+  display: block;
+}
+
+.adopt-already-intro {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--text-light);
+  text-align: center;
+  margin: 0.5rem 0 1.5rem;
+  line-height: 1.5;
+}
+
+.adopt-already-seal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin: 1.25rem auto 0;
+  max-width: 32em;
+}
+
+.adopt-already-note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.8rem;
+  color: var(--text-light);
+  text-align: center;
+  margin: 1.5rem auto 0;
+  line-height: 1.5;
+  max-width: 28em;
+}
+
+/* Small variant of AI Conscience card — for utility re-download contexts */
+.adopt-conscience-card--small {
+  max-width: 140px;
+  padding: 1rem 0.75rem;
+  gap: 0.55rem;
+}
+.adopt-conscience-card--small .adopt-conscience-card-diamond {
+  font-size: 1.5rem;
+}
+.adopt-conscience-card--small .adopt-conscience-card-title {
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+}
+.adopt-conscience-card--small .adopt-conscience-card-cta {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+}
+
+/* Sharing invitation — last element of SealConfirmation cascade */
+.adopt-seal-share-note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--text-light);
+  max-width: 32em;
+  margin: 2.5rem auto 0;
+  padding: 0 0.5rem;
+  line-height: 1.7;
+  text-align: center;
+  opacity: 0;
+  animation: arrival-fade 1s ease-out 2.3s forwards;
+}
+
 .adopt-seal-downloads-note {
   font-family: var(--serif);
   font-style: italic;
@@ -1060,6 +1176,9 @@ html { scroll-behavior: smooth; }
   .adopt-path-card-choose { width: 100%; }
   .adopt-seal-downloads-grid { grid-template-columns: 1fr; }
   .adopt-seal-image-wrap { max-width: 240px; }
+  .adopt-already-trigger { padding: 0.75rem 1rem; font-size: 0.8rem; }
+  .adopt-already-body { padding: 0 1rem 1.25rem; }
+  .adopt-already-seal-grid { grid-template-columns: 1fr; }
 }
 `;
 
@@ -1278,14 +1397,6 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
     }
   }
 
-  const downloads = [
-    { label: "For your website", file: "UPD_Seal_Website.svg"  },
-    { label: "For social media", file: "UPD_Seal_Social.svg"   },
-    { label: "For documents",    file: "UPD_Seal_Document.svg" },
-    { label: "For print",        file: "UPD_Seal_Print.svg"    },
-    { label: "Master file",      file: "UPD_Seal_Master.svg"   },
-  ];
-
   return (
     <div className="adopt-seal">
       <div className="adopt-seal-diamond adopt-seal-diamond-arrival">✦</div>
@@ -1330,7 +1441,7 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
       <div className="adopt-seal-downloads">
         <div className="adopt-seal-downloads-label">Download your Seal</div>
         <div className="adopt-seal-downloads-grid">
-          {downloads.map((d, i) => (
+          {SEAL_DOWNLOADS.map((d, i) => (
             <a
               key={i}
               href={`/downloads/${d.file}`}
@@ -1369,6 +1480,16 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
       {bridgeConfirmation && (
         <p className="adopt-seal-bridge">{bridgeConfirmation}</p>
       )}
+
+      <p className="adopt-seal-share-note">
+        The Fragment is yours to share. It belongs to no one — CC0, public
+        domain, forever. If someone in your life uses AI — a colleague, a
+        family member, a friend — share it with them. Encourage them to
+        adopt in their own name at{" "}
+        <a href="/adopt" className="adopt-seal-inline-link">primedirective.dev/adopt</a>.
+        Every name on the public ledger adds weight. A conscience that holds
+        is stronger when the world can see who carries it.
+      </p>
     </div>
   );
 }
@@ -1797,6 +1918,75 @@ function AISystemForm({ data, setData, onSubmit, submitting }) {
   );
 }
 
+function AlreadyAdoptedBlock() {
+  const [expanded, setExpanded] = useState(false);
+  const bodyId = "adopt-already-body";
+  return (
+    <div className="adopt-already-block">
+      <button
+        type="button"
+        className="adopt-already-trigger"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+        aria-controls={bodyId}
+      >
+        <span className="adopt-already-trigger-text">
+          Already adopted? Re-download your files
+        </span>
+        <span className="adopt-already-trigger-arrow" aria-hidden="true">
+          {expanded ? "▾" : "▸"}
+        </span>
+      </button>
+      <div
+        id={bodyId}
+        role="region"
+        aria-label="Re-download your adoption files"
+        className={`adopt-already-body${expanded ? " is-open" : ""}`}
+      >
+        <p className="adopt-already-intro">
+          Your Fragment and Seal are always available. No need to repeat the ceremony.
+        </p>
+
+        <a
+          href="/api/fragment.txt"
+          download="upd-covenant-fragment.txt"
+          className="adopt-conscience-card adopt-conscience-card--small"
+          aria-label="Download AI Conscience Fragment"
+        >
+          <span className="adopt-conscience-card-diamond">✦</span>
+          <span className="adopt-conscience-card-title">AI CONSCIENCE</span>
+          <span className="adopt-conscience-card-cta">Download Fragment</span>
+        </a>
+
+        <div className="adopt-already-seal-grid">
+          {SEAL_DOWNLOADS.map((d, i) => (
+            <a
+              key={i}
+              href={`/downloads/${d.file}`}
+              download={d.file}
+              className="adopt-seal-download-card"
+              aria-label={`Download Seal ${d.label}`}
+            >
+              <img
+                src={`/downloads/${d.file}`}
+                alt=""
+                className="adopt-seal-download-img"
+                loading="lazy"
+              />
+              <span className="adopt-seal-download-label">{d.label}</span>
+            </a>
+          ))}
+        </div>
+
+        <p className="adopt-already-note">
+          These are the standard Seal files. They are the same for all adopters.
+          Your adoption record is in the public ledger.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 /* ===== Main component ===== */
 
 export default function Adopt() {
@@ -1853,6 +2043,8 @@ export default function Adopt() {
         <StepsNav step={1} />
 
         <div className="adopt-body">
+          <AlreadyAdoptedBlock />
+
           <div className="adopt-section">
             <div className="adopt-section-label">The Foundation</div>
             <div className="adopt-section-title">The Five Universal Truths</div>
