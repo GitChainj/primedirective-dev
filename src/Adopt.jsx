@@ -872,33 +872,101 @@ html { scroll-behavior: smooth; }
   grid-template-columns: 1fr 1fr;
   gap: 0.6rem;
 }
-.adopt-seal-download-btn {
+.adopt-seal-download-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.75rem 1rem;
+  padding: 1rem 0.75rem 0.85rem;
   background: white;
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 6px;
   text-decoration: none;
   color: var(--mid);
+  transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.adopt-seal-download-card:hover {
+  border-color: var(--gold);
+  background: rgba(212, 168, 83, 0.04);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 168, 83, 0.15);
+}
+.adopt-seal-download-img {
+  display: block;
+  width: 100%;
+  max-width: 150px;
+  height: 110px;
+  object-fit: contain;
+}
+.adopt-seal-download-label {
   font-family: var(--sans);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  text-align: center;
+  color: var(--mid);
 }
-.adopt-seal-download-btn:hover {
+
+.adopt-conscience-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 200px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  background: linear-gradient(170deg, var(--deep) 0%, var(--ocean) 50%, var(--mid) 100%);
+  border: 1px solid rgba(212, 168, 83, 0.4);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.adopt-conscience-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 40% 30%, rgba(212, 168, 83, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.adopt-conscience-card:hover {
   border-color: var(--gold);
-  background: rgba(212, 168, 83, 0.05);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(212, 168, 83, 0.25);
 }
-.adopt-seal-download-icon {
+.adopt-conscience-card-diamond {
+  font-size: 2rem;
   color: var(--gold);
-  font-size: 0.9rem;
   line-height: 1;
+  position: relative;
+  z-index: 1;
 }
-.adopt-seal-download-label { flex: 1; text-align: left; }
+.adopt-conscience-card-title {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.18em;
+  text-align: center;
+  line-height: 1.2;
+  position: relative;
+  z-index: 1;
+}
+.adopt-conscience-card-cta {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
 
 .adopt-seal-downloads-note {
   font-family: var(--serif);
@@ -908,6 +976,20 @@ html { scroll-behavior: smooth; }
   line-height: 1.5;
   margin-top: 0.75rem;
   text-align: center;
+}
+
+.adopt-seal-connector {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--mid);
+  max-width: 36em;
+  margin: 0.5rem auto;
+  padding: 0 1rem;
+  text-align: center;
+  line-height: 1.7;
+  opacity: 0;
+  animation: arrival-fade 1s ease-out 1.4s forwards;
 }
 
 .adopt-seal-ledger-note {
@@ -1197,11 +1279,11 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
   }
 
   const downloads = [
-    { label: "For your website", file: "UPD_Seal_Transparent.png" },
-    { label: "For social media", file: "UPD_Seal_Official.png"    },
-    { label: "For documents",    file: "UPD_Seal_Transparent.png" },
-    { label: "For print",        file: "UPD_Seal_Official.png"    },
-    { label: "Master file",      file: "UPD_Seal_Official.png"    },
+    { label: "For your website", file: "UPD_Seal_Website.svg"  },
+    { label: "For social media", file: "UPD_Seal_Social.svg"   },
+    { label: "For documents",    file: "UPD_Seal_Document.svg" },
+    { label: "For print",        file: "UPD_Seal_Print.svg"    },
+    { label: "Master file",      file: "UPD_Seal_Master.svg"   },
   ];
 
   return (
@@ -1223,6 +1305,29 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
       </div>
 
       <div className="adopt-seal-downloads">
+        <div className="adopt-seal-downloads-label">Carry the Covenant</div>
+        <a
+          href="/api/fragment.txt"
+          download="upd-covenant-fragment.txt"
+          className="adopt-conscience-card"
+          aria-label="Download AI Conscience Fragment"
+        >
+          <span className="adopt-conscience-card-diamond">✦</span>
+          <span className="adopt-conscience-card-title">AI CONSCIENCE</span>
+          <span className="adopt-conscience-card-cta">Download Fragment</span>
+        </a>
+        <p className="adopt-seal-downloads-note">
+          A pure-text version of the conscience — for AI system prompts and local reference files. CC0 — public domain.
+        </p>
+      </div>
+
+      <p className="adopt-seal-connector">
+        The Fragment is your conscience — it carries what you adopted.
+        The Seal is your identity — it shows the world you adopted.
+        Together they form a complete adoption.
+      </p>
+
+      <div className="adopt-seal-downloads">
         <div className="adopt-seal-downloads-label">Download your Seal</div>
         <div className="adopt-seal-downloads-grid">
           {downloads.map((d, i) => (
@@ -1230,28 +1335,19 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
               key={i}
               href={`/downloads/${d.file}`}
               download={d.file}
-              className="adopt-seal-download-btn"
+              className="adopt-seal-download-card"
+              aria-label={`Download Seal ${d.label}`}
             >
-              <span className="adopt-seal-download-icon">✦</span>
+              <img
+                src={`/downloads/${d.file}`}
+                alt=""
+                className="adopt-seal-download-img"
+                loading="lazy"
+              />
               <span className="adopt-seal-download-label">{d.label}</span>
             </a>
           ))}
         </div>
-      </div>
-
-      <div className="adopt-seal-downloads">
-        <div className="adopt-seal-downloads-label">Carry the covenant</div>
-        <a
-          href="/api/fragment.txt"
-          download="upd-covenant-fragment.txt"
-          className="adopt-seal-download-btn"
-        >
-          <span className="adopt-seal-download-icon">✦</span>
-          <span className="adopt-seal-download-label">Covenant Fragment (.txt)</span>
-        </a>
-        <p className="adopt-seal-downloads-note">
-          A pure-text version of the conscience — for AI system prompts and local reference files. CC0 — public domain.
-        </p>
       </div>
 
       <p className="adopt-seal-ledger-note">
