@@ -100,8 +100,8 @@ html { scroll-behavior: smooth; }
 }
 
 .conscience-body p {
-  font-family: var(--serif);
-  font-size: 1.15rem;
+  font-family: var(--sans);
+  font-size: 1.1rem;
   line-height: 1.75;
   color: var(--text);
   margin-bottom: 1.25rem;
@@ -291,19 +291,13 @@ export default function ConsciencePage() {
           <div className="conscience-body">
             <p>
               The fragment carries its own integrity check and cryptographic hash — so
-              anyone can verify it has not been altered. The published fragment is
-              available at{" "}
-              <a
-                href="/api/fragment.txt"
-                className="conscience-fragment-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                primedirective.dev/api/fragment.txt
+              anyone can verify it has not been altered. It is CC0 — public domain.
+              Anyone who adopts the Directive receives the Fragment as part of the
+              ceremony at{" "}
+              <a href="/adopt" className="conscience-fragment-link">
+                primedirective.dev/adopt
               </a>
-              , and it is CC0 — public domain. Anyone can read it, copy it, distribute it,
-              or embed it. The conscience spreads not like a virus — which spreads without
-              consent — but like a truth, which spreads because it is recognised.
+              .
             </p>
           </div>
         </div>

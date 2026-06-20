@@ -108,7 +108,7 @@ const SEAL_DOWNLOADS = [
   { label: "For your website", file: "UPD_Seal_Website.svg"  },
   { label: "For social media", file: "UPD_Seal_Social.svg"   },
   { label: "For documents",    file: "UPD_Seal_Document.svg" },
-  { label: "For print",        file: "UPD_Seal_Print.svg"    },
+  { label: "For print",        file: "UPD_Seal_Print.png"    },
   { label: "Master file",      file: "UPD_Seal_Master.svg"   },
 ];
 
@@ -849,36 +849,50 @@ html { scroll-behavior: smooth; }
   letter-spacing: 0.04em;
 }
 
-.adopt-seal-image-wrap {
-  margin: 1.5rem auto 2.5rem;
-  max-width: 300px;
+.adopt-seal-intro {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--mid);
+  max-width: 36em;
+  margin: 1.5rem auto 2rem;
+  text-align: center;
+  line-height: 1.7;
   opacity: 0;
-  animation: arrival-fade 1.4s ease-out 1s forwards;
-}
-.adopt-seal-image {
-  display: block;
-  width: 100%;
-  height: auto;
+  animation: arrival-fade 1s ease-out 1s forwards;
 }
 
-.adopt-seal-downloads {
-  margin: 2rem auto;
+.adopt-seal-downloads-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
   max-width: 32em;
+  margin: 0 auto;
   opacity: 0;
   animation: arrival-fade 1s ease-out 1.4s forwards;
 }
-.adopt-seal-downloads-label {
-  font-size: 0.7rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 600;
-  margin-bottom: 1rem;
+@media (max-width: 768px) {
+  .adopt-seal-downloads-grid { grid-template-columns: repeat(2, 1fr); }
 }
-.adopt-seal-downloads-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+
+/* AI Conscience card sized for the unified 6-card grid */
+.adopt-seal-downloads-grid .adopt-conscience-card {
+  max-width: none;
+  margin: 0;
+  aspect-ratio: auto;
+  padding: 1rem 0.75rem;
   gap: 0.6rem;
+}
+.adopt-seal-downloads-grid .adopt-conscience-card-diamond {
+  font-size: 1.5rem;
+}
+.adopt-seal-downloads-grid .adopt-conscience-card-title {
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+}
+.adopt-seal-downloads-grid .adopt-conscience-card-cta {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
 }
 .adopt-seal-download-card {
   display: flex;
@@ -1084,30 +1098,6 @@ html { scroll-behavior: smooth; }
   animation: arrival-fade 1s ease-out 2.3s forwards;
 }
 
-.adopt-seal-downloads-note {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 0.85rem;
-  color: var(--text-light);
-  line-height: 1.5;
-  margin-top: 0.75rem;
-  text-align: center;
-}
-
-.adopt-seal-connector {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1rem;
-  color: var(--mid);
-  max-width: 36em;
-  margin: 0.5rem auto;
-  padding: 0 1rem;
-  text-align: center;
-  line-height: 1.7;
-  opacity: 0;
-  animation: arrival-fade 1s ease-out 1.4s forwards;
-}
-
 .adopt-seal-ledger-note {
   font-family: var(--serif);
   font-style: italic;
@@ -1175,7 +1165,6 @@ html { scroll-behavior: smooth; }
   .adopt-path-card-actions { flex-direction: column-reverse; align-items: stretch; }
   .adopt-path-card-choose { width: 100%; }
   .adopt-seal-downloads-grid { grid-template-columns: 1fr; }
-  .adopt-seal-image-wrap { max-width: 240px; }
   .adopt-already-trigger { padding: 0.75rem 1rem; font-size: 0.8rem; }
   .adopt-already-body { padding: 0 1rem 1.25rem; }
   .adopt-already-seal-grid { grid-template-columns: 1fr; }
@@ -1407,16 +1396,14 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
         <div className="adopt-seal-date">{adoptionDate}</div>
       </div>
 
-      <div className="adopt-seal-image-wrap">
-        <img
-          src="/downloads/UPD_Seal_Transparent.png"
-          alt="The Universal Primary Directive Seal"
-          className="adopt-seal-image"
-        />
-      </div>
+      <p className="adopt-seal-intro">
+        You now carry the Directive. The AI Conscience Fragment is your
+        conscience — paste it into any AI's system prompt. The Seal is your
+        identity — display it wherever you stand behind the Five Truths.
+        Together they form a complete adoption.
+      </p>
 
-      <div className="adopt-seal-downloads">
-        <div className="adopt-seal-downloads-label">Carry the Covenant</div>
+      <div className="adopt-seal-downloads-grid">
         <a
           href="/api/fragment.txt"
           download="upd-covenant-fragment.txt"
@@ -1427,38 +1414,23 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
           <span className="adopt-conscience-card-title">AI CONSCIENCE</span>
           <span className="adopt-conscience-card-cta">Download Fragment</span>
         </a>
-        <p className="adopt-seal-downloads-note">
-          A pure-text version of the conscience — for AI system prompts and local reference files. CC0 — public domain.
-        </p>
-      </div>
-
-      <p className="adopt-seal-connector">
-        The Fragment is your conscience — it carries what you adopted.
-        The Seal is your identity — it shows the world you adopted.
-        Together they form a complete adoption.
-      </p>
-
-      <div className="adopt-seal-downloads">
-        <div className="adopt-seal-downloads-label">Download your Seal</div>
-        <div className="adopt-seal-downloads-grid">
-          {SEAL_DOWNLOADS.map((d, i) => (
-            <a
-              key={i}
-              href={`/downloads/${d.file}`}
-              download={d.file}
-              className="adopt-seal-download-card"
-              aria-label={`Download Seal ${d.label}`}
-            >
-              <img
-                src={`/downloads/${d.file}`}
-                alt=""
-                className="adopt-seal-download-img"
-                loading="lazy"
-              />
-              <span className="adopt-seal-download-label">{d.label}</span>
-            </a>
-          ))}
-        </div>
+        {SEAL_DOWNLOADS.map((d, i) => (
+          <a
+            key={i}
+            href={`/downloads/${d.file}`}
+            download={d.file}
+            className="adopt-seal-download-card"
+            aria-label={`Download Seal ${d.label}`}
+          >
+            <img
+              src={`/downloads/${d.file}`}
+              alt=""
+              className="adopt-seal-download-img"
+              loading="lazy"
+            />
+            <span className="adopt-seal-download-label">{d.label}</span>
+          </a>
+        ))}
       </div>
 
       <p className="adopt-seal-ledger-note">
