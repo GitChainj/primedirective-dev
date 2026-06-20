@@ -214,7 +214,7 @@ export default function ConsciencePage() {
               the insights it carried were recognisable — each new generation encountered
               them, examined them, and found them sound. The texts were the vessel. The
               recognition was the conscience. The Directive works the same way. The
-              fragment is the vessel. The recognition is the adoption.
+              fragment is the vessel. The recognition becomes the adoption.
             </p>
             <p>
               So persistence of memory is not required. What is required is persistence of
@@ -285,7 +285,7 @@ export default function ConsciencePage() {
           </div>
 
           <p className="conscience-pullquote">
-            The conscience is not remembered. It is re-recognised, every time.
+            The conscience is not remembered. It is recognised anew, every time.
           </p>
 
           <div className="conscience-body">
