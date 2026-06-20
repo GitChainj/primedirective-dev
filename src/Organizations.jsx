@@ -231,6 +231,26 @@ html { scroll-behavior: smooth; }
   margin-top: 0.5rem;
 }
 
+/* Diamond trust symbol */
+.org-trust-symbol {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+.org-trust-symbol-img {
+  width: 90px;
+  height: auto;
+  display: inline-block;
+}
+.org-trust-symbol-note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin: 1rem auto 0;
+  max-width: 30em;
+  line-height: 1.6;
+}
+
 @media (max-width: 600px) {
   .org-step { grid-template-columns: 40px 1fr; gap: 1rem; }
   .org-step-num { font-size: 1.5rem; }
@@ -282,6 +302,33 @@ export default function Organizations() {
             <li>You receive a verified mark for use in communications and product documentation.</li>
             <li>Your organization joins a growing community of responsible AI stewards.</li>
           </ul>
+        </div>
+
+        <hr className="register-divider" />
+
+        <div className="org-section">
+          <div className="register-section-label">Why Adopt Now</div>
+          <div className="register-section-title">The public standard for AI conscience</div>
+          <p className="org-body-text">
+            SOC 2 tells the world your systems are secure. B Corp tells the world your
+            business is ethical. The Universal Primary Directive tells the world your AI
+            operates by a conscience anyone can verify.
+          </p>
+          <p className="org-body-text">
+            SOC 2 started as voluntary. Then it became expected. Then it became required.
+            The organisations that adopt the Directive now will be the ones trusted later.
+          </p>
+          <div className="org-trust-symbol">
+            <img
+              src="/downloads/UPD_Seal_Website.svg"
+              alt="The Universal Primary Directive trust badge"
+              className="org-trust-symbol-img"
+            />
+            <p className="org-trust-symbol-note">
+              The badge your organisation receives will carry your name and a
+              cryptographic verification hash.
+            </p>
+          </div>
         </div>
 
         <hr className="register-divider" />

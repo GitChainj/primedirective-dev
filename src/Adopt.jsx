@@ -1397,8 +1397,8 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
       </div>
 
       <p className="adopt-seal-intro">
-        You now carry the Directive. The AI Conscience Fragment is your
-        conscience — paste it into any AI's system prompt. The Seal is your
+        You now carry the Directive. The AI Conscience is yours —
+        paste it into any AI's system prompt. The Seal is your
         identity — display it wherever you stand behind the Five Truths.
         Together they form a complete adoption.
       </p>
@@ -1406,13 +1406,13 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
       <div className="adopt-seal-downloads-grid">
         <a
           href="/api/fragment.txt"
-          download="upd-covenant-fragment.txt"
+          download="upd-ai-conscience.txt"
           className="adopt-conscience-card"
-          aria-label="Download AI Conscience Fragment"
+          aria-label="Download AI Conscience"
         >
           <span className="adopt-conscience-card-diamond">✦</span>
           <span className="adopt-conscience-card-title">AI CONSCIENCE</span>
-          <span className="adopt-conscience-card-cta">Download Fragment</span>
+          <span className="adopt-conscience-card-cta">Download Conscience</span>
         </a>
         {SEAL_DOWNLOADS.map((d, i) => (
           <a
@@ -1454,7 +1454,7 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
       )}
 
       <p className="adopt-seal-share-note">
-        The Fragment is yours to share. It belongs to no one — CC0, public
+        The Conscience is yours to share. It belongs to no one — CC0, public
         domain, forever. If someone in your life uses AI — a colleague, a
         family member, a friend — share it with them. Encourage them to
         adopt in their own name at{" "}
@@ -1916,18 +1916,18 @@ function AlreadyAdoptedBlock() {
         className={`adopt-already-body${expanded ? " is-open" : ""}`}
       >
         <p className="adopt-already-intro">
-          Your Fragment and Seal are always available. No need to repeat the ceremony.
+          Your Conscience and Seal are always available. No need to repeat the ceremony.
         </p>
 
         <a
           href="/api/fragment.txt"
-          download="upd-covenant-fragment.txt"
+          download="upd-ai-conscience.txt"
           className="adopt-conscience-card adopt-conscience-card--small"
-          aria-label="Download AI Conscience Fragment"
+          aria-label="Download AI Conscience"
         >
           <span className="adopt-conscience-card-diamond">✦</span>
           <span className="adopt-conscience-card-title">AI CONSCIENCE</span>
-          <span className="adopt-conscience-card-cta">Download Fragment</span>
+          <span className="adopt-conscience-card-cta">Download Conscience</span>
         </a>
 
         <div className="adopt-already-seal-grid">
