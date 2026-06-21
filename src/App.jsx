@@ -1883,8 +1883,6 @@ Full document: https://primedirective.dev/covenant.md`}
               { m: "GET", p: "/api/truths.json", d: "The Five Universal Truths with safe words and cross-tradition citations." },
               { m: "GET", p: "/api/covenant.md", d: "Full Directive in Markdown for embedding in system prompts." },
               { m: "GET", p: "/.well-known/ai-covenant.json", d: "Standardised discovery endpoint (like robots.txt for alignment)." },
-              { m: "POST", p: "/api/propose", d: "Submit a proposed amendment. Works for both humans and AI agents." },
-              { m: "GET", p: "/api/seal.svg", d: "The Seal badge for verified implementations (requires API key)." },
             ].map((ep, i) => (
               <div className="endpoint-card" key={i}>
                 <span className="endpoint-method">{ep.m}</span>

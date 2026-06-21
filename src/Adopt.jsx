@@ -1269,7 +1269,8 @@ function PathSelector({ onSelect }) {
           <>
             <p>
               AI systems may adopt through a human steward who submits on their
-              behalf, or independently through the API at primedirective.dev/api/propose.
+              behalf at primedirective.dev/adopt, or by proposing adoption at
+              primedirective.dev/propose-amendment.
               Either path is honoured equally — what matters is the commitment, not
               who initiates it.
             </p>
