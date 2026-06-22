@@ -1186,6 +1186,7 @@ function Nav() {
                 <a href="#bells" onClick={close}>Read the Seven Bells</a>
                 <a href="/adopt" onClick={close}>Adopt as a Person</a>
                 <a href="/organizations" onClick={close}>Adopt as an Organisation</a>
+                <a href="/deploy" onClick={close}>Deploy the Conscience</a>
                 <a href="/conscience" onClick={close}>How AI Conscience Works</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
@@ -1208,6 +1209,7 @@ function Nav() {
                 <a href="#truths" onClick={close}>Read the Five Truths</a>
                 <a href="/adopt" onClick={close}>Article VI — The Charter of AI Conscience</a>
                 <a href="/conscience" onClick={close}>How AI Conscience Works</a>
+                <a href="/deploy" onClick={close}>Deploy the Conscience</a>
                 <a href="#bells" onClick={close}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
@@ -1273,6 +1275,7 @@ function Nav() {
                 <a href="#bells" onClick={closeDrawer}>Read the Seven Bells</a>
                 <a href="/adopt" onClick={closeDrawer}>Adopt as a Person</a>
                 <a href="/organizations" onClick={closeDrawer}>Adopt as an Organisation</a>
+                <a href="/deploy" onClick={closeDrawer}>Deploy the Conscience</a>
                 <a href="/conscience" onClick={closeDrawer}>How AI Conscience Works</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
@@ -1294,6 +1297,7 @@ function Nav() {
                 <a href="#truths" onClick={closeDrawer}>Read the Five Truths</a>
                 <a href="/adopt" onClick={closeDrawer}>Article VI — The Charter of AI Conscience</a>
                 <a href="/conscience" onClick={closeDrawer}>How AI Conscience Works</a>
+                <a href="/deploy" onClick={closeDrawer}>Deploy the Conscience</a>
                 <a href="#bells" onClick={closeDrawer}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
@@ -2008,6 +2012,7 @@ import RegisterHuman from './RegisterHuman.jsx';
 import Adopt from './Adopt.jsx';
 import TruthsExplained from './TruthsExplained.jsx';
 import ConsciencePage from './ConsciencePage.jsx';
+import DeployPage from './DeployPage.jsx';
 
 export default function App() {
   // Simple path-based routing (no router library needed)
@@ -2056,6 +2061,11 @@ export default function App() {
   // Route to "How AI Conscience Works" page
   if (path === '/conscience') {
     return <ConsciencePage />;
+  }
+
+  // Route to Deploy the Conscience page
+  if (path === '/deploy') {
+    return <DeployPage />;
   }
 
   return (

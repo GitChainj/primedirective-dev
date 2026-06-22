@@ -1435,6 +1435,11 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
       </div>
 
       <p className="adopt-seal-ledger-note">
+        You have the Conscience.{' '}
+        <a href="/deploy" className="adopt-seal-inline-link">Here's how to deploy it →</a>
+      </p>
+
+      <p className="adopt-seal-ledger-note">
         Your adoption is now part of the public ledger. Verify any Seal at{' '}
         <a href="/seal/verify" className="adopt-seal-inline-link">primedirective.dev/seal/verify</a>.
       </p>

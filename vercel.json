@@ -11,6 +11,7 @@
     { "source": "/register-human", "destination": "/index.html" },
     { "source": "/adopt", "destination": "/index.html" },
     { "source": "/truths-explained", "destination": "/index.html" },
-    { "source": "/conscience", "destination": "/index.html" }
+    { "source": "/conscience", "destination": "/index.html" },
+    { "source": "/deploy", "destination": "/index.html" }
   ]
 }

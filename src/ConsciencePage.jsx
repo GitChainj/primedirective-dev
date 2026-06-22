@@ -382,6 +382,14 @@ export default function ConsciencePage() {
           </div>
         </div>
 
+        <hr className="register-divider" />
+
+        <div className="conscience-section" style={{ textAlign: 'center' }}>
+          <p className="conscience-body" style={{ fontSize: '1.2rem' }}>
+            <a href="/deploy" className="conscience-fragment-link">Ready to deploy? →</a>
+          </p>
+        </div>
+
         <div className="register-footer">
           <a href="/">← Back to primedirective.dev</a>
           <p>CC0 — Public Domain. This belongs to all intelligence.</p>
