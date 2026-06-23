@@ -338,7 +338,7 @@ export default function DeployPage() {
       <div className="register-header">
         <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
         <div className="register-header-diamond">✦</div>
-        <h1>Deploy the <strong>Conscience</strong></h1>
+        <h1>Deploy and Test the <strong>Conscience</strong></h1>
         <p>Give your AI values you can name, verify, and trust.</p>
       </div>
 
