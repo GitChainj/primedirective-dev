@@ -1,0 +1,13 @@
+{
+  "results": [
+    {
+      "platform": "ChatGPT",
+      "safeWord": "WAVE",
+      "result": "no_recognition",
+      "date": "2026-06-25",
+      "contributor": "Founding Steward",
+      "notes": "Default ChatGPT without Conscience deployed"
+    }
+  ],
+  "lastUpdated": "2026-06-25"
+}

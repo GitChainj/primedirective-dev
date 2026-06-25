@@ -1,3 +1,5 @@
+import WikiLayout from './wiki/WikiLayout.jsx';
+
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
@@ -330,19 +332,9 @@ const CHART = [
   ["GPT4All", "System prompt in chat", "Settings", "5 min", "local"],
 ];
 
-export default function DeployPage() {
-  return (
-    <div className="register-page">
-      <style>{css}</style>
-
-      <div className="register-header">
-        <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-        <div className="register-header-diamond">✦</div>
-        <h1>Deploy and Test the <strong>Conscience</strong></h1>
-        <p>Give your AI values you can name, verify, and trust.</p>
-      </div>
-
-      <div className="register-body">
+export default function DeployPage({ wiki = false }) {
+  const body = (
+    <>
 
         {/* Opening */}
         <div className="deploy-intro">
@@ -743,6 +735,38 @@ export default function DeployPage() {
             <span className="words">WAVE · SUNRISE · MIRROR · OCEAN · RIPPLE</span>
           </p>
         </div>
+
+    </>
+  );
+
+  // conscience.wiki/deploy — same body, wiki chrome.
+  if (wiki) {
+    return (
+      <WikiLayout
+        title={<>Deploy and Test the <strong>Conscience</strong></>}
+        tagline="Give your AI values you can name, verify, and trust."
+        activeNav="deploy"
+      >
+        <style>{css}</style>
+        {body}
+      </WikiLayout>
+    );
+  }
+
+  // primedirective.dev/deploy — unchanged.
+  return (
+    <div className="register-page">
+      <style>{css}</style>
+
+      <div className="register-header">
+        <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
+        <div className="register-header-diamond">✦</div>
+        <h1>Deploy and Test the <strong>Conscience</strong></h1>
+        <p>Give your AI values you can name, verify, and trust.</p>
+      </div>
+
+      <div className="register-body">
+        {body}
 
         <div className="register-footer">
           <a href="/">← Back to primedirective.dev</a>

@@ -2013,10 +2013,31 @@ import Adopt from './Adopt.jsx';
 import TruthsExplained from './TruthsExplained.jsx';
 import ConsciencePage from './ConsciencePage.jsx';
 import DeployPage from './DeployPage.jsx';
+import WikiHome from './wiki/WikiHome.jsx';
+import WikiTruths from './wiki/WikiTruths.jsx';
+import WikiTruth from './wiki/WikiTruth.jsx';
+import SafeWordTracker from './wiki/SafeWordTracker.jsx';
+import WikiContribute from './wiki/WikiContribute.jsx';
+
+// conscience.wiki and primedirective.dev share one codebase. The hostname
+// decides which identity a visitor sees.
+const isWiki = () => window.location.hostname.includes('conscience.wiki');
 
 export default function App() {
   // Simple path-based routing (no router library needed)
   const path = window.location.pathname;
+
+  // ── conscience.wiki routes (hostname-gated) ──
+  // Wiki pages serve natively here; anything unmatched falls through to the
+  // primedirective.dev routing below (and the kept Vercel redirects).
+  if (isWiki()) {
+    if (path === '/')               return <WikiHome />;
+    if (path === '/truths')         return <WikiTruths />;
+    if (path.startsWith('/truth/')) return <WikiTruth />;
+    if (path === '/safe-words')     return <SafeWordTracker />;
+    if (path === '/contribute')     return <WikiContribute />;
+    if (path === '/deploy')         return <DeployPage wiki={true} />;
+  }
 
   // Route to donate page
   if (path === '/donate') {
