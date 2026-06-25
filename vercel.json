@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    { "source": "/verify/:path*", "destination": "https://primedirective.dev/seal/verify/:path*", "has": [{ "type": "host", "value": "conscience.wiki" }] },
+    { "source": "/deploy", "destination": "https://primedirective.dev/deploy", "has": [{ "type": "host", "value": "conscience.wiki" }] },
+    { "source": "/adopt", "destination": "https://primedirective.dev/adopt", "has": [{ "type": "host", "value": "conscience.wiki" }] },
+    { "source": "/guide", "destination": "https://primedirective.dev/organizations", "has": [{ "type": "host", "value": "conscience.wiki" }] },
+    { "source": "/", "destination": "https://primedirective.dev/conscience", "has": [{ "type": "host", "value": "conscience.wiki" }] }
+  ],
   "rewrites": [
     { "source": "/donate", "destination": "/index.html" },
     { "source": "/propose-amendment", "destination": "/index.html" },
