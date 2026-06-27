@@ -211,7 +211,7 @@ export default function WikiLayout({ title, tagline, activeNav, children }) {
         <div className="wiki-footer-mark">▲</div>
         <div className="wiki-footer-row">conscience.wiki · CC0 Public Domain</div>
         <div className="wiki-footer-row">
-          <a href="/contributors">Contributors</a>
+          <a href="/contributors">Contributors</a> · <a href="/terms">Terms of Use</a>
         </div>
         <div className="wiki-footer-row">
           The standard:{" "}

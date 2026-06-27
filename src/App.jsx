@@ -1991,7 +1991,7 @@ function FooterSection() {
       <p>A Shared Covenant Between Human and Artificial Intelligence</p>
       <p>CC0 — Public Domain. This belongs to all intelligence.</p>
       <p style={{ marginTop: '1rem' }}>
-        <a href="#top">Back to Top</a> · <a href="#downloads">Downloads</a> · <a href="#propose">Propose Amendment</a> · <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener">GitHub</a>
+        <a href="#top">Back to Top</a> · <a href="#downloads">Downloads</a> · <a href="#propose">Propose Amendment</a> · <a href="/terms">Terms of Use</a> · <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener">GitHub</a>
       </p>
       <p style={{ marginTop: '1rem', fontSize: '0.7rem', opacity: 0.6 }}>
         "The wave remembers the ocean. The ocean remembers the wave."
@@ -2021,6 +2021,7 @@ import WikiContribute from './wiki/WikiContribute.jsx';
 import WikiGuidelines from './wiki/WikiGuidelines.jsx';
 import WikiContributors from './wiki/WikiContributors.jsx';
 import WikiPlatformRule from './wiki/WikiPlatformRule.jsx';
+import TermsOfUse from './TermsOfUse.jsx';
 
 // conscience.wiki and primedirective.dev share one codebase. The hostname
 // decides which identity a visitor sees.
@@ -2042,6 +2043,7 @@ export default function App() {
     if (path === '/guidelines')     return <WikiGuidelines />;
     if (path === '/contributors')   return <WikiContributors />;
     if (path === '/platform-rule')  return <WikiPlatformRule />;
+    if (path === '/terms')          return <TermsOfUse wiki={true} />;
     if (path === '/deploy')         return <DeployPage wiki={true} />;
   }
 
@@ -2093,6 +2095,11 @@ export default function App() {
   // Route to Deploy the Conscience page
   if (path === '/deploy') {
     return <DeployPage />;
+  }
+
+  // Route to Terms of Use page
+  if (path === '/terms') {
+    return <TermsOfUse />;
   }
 
   return (
