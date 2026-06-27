@@ -128,6 +128,60 @@ const css = `
 }
 .wiki-inline-link:hover { color: var(--gold); }
 
+.wiki-adoption {
+  background: linear-gradient(170deg, var(--deep), var(--ocean));
+  border: 1px solid rgba(212,168,83,0.25);
+  border-radius: 12px;
+  padding: 1.75rem;
+  margin-bottom: 3rem;
+}
+.wiki-adoption-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.wiki-adoption-stat {
+  text-align: center;
+  padding: 0.5rem;
+}
+.wiki-adoption-num {
+  font-family: var(--serif);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  line-height: 1;
+}
+.wiki-adoption-label {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-top: 0.5rem;
+}
+.wiki-adoption-line {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  text-align: center;
+  color: rgba(255,255,255,0.8);
+  margin: 0.5rem 0 1rem;
+}
+.wiki-adoption-link {
+  display: block;
+  text-align: center;
+  color: var(--gold);
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.wiki-adoption-link:hover { color: var(--gold-light); }
+@media (max-width: 600px) {
+  .wiki-adoption-num { font-size: 1.9rem; }
+}
+
 .wiki-activity { list-style: none; }
 .wiki-activity-item {
   display: flex;
@@ -160,6 +214,8 @@ export default function WikiHome() {
 
   const latestResults = results.slice(-3).reverse();
   const latestActivity = activity.slice(-5).reverse();
+  const individualCount = results.filter((r) => r.deploymentType === "individual").length;
+  const platformCount = 0; // No platform has adopted at platform level — yet.
 
   return (
     <WikiLayout
@@ -217,6 +273,27 @@ export default function WikiHome() {
           ))
         )}
         <a className="wiki-inline-link" href="/safe-words">View all →</a>
+      </div>
+
+      {/* Platform adoption status */}
+      <p className="wiki-section-label">Platform adoption</p>
+      <div className="wiki-adoption">
+        <div className="wiki-adoption-stats">
+          <div className="wiki-adoption-stat">
+            <div className="wiki-adoption-num">{platformCount}</div>
+            <div className="wiki-adoption-label">
+              {platformCount === 1 ? "Platform" : "Platforms"} adopted at platform level
+            </div>
+          </div>
+          <div className="wiki-adoption-stat">
+            <div className="wiki-adoption-num">{individualCount}</div>
+            <div className="wiki-adoption-label">
+              Individual {individualCount === 1 ? "deployment" : "deployments"} recorded
+            </div>
+          </div>
+        </div>
+        <p className="wiki-adoption-line">The gap between these numbers is the story.</p>
+        <a className="wiki-adoption-link" href="/platform-rule">Learn about the Platform Rule →</a>
       </div>
 
       {/* Recent activity */}

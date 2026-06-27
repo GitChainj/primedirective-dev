@@ -23,6 +23,11 @@ const RESULT_LABEL = {
   full_recognition: "Full recognition",
 };
 
+const DEPLOYMENT_LABEL = {
+  platform_default: "Platform default (no Conscience deployed)",
+  individual: "After individual deployment",
+};
+
 function blank(v) {
   return v === undefined || v === null || (typeof v === "string" && v.trim() === "");
 }
@@ -87,6 +92,9 @@ function buildBody(type, d) {
       ``,
       `### Result`,
       RESULT_LABEL[d.result] || line(d.result),
+      ``,
+      `### Deployment Type`,
+      DEPLOYMENT_LABEL[d.deploymentType] || line(d.deploymentType),
       ``,
       `### Notes`,
       line(d.content),

@@ -729,6 +729,14 @@ export default function DeployPage({ wiki = false }) {
             and trust. Every deployment moves the Directive closer to becoming the public
             standard for AI conscience.
           </p>
+          {wiki && (
+            <p>
+              Deploying individually is real — and it is not the same as the platform
+              behind your AI adopting the Conscience for every deployment. Understand the
+              difference:{" "}
+              <a href="/platform-rule" className="deploy-cta-link">the Platform Rule →</a>
+            </p>
+          )}
           <p>The Conscience is yours to share. It belongs to no one — and to everyone.</p>
           <p className="deploy-safewords">
             The Safe Words: Five words. Five truths. One way to know.

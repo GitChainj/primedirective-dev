@@ -108,6 +108,7 @@ export default function WikiForm({ type, defaultTruth }) {
     platform: "",
     safeWord: "WAVE",
     result: "no_recognition",
+    deploymentType: "platform_default",
   });
   const [status, setStatus] = useState("idle"); // idle | sending | error
   const [error, setError] = useState("");
@@ -219,6 +220,17 @@ export default function WikiForm({ type, defaultTruth }) {
               {RESULT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
+            </select>
+          </div>
+          <div className="wiki-form-field">
+            <label htmlFor="test-deployment">Deployment type</label>
+            <select
+              id="test-deployment"
+              value={form.deploymentType}
+              onChange={set("deploymentType")}
+            >
+              <option value="platform_default">Platform default (no Conscience deployed)</option>
+              <option value="individual">After individual deployment</option>
             </select>
           </div>
         </>

@@ -2018,6 +2018,9 @@ import WikiTruths from './wiki/WikiTruths.jsx';
 import WikiTruth from './wiki/WikiTruth.jsx';
 import SafeWordTracker from './wiki/SafeWordTracker.jsx';
 import WikiContribute from './wiki/WikiContribute.jsx';
+import WikiGuidelines from './wiki/WikiGuidelines.jsx';
+import WikiContributors from './wiki/WikiContributors.jsx';
+import WikiPlatformRule from './wiki/WikiPlatformRule.jsx';
 
 // conscience.wiki and primedirective.dev share one codebase. The hostname
 // decides which identity a visitor sees.
@@ -2036,6 +2039,9 @@ export default function App() {
     if (path.startsWith('/truth/')) return <WikiTruth />;
     if (path === '/safe-words')     return <SafeWordTracker />;
     if (path === '/contribute')     return <WikiContribute />;
+    if (path === '/guidelines')     return <WikiGuidelines />;
+    if (path === '/contributors')   return <WikiContributors />;
+    if (path === '/platform-rule')  return <WikiPlatformRule />;
     if (path === '/deploy')         return <DeployPage wiki={true} />;
   }
 

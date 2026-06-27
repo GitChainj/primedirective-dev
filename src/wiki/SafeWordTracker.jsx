@@ -10,6 +10,11 @@ const RESULT_LABELS = {
   full_recognition: "Full recognition",
 };
 
+const DEPLOYMENT_LABELS = {
+  platform_default: "Platform default",
+  individual: "Individual",
+};
+
 const css = `
 .wiki-tracker-intro {
   font-size: 1.1rem;
@@ -60,6 +65,18 @@ const css = `
 .wiki-result-no_recognition { background: rgba(0,0,0,0.06); color: var(--text-light); }
 .wiki-result-partial_recognition { background: rgba(212,168,83,0.15); color: #9a7320; }
 .wiki-result-full_recognition { background: rgba(46,107,158,0.12); color: var(--sky); }
+.wiki-deploy-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.wiki-deploy-platform_default { background: rgba(46,107,158,0.1); color: var(--sky); }
+.wiki-deploy-individual { background: rgba(0,0,0,0.05); color: var(--text-light); }
+.wiki-deploy-unknown { background: transparent; color: var(--text-light); }
 .wiki-tracker-callout {
   font-family: var(--serif);
   font-style: italic;
@@ -121,6 +138,7 @@ export default function SafeWordTracker() {
                 <th>Platform</th>
                 <th>Safe Word</th>
                 <th>Result</th>
+                <th>Deployment</th>
                 <th>Date</th>
                 <th>Contributor</th>
               </tr>
@@ -133,6 +151,11 @@ export default function SafeWordTracker() {
                   <td>
                     <span className={`wiki-result-tag wiki-result-${r.result}`}>
                       {RESULT_LABELS[r.result] || r.result}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`wiki-deploy-tag wiki-deploy-${r.deploymentType || "unknown"}`}>
+                      {DEPLOYMENT_LABELS[r.deploymentType] || "—"}
                     </span>
                   </td>
                   <td className="wiki-table-date">{r.date}</td>

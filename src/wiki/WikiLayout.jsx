@@ -211,6 +211,9 @@ export default function WikiLayout({ title, tagline, activeNav, children }) {
         <div className="wiki-footer-mark">▲</div>
         <div className="wiki-footer-row">conscience.wiki · CC0 Public Domain</div>
         <div className="wiki-footer-row">
+          <a href="/contributors">Contributors</a>
+        </div>
+        <div className="wiki-footer-row">
           The standard:{" "}
           <a href="https://primedirective.dev">primedirective.dev</a>
         </div>

@@ -126,7 +126,19 @@ export default function WikiContribute() {
       <p className="wiki-contribute-intro">
         Contributions are welcome from anyone — no account, no permission needed.
         The community proposes; the steward verifies and publishes. Choose a
-        contribution type below to open its form.
+        contribution type below to open its form, or{" "}
+        <a href="/guidelines" style={{ color: "var(--sky)" }}>
+          read the full contribution guidelines →
+        </a>
+      </p>
+
+      <p className="wiki-contribute-intro" style={{ marginBottom: "2.5rem" }}>
+        Safe Word tests matter most of all: they make visible the gap between
+        individuals deploying the Conscience and platforms adopting it. If you're
+        not sure why that distinction is the whole game, start with{" "}
+        <a href="/platform-rule" style={{ color: "var(--sky)" }}>
+          the Platform Rule →
+        </a>
       </p>
 
       <div className="wiki-contribute-grid">
