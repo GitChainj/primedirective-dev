@@ -377,6 +377,10 @@ export default function TermsOfUse({ wiki = false }) {
       {/* 3 */}
       <div className="tou-section">
         <h2 className="tou-h2">3. Using the Marks</h2>
+        <p className="tou-why">
+          Organisations displaying the Mark are subject to the{" "}
+          <a href="/certification-licence" className="tou-link">Certification Licence Agreement</a>.
+        </p>
 
         <h3 className="tou-h3">3.1 When You May Use the Marks</h3>
         <p>
@@ -665,6 +669,10 @@ export default function TermsOfUse({ wiki = false }) {
         <p>
           You may request correction or removal of your personal data by contacting{" "}
           {MAILTO}. For adoption records, see section 4.2.
+        </p>
+        <p className="tou-why">
+          For the full privacy policy, see our{" "}
+          <a href="/privacy" className="tou-link">Privacy Policy</a>.
         </p>
       </div>
 

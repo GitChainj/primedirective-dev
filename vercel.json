@@ -16,6 +16,8 @@
     { "source": "/contributors", "destination": "/index.html" },
     { "source": "/platform-rule", "destination": "/index.html" },
     { "source": "/terms", "destination": "/index.html" },
+    { "source": "/privacy", "destination": "/index.html" },
+    { "source": "/certification-licence", "destination": "/index.html" },
     { "source": "/future-horizons", "destination": "/index.html" },
     { "source": "/seal/verify", "destination": "/index.html" },
     { "source": "/register-ai", "destination": "/index.html" },

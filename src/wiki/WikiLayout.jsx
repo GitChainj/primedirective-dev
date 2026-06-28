@@ -214,6 +214,9 @@ export default function WikiLayout({ title, tagline, activeNav, children }) {
           <a href="/contributors">Contributors</a> · <a href="/terms">Terms of Use</a>
         </div>
         <div className="wiki-footer-row">
+          <a href="/privacy">Privacy</a> · <a href="/certification-licence">Certification Licence</a>
+        </div>
+        <div className="wiki-footer-row">
           The standard:{" "}
           <a href="https://primedirective.dev">primedirective.dev</a>
         </div>
