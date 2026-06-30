@@ -374,7 +374,7 @@ export default function CertificationLicence({ wiki = false }) {
           the military contract, the surveillance deployment, the predictive policing tool —
           all would continue unaffected.
         </p>
-        <p>The Platform Rule prevents this. It ensures that the Mark means what it says.</p>
+        <p>The Platform Rule prevents this. It ensures that the Mark means what it says and adopters are clear on what adoption means.</p>
 
         <h3 className="tou-h3">2.4 Individual User Deployments</h3>
         <p>
@@ -716,7 +716,8 @@ export default function CertificationLicence({ wiki = false }) {
         <h2 className="tou-h2">13. Amendments</h2>
         <p>
           The stewardship may amend this agreement from time to time. Significant changes will
-          be communicated to all current Licensees in writing. The stewardship will not make
+          be communicated to all current Licensees in writing to the email provided. The
+          stewardship will not make
           amendments that contradict the Directive's core principles — particularly the
           Platform Rule, the commitment to CC0 public domain for content, and the independence
           from commercial capture.
