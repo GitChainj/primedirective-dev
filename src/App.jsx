@@ -2024,6 +2024,7 @@ import WikiPlatformRule from './wiki/WikiPlatformRule.jsx';
 import TermsOfUse from './TermsOfUse.jsx';
 import PrivacyPolicy from './PrivacyPolicy.jsx';
 import CertificationLicence from './CertificationLicence.jsx';
+import WikiVerify from './wiki/WikiVerify.jsx';
 
 // conscience.wiki and primedirective.dev share one codebase. The hostname
 // decides which identity a visitor sees.
@@ -2048,6 +2049,7 @@ export default function App() {
     if (path === '/terms')          return <TermsOfUse wiki={true} />;
     if (path === '/privacy')        return <PrivacyPolicy wiki={true} />;
     if (path === '/certification-licence') return <CertificationLicence wiki={true} />;
+    if (path === '/verify' || path.startsWith('/verify/')) return <WikiVerify />;
     if (path === '/deploy')         return <DeployPage wiki={true} />;
   }
 

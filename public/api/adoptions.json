@@ -1,0 +1,13 @@
+{
+  "adoptions": [
+    {
+      "reference": "UPD-2026-0001",
+      "name": "John Strand",
+      "path": "person",
+      "date": "2026-05-03",
+      "hash": "1033c76b87d97cfa89f8e535de51ca7872a771df1f52797f6d838327462383c3",
+      "conscience_version": "b2b16b00498530ef4a5b5af39d7a2d3316416447e298a0b5cfb506b36023abb7"
+    }
+  ],
+  "lastUpdated": "2026-06-29"
+}
