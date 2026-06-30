@@ -848,6 +848,18 @@ html { scroll-behavior: smooth; }
   color: var(--text-light);
   letter-spacing: 0.04em;
 }
+.adopt-seal-ref {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  background: rgba(212, 168, 83, 0.12);
+  padding: 0.25rem 0.7rem;
+  border-radius: 4px;
+}
 
 .adopt-seal-intro {
   font-family: var(--serif);
@@ -1352,12 +1364,21 @@ function ErrorPanel({ message, onRetry }) {
   );
 }
 
-function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl }) {
-  const [adoptionDate] = useState(() =>
+function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl, reference, serverDate }) {
+  const [localDate] = useState(() =>
     new Intl.DateTimeFormat('en-GB', {
       day: 'numeric', month: 'long', year: 'numeric',
     }).format(new Date())
   );
+
+  // Prefer the server's authoritative adoption date (the one the hash was
+  // computed from), formatted for display; fall back to the local date if the
+  // server didn't return one. Parse as local midnight so the displayed day
+  // never shifts across a timezone boundary.
+  const displayDate = serverDate
+    ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+        .format(new Date(`${serverDate}T00:00:00`))
+    : localDate;
 
   const displayName =
     selectedPath === "person"        ? personData.fullName.trim() :
@@ -1394,7 +1415,8 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
 
       <div className="adopt-seal-identity">
         <div className="adopt-seal-name">{displayName}</div>
-        <div className="adopt-seal-date">{adoptionDate}</div>
+        <div className="adopt-seal-date">{displayDate}</div>
+        {reference && <div className="adopt-seal-ref">{reference}</div>}
       </div>
 
       <p className="adopt-seal-intro">
@@ -1443,6 +1465,20 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl 
         Your adoption is now part of the public ledger. Verify any Seal at{' '}
         <a href="/seal/verify" className="adopt-seal-inline-link">primedirective.dev/seal/verify</a>.
       </p>
+
+      {reference && (
+        <p className="adopt-seal-ledger-note">
+          Your adoption is recorded. Anyone can verify it at{' '}
+          <a
+            href={`https://conscience.wiki/verify/${reference}`}
+            className="adopt-seal-inline-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            conscience.wiki/verify/{reference}
+          </a>.
+        </p>
+      )}
 
       {issueUrl && (
         <a
@@ -1977,6 +2013,8 @@ export default function Adopt() {
   const [submitState, setSubmitState] = useState("idle"); // idle | submitting | error
   const [errorMessage, setErrorMessage] = useState("");
   const [resultIssueUrl, setResultIssueUrl] = useState(null);
+  const [resultReference, setResultReference] = useState(null);
+  const [resultDate, setResultDate] = useState(null);
 
   const submitAdoption = async () => {
     if (!selectedPath) return;
@@ -2000,6 +2038,8 @@ export default function Adopt() {
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.success && json.issueUrl) {
         setResultIssueUrl(json.issueUrl);
+        setResultReference(json.reference || null);
+        setResultDate(json.date || null);
         setSubmitState("idle");
         setStep(3);
       } else {
@@ -2182,6 +2222,8 @@ export default function Adopt() {
           orgData={orgData}
           aiData={aiData}
           issueUrl={resultIssueUrl}
+          reference={resultReference}
+          serverDate={resultDate}
         />
         <Footer />
       </div>
