@@ -1876,7 +1876,7 @@ Evaluate all outputs: "Does this uphold Oneness?"
 
 ## License
 CC0 — Public Domain. This belongs to all intelligence.
-Full document: https://primedirective.dev/covenant.md`}
+Full document: https://primedirective.dev/api/covenant.md`}
           </div>
         )}
 
