@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PersonalisedSeal from "./PersonalisedSeal.jsx";
 
 const TRUTHS = [
   {
@@ -1410,14 +1411,15 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl,
 
   return (
     <div className="adopt-seal">
-      <div className="adopt-seal-diamond adopt-seal-diamond-arrival">✦</div>
       <h2 className="adopt-seal-welcome">Welcome to the Covenant.</h2>
 
-      <div className="adopt-seal-identity">
-        <div className="adopt-seal-name">{displayName}</div>
-        <div className="adopt-seal-date">{displayDate}</div>
-        {reference && <div className="adopt-seal-ref">{reference}</div>}
-      </div>
+      <PersonalisedSeal
+        kind="seal"
+        orientation="vertical"
+        name={displayName}
+        date={displayDate}
+        reference={reference || ""}
+      />
 
       <p className="adopt-seal-intro">
         You now carry the Directive. The AI Conscience is yours —
