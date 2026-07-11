@@ -9,7 +9,7 @@
 
 import { Resend } from "resend";
 
-const FROM = process.env.ADOPT_FROM_EMAIL || "Universal Primary Directive <covenant@primedirective.dev>";
+const FROM = process.env.ADOPT_FROM_EMAIL || "Universal Primary Directive <conscience@mail.primedirective.dev>";
 const STEWARD = process.env.ADOPT_STEWARD_EMAIL || "human@primedirective.dev";
 export const SITE_URL = (process.env.SITE_URL || "https://primedirective.dev").replace(/\/+$/, "");
 
