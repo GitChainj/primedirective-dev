@@ -2010,6 +2010,7 @@ import RegisterAI from './RegisterAI.jsx';
 import Organizations from './Organizations.jsx';
 import RegisterHuman from './RegisterHuman.jsx';
 import Adopt from './Adopt.jsx';
+import AdoptConfirm from './AdoptConfirm.jsx';
 import TruthsExplained from './TruthsExplained.jsx';
 import ConsciencePage from './ConsciencePage.jsx';
 import DeployPage from './DeployPage.jsx';
@@ -2081,6 +2082,11 @@ export default function App() {
   // Route to Human registration page
   if (path === '/register-human') {
     return <RegisterHuman />;
+  }
+
+  // Adoption email-confirmation landing (step 2 of the human flow)
+  if (path === '/adopt/confirm') {
+    return <AdoptConfirm />;
   }
 
   // Route to unified Adoption page

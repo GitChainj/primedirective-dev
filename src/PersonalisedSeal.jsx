@@ -109,6 +109,19 @@ function refPrefix(reference) {
   return (String(reference).replace(/[^a-zA-Z0-9-]/g, "") || "UPD").slice(0, 40);
 }
 
+// Reusable PNG generator (Blob) for the confirmation page's welcome-email
+// attachments. Mirrors the in-component download(): a seal renders on a
+// parchment ground; a mark stays transparent gold.
+export async function renderSealPngBlob({ kind = "seal", orientation = "vertical", name, date, reference, uid = "email" }) {
+  const fill = displayFill(kind);
+  const svg = injectSeal(RAW[kind][orientation].display, {
+    name: name || "", date: date || "", reference: reference || "",
+    orientation, fill, uid: `png${uid}`,
+  });
+  const background = isSeal(kind) ? PARCHMENT : null;
+  return svgToPngBlob(svg, { background });
+}
+
 /* ---------------- Component ---------------- */
 
 export default function PersonalisedSeal({

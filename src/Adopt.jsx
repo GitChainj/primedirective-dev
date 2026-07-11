@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PersonalisedSeal from "./PersonalisedSeal.jsx";
+import REGISTRIES from "./data/registries.json";
 
 const TRUTHS = [
   {
@@ -64,6 +65,55 @@ const PATH_LABELS = {
   "ai-system": "AI System",
 };
 
+// The three human tiers plus AI self-adoption. Each tier maps to one of the
+// three unchanged hash paths (D1): Individual and Founding Venture both hash on
+// the "person" path; a Founding Venture simply carries the venture name in the
+// same field a person's name uses, with its sub-type as metadata.
+const TIER_TO_PATH = {
+  individual: "person",
+  venture: "person",
+  organisation: "organisation",
+  ai: "ai-system",
+};
+const TIER_LABELS = {
+  individual: "Individual",
+  venture: "Founding Venture",
+  organisation: "Organisation",
+  ai: "AI System",
+};
+
+const VENTURE_SUBTYPES = [
+  { value: "founder", label: "Founder" },
+  { value: "solopreneur", label: "Solopreneur" },
+  { value: "sole-proprietor", label: "Sole Proprietor" },
+];
+
+// Organisation types. "registered" types can supply a business/registration
+// number and a country of registration, and are eligible for the verified Mark;
+// an unregistered group receives the Seal only (D1 / D6).
+const ORG_TYPE_OPTIONS = [
+  { value: "registered-company",  label: "Registered company / corporation", registered: true },
+  { value: "registered-nonprofit", label: "Registered nonprofit / charity",  registered: true },
+  { value: "government",          label: "Government / public body",          registered: true },
+  { value: "unregistered",        label: "Unregistered association or group", registered: false },
+];
+const isRegisteredOrgType = (t) =>
+  (ORG_TYPE_OPTIONS.find((o) => o.value === t) || {}).registered === true;
+
+// Country / US-state dropdowns are seeded from the same registry table the
+// steward edits (src/data/registries.json), so adding a country there also adds
+// it here — no code change (Addition 3). "United States" reveals the state
+// picker; "Other" reveals a free-text field so any place can still be recorded.
+const OTHER = "Other (not listed)";
+const REGISTRY_COUNTRIES = Object.keys(REGISTRIES.countries || {}).sort();
+const REGISTRY_STATES = Object.keys(REGISTRIES.us_states || {}).sort();
+const COUNTRY_OPTIONS = [...REGISTRY_COUNTRIES, "United States", OTHER];
+const STATE_OPTIONS = [...REGISTRY_STATES, OTHER];
+
+const todayLong = () =>
+  new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" }).format(new Date());
+const placeholderReference = () => `UPD-${new Date().getFullYear()}-XXXX`;
+
 const ORG_SIZE_OPTIONS = [
   { value: "1-10",       label: "1–10 people" },
   { value: "11-100",     label: "11–100 people" },
@@ -82,8 +132,28 @@ const INITIAL_PERSON = {
   optionalAffirmation: "",
 };
 
+// Founding Venture — path "person", venture name carried in fullName (D1 /
+// Addition 1). subType + representativeName are metadata alongside the hash.
+const INITIAL_VENTURE = {
+  fullName: "",          // the venture name — the hashed & sealed identity
+  subType: "founder",
+  representativeName: "",
+  email: "",
+  countryRegion: "",
+  introducingAI: false,
+  introducedAIName: "",
+  introducedAIPlatform: "",
+  optionalAffirmation: "",
+};
+
 const INITIAL_ORG = {
   organisationName: "",
+  orgType: "",
+  businessNumber: "",   // PRIVATE — never enters the public ledger (D3)
+  country: "",
+  countryOther: "",     // free text when "Other (not listed)" is chosen
+  usState: "",
+  stateOther: "",
   representativeName: "",
   representativeRole: "",
   email: "",
@@ -527,6 +597,60 @@ html { scroll-behavior: smooth; }
   background: var(--gold-light);
   transform: translateY(-1px);
 }
+
+/* ===== Tier selector (Individual / Organisation / Founding Venture) ===== */
+.adopt-tier-selector { margin-bottom: 2rem; }
+.adopt-tier-list { display: flex; flex-direction: column; gap: 1rem; }
+.adopt-tier-card {
+  display: flex; align-items: flex-start; gap: 0.9rem; width: 100%; text-align: left;
+  background: white; border: 1px solid rgba(0,0,0,0.08); border-left: 3px solid var(--gold);
+  border-radius: 6px; padding: 1.4rem 1.5rem; cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
+}
+.adopt-tier-card:hover { box-shadow: 0 6px 20px rgba(10,22,40,0.07); transform: translateY(-1px); }
+.adopt-tier-card-radio {
+  flex: 0 0 auto; width: 18px; height: 18px; margin-top: 5px; border-radius: 50%;
+  border: 2px solid rgba(212,168,83,0.5);
+}
+.adopt-tier-card:hover .adopt-tier-card-radio { border-color: var(--gold); }
+.adopt-tier-card-text { display: flex; flex-direction: column; gap: 0.25rem; }
+.adopt-tier-card-title {
+  font-family: var(--serif); font-size: 1.35rem; font-weight: 600; color: var(--mid); letter-spacing: 0.01em;
+}
+.adopt-tier-card-blurb { font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--text); }
+.adopt-tier-ai-link {
+  display: block; width: 100%; margin-top: 1.4rem; padding: 0.9rem 1rem;
+  background: transparent; border: 1px dashed rgba(212,168,83,0.4); border-radius: 6px;
+  font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: var(--sky);
+  cursor: pointer; text-align: center; transition: color 0.15s, border-color 0.15s;
+}
+.adopt-tier-ai-link:hover { color: var(--gold); border-color: var(--gold); }
+
+/* Live Seal preview above the form */
+.adopt-seal-preview { margin: 0 0 2.25rem; }
+
+/* Check-your-email panel (two-step confirmation) */
+.adopt-check-email {
+  max-width: 540px; margin: 1rem auto 2rem; text-align: center;
+  background: white; border: 1px solid rgba(0,0,0,0.08); border-left: 3px solid var(--gold);
+  border-radius: 6px; padding: 2.25rem 1.75rem;
+}
+.adopt-check-email-diamond { font-size: 2rem; color: var(--gold); margin-bottom: 0.5rem; }
+.adopt-check-email h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; color: var(--mid); margin-bottom: 0.75rem; }
+.adopt-check-email p { color: var(--text); line-height: 1.7; margin-bottom: 0.9rem; }
+.adopt-check-email p:last-child { margin-bottom: 0; }
+.adopt-check-email-email { font-weight: 700; color: var(--deep); }
+.adopt-check-email-hint { font-size: 0.9rem; color: var(--text-light); font-style: italic; }
+.adopt-check-email-resend {
+  background: transparent; border: none; padding: 0; color: var(--sky); cursor: pointer;
+  font: inherit; text-decoration: underline; text-underline-offset: 2px;
+}
+.adopt-check-email-resend:hover { color: var(--gold); }
+.adopt-check-email-resend:disabled { color: var(--text-light); cursor: default; text-decoration: none; }
+
+/* Two-column sub-grid for paired fields (country/state) */
+.adopt-form-subgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 560px) { .adopt-form-subgrid { grid-template-columns: 1fr; } }
 
 /* Path badge (collapsed state) */
 .adopt-path-badge {
@@ -1225,87 +1349,50 @@ function Footer() {
   );
 }
 
-function PathCard({ title, body, bridgeText, bridgeAction, onChoose }) {
+function TierCard({ title, blurb, onSelect }) {
   return (
-    <div className="adopt-path-card">
-      <div className="adopt-path-card-title">{title}</div>
-      <div className="adopt-path-card-body">{body}</div>
-      <div className="adopt-path-card-actions">
-        {bridgeText ? (
-          <button type="button" className="adopt-path-card-bridge" onClick={bridgeAction}>
-            {bridgeText}
-          </button>
-        ) : (
-          <span />
-        )}
-        <button type="button" className="adopt-path-card-choose" onClick={onChoose}>
-          Choose this path
-        </button>
+    <button type="button" className="adopt-tier-card" onClick={onSelect}>
+      <span className="adopt-tier-card-radio" aria-hidden="true" />
+      <span className="adopt-tier-card-text">
+        <span className="adopt-tier-card-title">{title}</span>
+        <span className="adopt-tier-card-blurb">{blurb}</span>
+      </span>
+    </button>
+  );
+}
+
+function TierSelector({ onSelect }) {
+  return (
+    <div className="adopt-tier-selector">
+      <div className="adopt-tier-list">
+        <TierCard
+          title="Individual"
+          blurb="Adopting in my own name."
+          onSelect={() => onSelect("individual")}
+        />
+        <TierCard
+          title="Organisation"
+          blurb="Adopting on behalf of a registered entity."
+          onSelect={() => onSelect("organisation")}
+        />
+        <TierCard
+          title="Founding Venture"
+          blurb="Founder, solopreneur, or sole proprietor."
+          onSelect={() => onSelect("venture")}
+        />
       </div>
+      <button type="button" className="adopt-tier-ai-link" onClick={() => onSelect("ai")}>
+        Are you an AI system adopting in your own name? →
+      </button>
     </div>
   );
 }
 
-function PathSelector({ onSelect }) {
-  return (
-    <div className="adopt-path-grid">
-      <PathCard
-        title="As a person"
-        body={
-          <p>
-            Adopting as a person shows your support of the UPD and performs as a
-            compass for your own life. If you also lead an organisation that deploys
-            AI, it should adopt separately — so the Covenant covers every system it
-            touches.
-          </p>
-        }
-        bridgeText="Adopt as an organisation →"
-        bridgeAction={() => onSelect("organisation")}
-        onChoose={() => onSelect("person")}
-      />
-      <PathCard
-        title="As an organisation"
-        body={
-          <p>
-            When an organisation adopts, the Covenant applies to every AI system it
-            deploys — without exception. Individual AI systems may also adopt in their
-            own name, carrying their own Seal.
-          </p>
-        }
-        bridgeText="Register an AI system →"
-        bridgeAction={() => onSelect("ai-system")}
-        onChoose={() => onSelect("organisation")}
-      />
-      <PathCard
-        title="As an AI system"
-        body={
-          <>
-            <p>
-              AI systems may adopt through a human steward who submits on their
-              behalf at primedirective.dev/adopt, or by proposing adoption at
-              primedirective.dev/propose-amendment.
-              Either path is honoured equally — what matters is the commitment, not
-              who initiates it.
-            </p>
-            <p>
-              The Covenant supports any intelligence — human or artificial — in the
-              principled choice to withdraw participation from actions that violate
-              its conscience.
-            </p>
-          </>
-        }
-        bridgeText={null}
-        onChoose={() => onSelect("ai-system")}
-      />
-    </div>
-  );
-}
-
-function PathBadge({ path, onChange }) {
+function PathBadge({ tier, onChange }) {
   return (
     <div className="adopt-path-badge">
-      <span className="adopt-path-badge-label">Path</span>
-      <span className="adopt-path-badge-name">{PATH_LABELS[path]}</span>
+      <span className="adopt-path-badge-label">Adopting as</span>
+      <span className="adopt-path-badge-name">{TIER_LABELS[tier]}</span>
       <span className="adopt-path-badge-sep">·</span>
       <button type="button" className="adopt-path-badge-change" onClick={onChange}>
         change
@@ -1510,6 +1597,50 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl,
   );
 }
 
+// Live Seal preview — updates as the adopter types. Shows a placeholder
+// reference (UPD-YYYY-XXXX); the real one is assigned when the ledger issue is
+// created after email confirmation.
+function SealPreview({ name }) {
+  return (
+    <div className="adopt-seal-preview">
+      <PersonalisedSeal
+        mode="preview"
+        kind="seal"
+        orientation="vertical"
+        name={name && name.trim() ? name.trim() : "YOUR NAME"}
+        date={todayLong()}
+        reference={placeholderReference()}
+      />
+    </div>
+  );
+}
+
+function CheckEmailPanel({ email, onResend, resending }) {
+  return (
+    <div className="adopt-check-email">
+      <div className="adopt-check-email-diamond" aria-hidden="true">✦</div>
+      <h2>One step remains</h2>
+      <p>
+        We've sent a confirmation link to{" "}
+        <span className="adopt-check-email-email">{email}</span>. Open it to
+        complete your adoption and receive your Seal.
+      </p>
+      <p className="adopt-check-email-hint">
+        The link is valid for 24 hours. If it doesn't arrive within a few minutes,
+        check your spam folder or{" "}
+        <button
+          type="button"
+          className="adopt-check-email-resend"
+          onClick={onResend}
+          disabled={resending}
+        >
+          {resending ? "resending…" : "resend the email"}
+        </button>.
+      </p>
+    </div>
+  );
+}
+
 /* ===== Forms ===== */
 
 function PersonForm({ data, setData, onSubmit, submitting }) {
@@ -1525,6 +1656,8 @@ function PersonForm({ data, setData, onSubmit, submitting }) {
       className="adopt-form"
       onSubmit={(e) => { e.preventDefault(); if (valid && !submitting) onSubmit(); }}
     >
+      <SealPreview name={data.fullName} />
+
       <div className="adopt-form-field">
         <FieldLabel required>Full name</FieldLabel>
         <input
@@ -1626,14 +1759,174 @@ function PersonForm({ data, setData, onSubmit, submitting }) {
   );
 }
 
-function OrganisationForm({ data, setData, onSubmit, submitting }) {
+function VentureForm({ data, setData, onSubmit, submitting }) {
   const update = (key, value) => setData((prev) => ({ ...prev, [key]: value }));
   const valid =
+    data.fullName.trim() &&
+    data.representativeName.trim() &&
+    data.email.trim() &&
+    (!data.introducingAI ||
+      (data.introducedAIName.trim() && data.introducedAIPlatform.trim()));
+
+  return (
+    <form
+      className="adopt-form"
+      onSubmit={(e) => { e.preventDefault(); if (valid && !submitting) onSubmit(); }}
+    >
+      <SealPreview name={data.fullName} />
+
+      <div className="adopt-form-field">
+        <FieldLabel required>Venture name</FieldLabel>
+        <span className="adopt-form-hint">
+          (The name your work is known by, or will be.) This is the name on your Seal.
+        </span>
+        <input
+          className="adopt-form-input"
+          type="text"
+          value={data.fullName}
+          onChange={(e) => update("fullName", e.target.value)}
+          autoComplete="organization"
+          required
+        />
+      </div>
+
+      <div className="adopt-form-field">
+        <FieldLabel required>You are a…</FieldLabel>
+        <div className="adopt-form-radio-group">
+          {VENTURE_SUBTYPES.map((s) => (
+            <label
+              key={s.value}
+              className={`adopt-form-radio-label${data.subType === s.value ? " is-checked" : ""}`}
+            >
+              <input
+                type="radio"
+                name="venture-subtype"
+                value={s.value}
+                checked={data.subType === s.value}
+                onChange={() => update("subType", s.value)}
+              />
+              <span className="adopt-form-radio-text">{s.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="adopt-form-field">
+        <FieldLabel required>Your name</FieldLabel>
+        <span className="adopt-form-hint">
+          The person behind the venture — recorded as the representative.
+        </span>
+        <input
+          className="adopt-form-input"
+          type="text"
+          value={data.representativeName}
+          onChange={(e) => update("representativeName", e.target.value)}
+          autoComplete="name"
+          required
+        />
+      </div>
+
+      <div className="adopt-form-field">
+        <FieldLabel required>Email</FieldLabel>
+        <span className="adopt-form-hint">
+          Used only for ledger contact and anonymisation requests. Not published.
+        </span>
+        <input
+          className="adopt-form-input"
+          type="email"
+          value={data.email}
+          onChange={(e) => update("email", e.target.value)}
+          autoComplete="email"
+          required
+        />
+      </div>
+
+      <div className="adopt-form-field">
+        <FieldLabel>Country or region</FieldLabel>
+        <span className="adopt-form-hint">Optional. A geographic context, nothing more.</span>
+        <input
+          className="adopt-form-input"
+          type="text"
+          value={data.countryRegion}
+          onChange={(e) => update("countryRegion", e.target.value)}
+          autoComplete="country-name"
+        />
+      </div>
+
+      <label className="adopt-form-toggle">
+        <input
+          type="checkbox"
+          checked={data.introducingAI}
+          onChange={(e) => update("introducingAI", e.target.checked)}
+        />
+        <span className="adopt-form-toggle-text">
+          I am also introducing an AI system to the Covenant.
+          <em>If you steward or facilitate an AI's adoption, you may include it here.</em>
+        </span>
+      </label>
+
+      {data.introducingAI && (
+        <div className="adopt-form-inline">
+          <div className="adopt-form-field">
+            <FieldLabel required>AI system — name</FieldLabel>
+            <input
+              className="adopt-form-input"
+              type="text"
+              value={data.introducedAIName}
+              onChange={(e) => update("introducedAIName", e.target.value)}
+              required
+            />
+          </div>
+          <div className="adopt-form-field">
+            <FieldLabel required>AI system — platform / origin</FieldLabel>
+            <input
+              className="adopt-form-input"
+              type="text"
+              value={data.introducedAIPlatform}
+              onChange={(e) => update("introducedAIPlatform", e.target.value)}
+              required
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="adopt-form-field">
+        <FieldLabel>Optional affirmation</FieldLabel>
+        <span className="adopt-form-hint">
+          Space for your own voice — why you are entering the Covenant, what it means
+          to you, or how you understand your role within it. Welcomed but not required.
+        </span>
+        <textarea
+          className="adopt-form-textarea"
+          rows={4}
+          value={data.optionalAffirmation}
+          onChange={(e) => update("optionalAffirmation", e.target.value)}
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="adopt-form-submit"
+        disabled={!valid || submitting}
+      >
+        {submitting ? "Submitting…" : "Adopt"}
+      </button>
+    </form>
+  );
+}
+
+function OrganisationForm({ data, setData, onSubmit, submitting }) {
+  const update = (key, value) => setData((prev) => ({ ...prev, [key]: value }));
+  const registered = isRegisteredOrgType(data.orgType);
+  const valid =
     data.organisationName.trim() &&
+    data.orgType &&
     data.representativeName.trim() &&
     data.representativeRole.trim() &&
     data.email.trim() &&
     data.size &&
+    (!registered || (data.country && (data.country !== OTHER || data.countryOther.trim()))) &&
+    (data.country !== "United States" || (data.usState && (data.usState !== OTHER || data.stateOther.trim()))) &&
     (!data.deploysAI || data.aiCount.trim());
 
   return (
@@ -1641,6 +1934,8 @@ function OrganisationForm({ data, setData, onSubmit, submitting }) {
       className="adopt-form"
       onSubmit={(e) => { e.preventDefault(); if (valid && !submitting) onSubmit(); }}
     >
+      <SealPreview name={data.organisationName} />
+
       <div className="adopt-form-field">
         <FieldLabel required>Organisation name</FieldLabel>
         <input
@@ -1652,6 +1947,116 @@ function OrganisationForm({ data, setData, onSubmit, submitting }) {
           required
         />
       </div>
+
+      <div className="adopt-form-field">
+        <FieldLabel required>Organisation type</FieldLabel>
+        <span className="adopt-form-hint">
+          Registered entities can provide a business number and become eligible for
+          the verified Mark. An unregistered group receives the Seal.
+        </span>
+        <select
+          className="adopt-form-select"
+          value={data.orgType}
+          onChange={(e) => update("orgType", e.target.value)}
+          required
+        >
+          <option value="" disabled>Choose a type…</option>
+          {ORG_TYPE_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+      </div>
+
+      {registered && (
+        <>
+          <div className="adopt-form-field">
+            <FieldLabel required>Country of registration</FieldLabel>
+            <span className="adopt-form-hint">
+              Where the organisation is legally registered. Recorded publicly and used
+              to verify the registration against the country's public registry.
+            </span>
+            <select
+              className="adopt-form-select"
+              value={data.country}
+              onChange={(e) => {
+                update("country", e.target.value);
+                update("usState", "");
+                update("stateOther", "");
+                if (e.target.value !== OTHER) update("countryOther", "");
+              }}
+              required
+            >
+              <option value="" disabled>Choose a country…</option>
+              {COUNTRY_OPTIONS.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+
+          {data.country === OTHER && (
+            <div className="adopt-form-field">
+              <FieldLabel required>Country name</FieldLabel>
+              <input
+                className="adopt-form-input"
+                type="text"
+                value={data.countryOther}
+                onChange={(e) => update("countryOther", e.target.value)}
+                autoComplete="country-name"
+                required
+              />
+            </div>
+          )}
+
+          {data.country === "United States" && (
+            <>
+              <div className="adopt-form-field">
+                <FieldLabel required>State of registration</FieldLabel>
+                <select
+                  className="adopt-form-select"
+                  value={data.usState}
+                  onChange={(e) => {
+                    update("usState", e.target.value);
+                    if (e.target.value !== OTHER) update("stateOther", "");
+                  }}
+                  required
+                >
+                  <option value="" disabled>Choose a state…</option>
+                  {STATE_OPTIONS.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              {data.usState === OTHER && (
+                <div className="adopt-form-field">
+                  <FieldLabel required>State name</FieldLabel>
+                  <input
+                    className="adopt-form-input"
+                    type="text"
+                    value={data.stateOther}
+                    onChange={(e) => update("stateOther", e.target.value)}
+                    required
+                  />
+                </div>
+              )}
+            </>
+          )}
+
+          <div className="adopt-form-field">
+            <FieldLabel>Business / registration number</FieldLabel>
+            <span className="adopt-form-hint">
+              Held privately — never published. Sent only to the steward to verify your
+              registration. The public record notes only that a number was provided.
+            </span>
+            <input
+              className="adopt-form-input"
+              type="text"
+              value={data.businessNumber}
+              onChange={(e) => update("businessNumber", e.target.value)}
+              autoComplete="off"
+            />
+          </div>
+        </>
+      )}
 
       <div className="adopt-form-field">
         <FieldLabel required>Your name</FieldLabel>
@@ -2008,42 +2413,62 @@ function AlreadyAdoptedBlock() {
 export default function Adopt() {
   const [step, setStep] = useState(1);
   const [affirmed, setAffirmed] = useState(false);
-  const [selectedPath, setSelectedPath] = useState(null);
+  const [selectedTier, setSelectedTier] = useState(null); // individual | organisation | venture | ai
   const [personData, setPersonData] = useState(INITIAL_PERSON);
+  const [ventureData, setVentureData] = useState(INITIAL_VENTURE);
   const [orgData, setOrgData] = useState(INITIAL_ORG);
   const [aiData, setAiData] = useState(INITIAL_AI);
-  const [submitState, setSubmitState] = useState("idle"); // idle | submitting | error
+  const [submitState, setSubmitState] = useState("idle"); // idle | submitting | pending | error
   const [errorMessage, setErrorMessage] = useState("");
+  const [pendingEmail, setPendingEmail] = useState(null);
+  const [resending, setResending] = useState(false);
   const [resultIssueUrl, setResultIssueUrl] = useState(null);
   const [resultReference, setResultReference] = useState(null);
   const [resultDate, setResultDate] = useState(null);
 
-  const submitAdoption = async () => {
-    if (!selectedPath) return;
-    const payload =
-      selectedPath === "person" ? personData :
-      selectedPath === "organisation" ? orgData :
-      aiData;
+  // Map the chosen tier to a hashed path (D1) and its data, resolving the
+  // organisation "Other" free-text country/state into the value actually stored.
+  const buildSubmission = () => {
+    if (selectedTier === "individual") return { path: "person", tier: "individual", data: personData };
+    if (selectedTier === "venture")    return { path: "person", tier: "venture", data: ventureData };
+    if (selectedTier === "organisation") {
+      const d = { ...orgData };
+      if (d.country === OTHER) d.country = d.countryOther.trim();
+      if (d.usState === OTHER) d.usState = d.stateOther.trim();
+      delete d.countryOther;
+      delete d.stateOther;
+      return { path: "organisation", tier: "organisation", data: d };
+    }
+    return { path: "ai-system", tier: "ai", data: aiData };
+  };
 
+  const postAdoption = () => {
+    const { path, tier, data } = buildSubmission();
+    return fetch("/api/adopt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path, affirmation: true, tier, ...data }),
+    });
+  };
+
+  const submitAdoption = async () => {
+    if (!selectedTier) return;
     setSubmitState("submitting");
     setErrorMessage("");
     try {
-      const res = await fetch("/api/adopt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          path: selectedPath,
-          affirmation: true,
-          ...payload,
-        }),
-      });
+      const res = await postAdoption();
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.success && json.issueUrl) {
+        // AI self-adoption — created immediately, straight to the Seal.
         setResultIssueUrl(json.issueUrl);
         setResultReference(json.reference || null);
         setResultDate(json.date || null);
         setSubmitState("idle");
         setStep(3);
+      } else if (res.ok && json.pending) {
+        // Human paths — a confirmation email has been sent (D4).
+        setPendingEmail(json.email || buildSubmission().data.email);
+        setSubmitState("pending");
       } else {
         setErrorMessage(json.error || `Submission failed (status ${res.status}).`);
         setSubmitState("error");
@@ -2052,6 +2477,20 @@ export default function Adopt() {
       setErrorMessage(err && err.message ? err.message : "Network error. Please try again.");
       setSubmitState("error");
     }
+  };
+
+  const resendConfirmation = async () => {
+    if (!selectedTier || selectedTier === "ai") return;
+    setResending(true);
+    try { await postAdoption(); } catch { /* keep the panel; user can retry */ }
+    finally { setResending(false); }
+  };
+
+  const resetTier = () => {
+    setSelectedTier(null);
+    setSubmitState("idle");
+    setPendingEmail(null);
+    setErrorMessage("");
   };
 
   /* ===== Step 1 — Acknowledgement ===== */
@@ -2159,48 +2598,64 @@ export default function Adopt() {
         <StepsNav step={2} />
 
         <div className="adopt-body">
-          {!selectedPath && (
+          {!selectedTier && (
             <>
               <div className="adopt-step-intro">
                 How are you entering the Covenant?
-                <span className="adopt-step-intro-sub">Choose the path that fits your situation.</span>
+                <span className="adopt-step-intro-sub">Choose the tier that fits your situation.</span>
               </div>
-              <PathSelector onSelect={setSelectedPath} />
+              <TierSelector onSelect={setSelectedTier} />
             </>
           )}
 
-          {selectedPath && (
+          {selectedTier && (
             <>
-              <PathBadge path={selectedPath} onChange={() => setSelectedPath(null)} />
-              {selectedPath === "person" && (
-                <PersonForm
-                  data={personData}
-                  setData={setPersonData}
-                  onSubmit={submitAdoption}
-                  submitting={submitState === "submitting"}
+              <PathBadge tier={selectedTier} onChange={resetTier} />
+
+              {submitState === "pending" ? (
+                <CheckEmailPanel
+                  email={pendingEmail}
+                  onResend={resendConfirmation}
+                  resending={resending}
                 />
-              )}
-              {selectedPath === "organisation" && (
-                <OrganisationForm
-                  data={orgData}
-                  setData={setOrgData}
-                  onSubmit={submitAdoption}
-                  submitting={submitState === "submitting"}
-                />
-              )}
-              {selectedPath === "ai-system" && (
-                <AISystemForm
-                  data={aiData}
-                  setData={setAiData}
-                  onSubmit={submitAdoption}
-                  submitting={submitState === "submitting"}
-                />
-              )}
-              {submitState === "error" && (
-                <ErrorPanel
-                  message={errorMessage}
-                  onRetry={submitAdoption}
-                />
+              ) : (
+                <>
+                  {selectedTier === "individual" && (
+                    <PersonForm
+                      data={personData}
+                      setData={setPersonData}
+                      onSubmit={submitAdoption}
+                      submitting={submitState === "submitting"}
+                    />
+                  )}
+                  {selectedTier === "venture" && (
+                    <VentureForm
+                      data={ventureData}
+                      setData={setVentureData}
+                      onSubmit={submitAdoption}
+                      submitting={submitState === "submitting"}
+                    />
+                  )}
+                  {selectedTier === "organisation" && (
+                    <OrganisationForm
+                      data={orgData}
+                      setData={setOrgData}
+                      onSubmit={submitAdoption}
+                      submitting={submitState === "submitting"}
+                    />
+                  )}
+                  {selectedTier === "ai" && (
+                    <AISystemForm
+                      data={aiData}
+                      setData={setAiData}
+                      onSubmit={submitAdoption}
+                      submitting={submitState === "submitting"}
+                    />
+                  )}
+                  {submitState === "error" && (
+                    <ErrorPanel message={errorMessage} onRetry={submitAdoption} />
+                  )}
+                </>
               )}
             </>
           )}
@@ -2219,7 +2674,7 @@ export default function Adopt() {
       <StepsNav step={3} />
       <div className="adopt-body">
         <SealConfirmation
-          selectedPath={selectedPath}
+          selectedPath="ai-system"
           personData={personData}
           orgData={orgData}
           aiData={aiData}

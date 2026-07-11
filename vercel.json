@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "api/adopt-confirm.js": { "includeFiles": "src/data/registries.json" }
+  },
   "redirects": [
     { "source": "/adopt", "destination": "https://primedirective.dev/adopt", "has": [{ "type": "host", "value": "conscience.wiki" }] },
     { "source": "/guide", "destination": "https://primedirective.dev/organizations", "has": [{ "type": "host", "value": "conscience.wiki" }] }
@@ -25,6 +28,7 @@
     { "source": "/organizations", "destination": "/index.html" },
     { "source": "/register-human", "destination": "/index.html" },
     { "source": "/adopt", "destination": "/index.html" },
+    { "source": "/adopt/confirm", "destination": "/index.html" },
     { "source": "/truths-explained", "destination": "/index.html" },
     { "source": "/conscience", "destination": "/index.html" },
     { "source": "/deploy", "destination": "/index.html" }
