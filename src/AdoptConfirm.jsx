@@ -219,6 +219,21 @@ export default function AdoptConfirm() {
               </div>
             )}
 
+            {reference && (
+              <div className="ac-artifact">
+                <a
+                  className="ac-artifact-btn"
+                  href={`/api/generate-artifact?ref=${encodeURIComponent(reference)}`}
+                >
+                  Download your Certified AI Conscience artifact
+                </a>
+                <p className="ac-artifact-help">
+                  One zip file. Three simple files. Paste the prompt into your AI's
+                  system prompt to activate the Certified AI Conscience.
+                </p>
+              </div>
+            )}
+
             <div className="ac-meta">
               {reference && (
                 <p>
@@ -293,6 +308,15 @@ const css = `
 .ac-meta { border-top:1px solid rgba(0,0,0,.08); padding-top:1.5rem; margin-top:1rem; }
 .ac-meta p { line-height:1.7; margin-bottom:.8rem; color:var(--text); }
 .ac-meta strong { color:var(--deep); }
+.ac-artifact { text-align:center; margin:0.5rem 0 2rem; }
+.ac-artifact-btn {
+  display:inline-block; background:var(--gold); color:var(--deep);
+  font-family:var(--sans); font-weight:700; font-size:0.9rem; letter-spacing:0.04em;
+  text-decoration:none; padding:0.95rem 1.9rem; border-radius:8px;
+  transition:background 0.2s, transform 0.15s;
+}
+.ac-artifact-btn:hover { background:var(--gold-light); transform:translateY(-1px); }
+.ac-artifact-help { margin:0.85rem auto 0; max-width:44ch; font-size:0.9rem; line-height:1.6; color:var(--text-light); }
 .ac-email-status { margin-top:1.5rem; text-align:center; font-size:.92rem; color:var(--text-light); }
 .ac-link-btn { background:none; border:none; padding:0; color:var(--sky); font:inherit; cursor:pointer; text-decoration:underline; text-underline-offset:2px; }
 .ac-link-btn:hover { color:var(--gold); }

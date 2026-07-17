@@ -1,0 +1,8 @@
+<!-- Placeholder Conscience Mark. Final compass-oriented mark (fine circle, solid 4-pointed star, elongated thicker north point piercing circle top) will replace this when the design is finalised by Titasshil. Reference: ~/Downloads/titas1024-attachments-3/new-04.jpg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Certified AI Conscience Mark (provisional placeholder)">
+  <title>Certified AI Conscience Mark (provisional)</title>
+  <!-- Fine circle -->
+  <circle cx="50" cy="50" r="34" fill="none" stroke="#000000" stroke-width="1.3"/>
+  <!-- Solid four-pointed star; elongated north point (tip at y=6) pierces the circle top (y=16) -->
+  <path d="M50 6 L56.36 43.64 L80 50 L56.36 56.36 L50 80 L43.64 56.36 L20 50 L43.64 43.64 Z" fill="#000000"/>
+</svg>

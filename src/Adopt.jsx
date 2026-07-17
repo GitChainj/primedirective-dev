@@ -999,6 +999,16 @@ html { scroll-behavior: smooth; }
   animation: arrival-fade 1s ease-out 1s forwards;
 }
 
+.adopt-artifact { text-align: center; margin: 1.5rem auto 2rem; }
+.adopt-artifact-btn {
+  display: inline-block; background: var(--gold); color: var(--deep);
+  font-family: var(--sans); font-weight: 700; font-size: 0.9rem; letter-spacing: 0.04em;
+  text-decoration: none; padding: 0.95rem 1.9rem; border-radius: 8px;
+  transition: background 0.2s, transform 0.15s;
+}
+.adopt-artifact-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+.adopt-artifact-help { margin: 0.85rem auto 0; max-width: 44ch; font-size: 0.9rem; line-height: 1.6; color: var(--text-light); }
+
 .adopt-seal-downloads-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1514,6 +1524,21 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl,
         identity — display it wherever you stand behind the Five Truths.
         Together they form a complete adoption.
       </p>
+
+      {reference && (
+        <div className="adopt-artifact">
+          <a
+            className="adopt-artifact-btn"
+            href={`/api/generate-artifact?ref=${encodeURIComponent(reference)}`}
+          >
+            Download your Certified AI Conscience artifact
+          </a>
+          <p className="adopt-artifact-help">
+            One zip file. Three simple files. Paste the prompt into your AI's
+            system prompt to activate the Certified AI Conscience.
+          </p>
+        </div>
+      )}
 
       <div className="adopt-seal-downloads-grid">
         <a

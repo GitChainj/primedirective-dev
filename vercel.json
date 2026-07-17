@@ -1,6 +1,7 @@
 {
   "functions": {
-    "api/adopt-confirm.js": { "includeFiles": "src/data/registries.json" }
+    "api/adopt-confirm.js": { "includeFiles": "src/data/registries.json" },
+    "api/generate-artifact.js": { "includeFiles": "api/_artifact/**" }
   },
   "redirects": [
     { "source": "/adopt", "destination": "https://primedirective.dev/adopt", "has": [{ "type": "host", "value": "conscience.wiki" }] },
