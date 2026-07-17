@@ -11,6 +11,7 @@
     { "source": "/propose-amendment", "destination": "/index.html" },
     { "source": "/governance", "destination": "/index.html" },
     { "source": "/contribute", "destination": "/index.html" },
+    { "source": "/community", "destination": "/index.html" },
     { "source": "/truths", "destination": "/index.html" },
     { "source": "/truth/:path*", "destination": "/index.html" },
     { "source": "/safe-words", "destination": "/index.html" },

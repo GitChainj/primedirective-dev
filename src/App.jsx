@@ -2026,10 +2026,14 @@ import TermsOfUse from './TermsOfUse.jsx';
 import PrivacyPolicy from './PrivacyPolicy.jsx';
 import CertificationLicence from './CertificationLicence.jsx';
 import WikiVerify from './wiki/WikiVerify.jsx';
+import ConsciencePortal from './wiki/ConsciencePortal.jsx';
 
 // conscience.wiki and primedirective.dev share one codebase. The hostname
-// decides which identity a visitor sees.
-const isWiki = () => window.location.hostname.includes('conscience.wiki');
+// decides which identity a visitor sees. ?portal=1 previews the conscience.wiki
+// experience on any host (e.g. localhost) without changing deployed behaviour.
+const isWiki = () =>
+  window.location.hostname.includes('conscience.wiki') ||
+  new URLSearchParams(window.location.search).has('portal');
 
 export default function App() {
   // Simple path-based routing (no router library needed)
@@ -2039,7 +2043,8 @@ export default function App() {
   // Wiki pages serve natively here; anything unmatched falls through to the
   // primedirective.dev routing below (and the kept Vercel redirects).
   if (isWiki()) {
-    if (path === '/')               return <WikiHome />;
+    if (path === '/')               return <ConsciencePortal />;
+    if (path === '/community')      return <WikiHome />;
     if (path === '/truths')         return <WikiTruths />;
     if (path.startsWith('/truth/')) return <WikiTruth />;
     if (path === '/safe-words')     return <SafeWordTracker />;

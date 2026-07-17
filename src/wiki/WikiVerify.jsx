@@ -8,6 +8,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import WikiLayout from "./WikiLayout.jsx";
+import PersonalisedSeal from "../PersonalisedSeal.jsx";
 import { computeAdoptionHash, CONSCIENCE_SHA256 } from "../lib/adoptionHash.js";
 
 const PATH_LABELS = {
@@ -17,15 +18,47 @@ const PATH_LABELS = {
   "ai-system": "AI system",
 };
 
-// Read the reference from /verify/<reference>, normalised to upper case.
-function refFromPath() {
+// Read the query from /verify/<query> (path) or /verify?ref=<query> (fallback).
+// Not upper-cased: references are matched case-insensitively, names keep case.
+function queryFromUrl() {
   const parts = window.location.pathname.split("/").filter(Boolean);
-  // ["verify"] → landing; ["verify", "UPD-2026-0001"] → direct
   if (parts.length >= 2 && parts[0] === "verify") {
-    return decodeURIComponent(parts[1]).trim().toUpperCase();
+    return decodeURIComponent(parts[1]).trim();
   }
-  return "";
+  const ref = new URLSearchParams(window.location.search).get("ref");
+  return ref ? ref.trim() : "";
 }
+
+// Match a ledger record by reference (case-insensitive) OR adopter name
+// (case-insensitive, exact). Reference is tried first.
+function matchRecord(ledger, rawQuery) {
+  const q = String(rawQuery || "").trim();
+  if (!q) return null;
+  const upper = q.toUpperCase();
+  const lower = q.toLowerCase();
+  return (
+    ledger.find((a) => String(a.reference).trim().toUpperCase() === upper) ||
+    ledger.find((a) => String(a.name).trim().toLowerCase() === lower) ||
+    null
+  );
+}
+
+// Preserve ?portal=1 on internal navigation so the portal preview survives on
+// hosts other than conscience.wiki (e.g. localhost).
+function navSuffix() {
+  return window.location.hostname.includes("conscience.wiki") ? "" : "?portal=1";
+}
+
+const longDate = (iso) => {
+  if (!iso) return iso || "";
+  try {
+    return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" })
+      .format(new Date(`${iso}T00:00:00`));
+  } catch { return iso; }
+};
+
+// Organisations carry the Mark; everyone else carries the Seal.
+const markKind = (path) => (path === "organisation" ? "mark" : "seal");
 
 const css = `
 .verify-intro {
@@ -37,13 +70,13 @@ const css = `
 
 .verify-form {
   display: flex;
+  flex-direction: column;
   gap: 0.6rem;
-  flex-wrap: wrap;
-  margin-bottom: 2.5rem;
+  max-width: 360px;
+  margin: 0 auto 2.5rem;
 }
 .verify-form input {
-  flex: 1;
-  min-width: 220px;
+  width: 100%;
   font-family: var(--mono);
   font-size: 0.95rem;
   letter-spacing: 0.04em;
@@ -105,6 +138,14 @@ const css = `
   color: rgba(255,255,255,0.6);
   margin-top: 0.35rem;
 }
+
+.verify-cert {
+  display: flex;
+  justify-content: center;
+  padding: 1.75rem 1.75rem 0.25rem;
+  background: white;
+}
+.verify-cert .pseal-frame { max-width: 260px; }
 
 .verify-rows { padding: 1.5rem 1.75rem; }
 .verify-row {
@@ -177,11 +218,11 @@ const css = `
 `;
 
 export default function WikiVerify() {
-  const initialRef = refFromPath();
-  const [query, setQuery] = useState(initialRef);
-  const [activeRef, setActiveRef] = useState(initialRef);
+  const initialQuery = queryFromUrl();
+  const [query, setQuery] = useState(initialQuery);
+  const [activeQuery, setActiveQuery] = useState(initialQuery);
   const [ledger, setLedger] = useState(null); // null until loaded; [] on error
-  const [state, setState] = useState(initialRef ? "checking" : "idle");
+  const [state, setState] = useState(initialQuery ? "checking" : "idle");
   const [record, setRecord] = useState(null);
   const [computedHash, setComputedHash] = useState("");
 
@@ -195,14 +236,12 @@ export default function WikiVerify() {
     return () => { cancelled = true; };
   }, []);
 
-  // Verify whenever the active reference or the ledger changes.
+  // Verify whenever the active query (reference or name) or the ledger changes.
   useEffect(() => {
-    if (!activeRef) { setState("idle"); setRecord(null); return; }
+    if (!activeQuery) { setState("idle"); setRecord(null); return; }
     if (ledger === null) { setState("checking"); return; }
 
-    const match = ledger.find(
-      (a) => String(a.reference).trim().toUpperCase() === activeRef
-    );
+    const match = matchRecord(ledger, activeQuery);
     if (!match) { setRecord(null); setState("notfound"); return; }
 
     setRecord(match);
@@ -216,14 +255,15 @@ export default function WikiVerify() {
       })
       .catch(() => { if (!cancelled) setState("error"); });
     return () => { cancelled = true; };
-  }, [activeRef, ledger]);
+  }, [activeQuery, ledger]);
 
   const onSubmit = useCallback((e) => {
     e.preventDefault();
-    const next = query.trim().toUpperCase();
-    setActiveRef(next);
-    // Reflect the reference in the URL so it is shareable, without a reload.
-    const url = next ? `/verify/${encodeURIComponent(next)}` : "/verify";
+    const next = query.trim();
+    setActiveQuery(next);
+    // Reflect the query in the URL so it is shareable, without a reload. Keep it
+    // as typed (a name may contain spaces); the matcher handles case.
+    const url = next ? `/verify/${encodeURIComponent(next)}${navSuffix()}` : `/verify${navSuffix()}`;
     window.history.pushState({}, "", url);
   }, [query]);
 
@@ -237,8 +277,9 @@ export default function WikiVerify() {
       <p className="verify-intro">
         Every adoption of the Universal Primary Directive carries a deterministic
         SHA-256 hash built from its public facts and the version of the Conscience
-        it was adopted against. Enter a reference number to recompute that hash in
-        your own browser and confirm the record has not been altered.
+        it was adopted against. Enter a reference number or an adopter name to
+        recompute that hash in your own browser and confirm the record has not
+        been altered.
       </p>
 
       <form className="verify-form" onSubmit={onSubmit}>
@@ -246,10 +287,9 @@ export default function WikiVerify() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="UPD-2026-0001"
-          aria-label="Adoption reference number"
+          placeholder="UPD-2026-0001 or adopter name"
+          aria-label="Adoption reference number or adopter name"
           spellCheck="false"
-          autoCapitalize="characters"
         />
         <button type="submit" disabled={!query.trim()}>Verify</button>
       </form>
@@ -261,7 +301,7 @@ export default function WikiVerify() {
       )}
 
       {state === "checking" && (
-        <p className="verify-status">Verifying {activeRef}…</p>
+        <p className="verify-status">Verifying {activeQuery}…</p>
       )}
 
       {state === "verified" && record && (
@@ -272,6 +312,16 @@ export default function WikiVerify() {
             <div className="verify-badge-sub">
               The recomputed hash matches the public ledger.
             </div>
+          </div>
+          <div className="verify-cert">
+            <PersonalisedSeal
+              kind={markKind(record.path)}
+              mode="display"
+              orientation="vertical"
+              name={record.name}
+              date={longDate(record.date)}
+              reference={record.reference}
+            />
           </div>
           <div className="verify-rows">
             <div className="verify-row">
@@ -327,10 +377,10 @@ export default function WikiVerify() {
 
       {state === "notfound" && (
         <div className="verify-panel">
-          <h2>No adoption found with this reference</h2>
+          <h2>No adoption found</h2>
           <p>
-            We could not find an adoption matching <strong>{activeRef}</strong>. Check
-            the reference and try again — it looks like <code>UPD-2026-0001</code>.
+            We could not find an adoption matching <strong>{activeQuery}</strong>. Check
+            the reference or name and try again — a reference looks like <code>UPD-2026-0001</code>.
           </p>
           <p>
             You can{" "}

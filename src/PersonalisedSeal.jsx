@@ -180,6 +180,23 @@ export default function PersonalisedSeal({
 
   const seal = isSeal(kind);
 
+  // "display" — just the framed art, no helper/cue/downloads/lightbox. Used for
+  // generic marks on the conscience.wiki portal hero (rendered with blank
+  // fields). Marks show gold on navy; seals keep their parchment ground.
+  if (mode === "display") {
+    return (
+      <div className="pseal">
+        <style>{css}</style>
+        <div
+          className={`pseal-frame ${seal ? "is-seal" : "is-mark"}`}
+          dangerouslySetInnerHTML={{ __html: displaySvg }}
+          role="img"
+          aria-label={`Universal Primary Directive ${seal ? "Adoption Seal" : "Trust Mark"}`}
+        />
+      </div>
+    );
+  }
+
   if (mode === "preview") {
     return (
       <div className="pseal">
