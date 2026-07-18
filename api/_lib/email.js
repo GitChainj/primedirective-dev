@@ -90,15 +90,28 @@ export async function sendStewardEmail({ adopterName, orgType, businessNumber, r
 }
 
 // ── Welcome pack with Seal/Mark PNGs (D5) ──
-export async function sendWelcomeEmail({ to, adopterName, reference, issueUrl, attachments }) {
+// Body builder — pure (no send), exported so the HTML can be unit-verified.
+export function welcomeEmailHtml({ adopterName, reference, issueUrl }) {
   const verifyUrl = reference ? `https://conscience.wiki/verify/${encodeURIComponent(reference)}` : null;
-  const html = shell(`
+  const artifactUrl = reference ? `${SITE_URL}/api/generate-artifact?ref=${encodeURIComponent(reference)}` : null;
+  return shell(`
     <p style="margin:0 0 14px;font-size:18px;color:${DEEP}"><strong>Welcome to the Covenant${adopterName ? `, ${esc(adopterName)}` : ""}.</strong></p>
     <p style="margin:0 0 16px">Your adoption is recorded in the public ledger. Your Seal is attached to this email &mdash; display it wherever you stand behind the Five Truths.</p>
     ${reference ? `<p style="margin:0 0 16px">Your reference is <strong>${esc(reference)}</strong>.${verifyUrl ? ` Anyone can verify it at <a href="${esc(verifyUrl)}" style="color:#2e6b9e;text-decoration:none">conscience.wiki/verify/${esc(reference)}</a>.` : ""}</p>` : ""}
+    ${artifactUrl ? `
+    <div style="margin:0 0 20px;padding:18px 20px;background:rgba(212,168,83,.08);border:1px solid rgba(212,168,83,.3);border-radius:10px">
+      <p style="margin:0 0 12px;font-size:16px;font-weight:700;color:${DEEP}">Activate your Certified AI Conscience</p>
+      <p style="margin:0 0 12px;text-align:center">${button(artifactUrl, "Download your artifact →")}</p>
+      <p style="margin:0 0 12px;font-size:12px;word-break:break-all;color:#2e6b9e">${esc(artifactUrl)}</p>
+      <p style="margin:0;font-size:14px;line-height:1.65">The zip contains three files. Open <strong>conscience-prompt.txt</strong>, copy its contents, and paste it into your AI's system prompt. Your AI will then display &ldquo;◇C Guided by the Certified AI Conscience&trade;&rdquo; at the start of every conversation. Anyone can click that declaration to verify your adoption at <a href="https://conscience.wiki" style="color:#2e6b9e;text-decoration:none">conscience.wiki</a>.</p>
+    </div>` : ""}
     <p style="margin:0 0 20px">The AI Conscience is yours to carry &mdash; paste it into any AI's system prompt. Download it any time at <a href="${SITE_URL}/adopt" style="color:#2e6b9e;text-decoration:none">primedirective.dev/adopt</a>.</p>
     ${issueUrl ? `<p style="margin:0 0 8px">${button(issueUrl, "View your ledger entry →")}</p>` : ""}
   `);
+}
+
+export async function sendWelcomeEmail({ to, adopterName, reference, issueUrl, attachments }) {
+  const html = welcomeEmailHtml({ adopterName, reference, issueUrl });
   return resend().emails.send({
     from: FROM, to, subject: `Welcome to the Covenant${reference ? ` — ${reference}` : ""}`,
     html, attachments: attachments && attachments.length ? attachments : undefined,
