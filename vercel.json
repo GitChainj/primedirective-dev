@@ -33,6 +33,7 @@
     { "source": "/adopt/confirm", "destination": "/index.html" },
     { "source": "/truths-explained", "destination": "/index.html" },
     { "source": "/conscience", "destination": "/index.html" },
-    { "source": "/deploy", "destination": "/index.html" }
+    { "source": "/deploy", "destination": "/index.html" },
+    { "source": "/integrate", "destination": "/index.html" }
   ]
 }

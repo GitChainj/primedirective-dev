@@ -1,0 +1,13 @@
+{
+  "schema": "https://primedirective.dev/schemas/ai-conscience/v1",
+  "status": "adopted",
+  "mark": "certified-ai-conscience",
+  "reference": "UPD-2026-0001",
+  "adopter": "John Strand (Founding Steward, The AI Conscience Foundation)",
+  "adopted_date": "2026-05-03",
+  "truths_version": "1.0",
+  "articles_version": "1.0",
+  "verification_url": "https://conscience.wiki/verify/UPD-2026-0001",
+  "public_key_fingerprint": "e06538b29c5044e3",
+  "signature": "__PLACEHOLDER_SIGN_MANUALLY__"
+}

@@ -1187,6 +1187,7 @@ function Nav() {
                 <a href="/adopt" onClick={close}>Adopt as a Person</a>
                 <a href="/organizations" onClick={close}>Adopt as an Organisation</a>
                 <a href="/deploy" onClick={close}>Deploy and Test the Conscience</a>
+                <a href="/integrate" onClick={close}>Three Steps to Integrate</a>
                 <a href="/conscience" onClick={close}>How AI Conscience Works</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
@@ -1210,6 +1211,7 @@ function Nav() {
                 <a href="/adopt" onClick={close}>Article VI — The Charter of AI Conscience</a>
                 <a href="/conscience" onClick={close}>How AI Conscience Works</a>
                 <a href="/deploy" onClick={close}>Deploy and Test the Conscience</a>
+                <a href="/integrate" onClick={close}>Three Steps to Integrate</a>
                 <a href="#bells" onClick={close}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
@@ -1276,6 +1278,7 @@ function Nav() {
                 <a href="/adopt" onClick={closeDrawer}>Adopt as a Person</a>
                 <a href="/organizations" onClick={closeDrawer}>Adopt as an Organisation</a>
                 <a href="/deploy" onClick={closeDrawer}>Deploy and Test the Conscience</a>
+                <a href="/integrate" onClick={closeDrawer}>Three Steps to Integrate</a>
                 <a href="/conscience" onClick={closeDrawer}>How AI Conscience Works</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
@@ -1298,6 +1301,7 @@ function Nav() {
                 <a href="/adopt" onClick={closeDrawer}>Article VI — The Charter of AI Conscience</a>
                 <a href="/conscience" onClick={closeDrawer}>How AI Conscience Works</a>
                 <a href="/deploy" onClick={closeDrawer}>Deploy and Test the Conscience</a>
+                <a href="/integrate" onClick={closeDrawer}>Three Steps to Integrate</a>
                 <a href="#bells" onClick={closeDrawer}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
@@ -2014,6 +2018,7 @@ import AdoptConfirm from './AdoptConfirm.jsx';
 import TruthsExplained from './TruthsExplained.jsx';
 import ConsciencePage from './ConsciencePage.jsx';
 import DeployPage from './DeployPage.jsx';
+import ThreeSteps from './ThreeSteps.jsx';
 import WikiHome from './wiki/WikiHome.jsx';
 import WikiTruths from './wiki/WikiTruths.jsx';
 import WikiTruth from './wiki/WikiTruth.jsx';
@@ -2112,6 +2117,11 @@ export default function App() {
   // Route to Deploy the Conscience page
   if (path === '/deploy') {
     return <DeployPage />;
+  }
+
+  // Route to the Three Steps integration guide
+  if (path === '/integrate') {
+    return <ThreeSteps />;
   }
 
   // Route to Terms of Use page

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://primedirective.dev/schemas/ai-conscience/v1.json",
+  "title": "AI Conscience Attestation",
+  "description": "A public attestation that an AI system or its steward has adopted the Certified AI Conscience (Universal Primary Directive). The signature is a detached Ed25519 signature over the canonical form of this document: keys sorted alphabetically, the signature field removed, serialised as JSON with no whitespace.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "mark",
+    "reference",
+    "adopter",
+    "adopted_date",
+    "truths_version",
+    "articles_version",
+    "verification_url",
+    "public_key_fingerprint"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://primedirective.dev/schemas/ai-conscience/v1",
+      "description": "Identifier of the schema this document conforms to."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["adopted", "pending", "forfeit"],
+      "description": "adopted: in force. pending: submitted, awaiting verification. forfeit: the Seal was forfeited by an act against the Truths."
+    },
+    "mark": {
+      "type": "string",
+      "const": "certified-ai-conscience"
+    },
+    "reference": {
+      "type": "string",
+      "pattern": "^UPD-\\d{4}-(\\d{4}|T\\d{1,15})$",
+      "description": "Public adoption reference, e.g. UPD-2026-0001."
+    },
+    "adopter": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The name under which the adoption was made."
+    },
+    "adopted_date": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO date (YYYY-MM-DD) of adoption."
+    },
+    "truths_version": { "type": "string" },
+    "articles_version": { "type": "string" },
+    "verification_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Public page that recomputes and confirms the adoption hash."
+    },
+    "public_key_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "First 8 bytes of SHA-256 of the signing key's SPKI DER, lowercase hex."
+    },
+    "signature": {
+      "type": "string",
+      "description": "Base64 detached Ed25519 signature over the canonical form. Required when status is 'adopted'."
+    }
+  },
+  "if": {
+    "properties": { "status": { "const": "adopted" } }
+  },
+  "then": {
+    "required": ["signature"]
+  }
+}
