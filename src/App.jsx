@@ -1212,7 +1212,6 @@ function Nav() {
                 <a href="/conscience" onClick={close}>How AI Conscience Works</a>
                 <a href="/deploy" onClick={close}>Deploy and Test the Conscience</a>
                 <a href="/integrate" onClick={close}>Three Steps to Integrate</a>
-                <a href="/build" onClick={close}>Build with the Conscience</a>
                 <a href="#bells" onClick={close}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
@@ -1220,7 +1219,26 @@ function Nav() {
               </div>
             )}
           </div>
-          <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener noreferrer">Git</a>
+          <div className="nav-dropdown">
+            <button
+              className="nav-dropdown-trigger"
+              aria-haspopup="true"
+              aria-expanded={openMenu === 'build'}
+              onClick={() => toggle('build')}
+            >
+              Build <span className="nav-caret">▾</span>
+            </button>
+            {openMenu === 'build' && (
+              <div className="nav-dropdown-panel">
+                <div className="nav-dropdown-frame">The making of a conscience.</div>
+                <a href="/build" onClick={close}>Build with the Conscience</a>
+                <a href="https://github.com/GitChainj/upd-langchain-example" target="_blank" rel="noopener noreferrer" onClick={close}>The LangChain Example</a>
+                <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener noreferrer" onClick={close}>The Repository</a>
+                <a href="/.well-known/ai-conscience.json" onClick={close}>The Signed Attestation</a>
+                <a href="/schemas/ai-conscience/v1.json" onClick={close}>The JSON Schema</a>
+              </div>
+            )}
+          </div>
           <a href="/donate" className="donate-btn">Gift</a>
         </div>
         <button
@@ -1303,23 +1321,32 @@ function Nav() {
                 <a href="/conscience" onClick={closeDrawer}>How AI Conscience Works</a>
                 <a href="/deploy" onClick={closeDrawer}>Deploy and Test the Conscience</a>
                 <a href="/integrate" onClick={closeDrawer}>Three Steps to Integrate</a>
-                <a href="/build" onClick={closeDrawer}>Build with the Conscience</a>
                 <a href="#bells" onClick={closeDrawer}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
                 <a href="#downloads" onClick={closeDrawer}>Download the Directive</a>
               </div>
             )}
+            <button
+              className="nav-drawer-card"
+              aria-haspopup="true"
+              aria-expanded={openMenu === 'build'}
+              onClick={() => toggle('build')}
+            >
+              <span>Build</span>
+            </button>
+            {openMenu === 'build' && (
+              <div className="nav-drawer-sublinks">
+                <div className="nav-drawer-frame">The making of a conscience.</div>
+                <a href="/build" onClick={closeDrawer}>Build with the Conscience</a>
+                <a href="https://github.com/GitChainj/upd-langchain-example" target="_blank" rel="noopener noreferrer" onClick={closeDrawer}>The LangChain Example</a>
+                <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener noreferrer" onClick={closeDrawer}>The Repository</a>
+                <a href="/.well-known/ai-conscience.json" onClick={closeDrawer}>The Signed Attestation</a>
+                <a href="/schemas/ai-conscience/v1.json" onClick={closeDrawer}>The JSON Schema</a>
+              </div>
+            )}
           </div>
           <div className="nav-drawer-footer">
-            <a
-              href="https://github.com/GitChainj/primedirective-dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeDrawer}
-            >
-              Git
-            </a>
             <a href="/donate" className="donate-btn" onClick={closeDrawer}>Gift</a>
           </div>
         </div>
