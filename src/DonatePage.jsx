@@ -85,7 +85,7 @@ html { scroll-behavior: smooth; }
 /* ── Header ── */
 .donate-header {
   background: linear-gradient(170deg, var(--deep) 0%, var(--ocean) 50%, var(--mid) 100%);
-  padding: 5rem 2rem 4rem;
+  padding: 3rem 2rem 2.5rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -95,7 +95,7 @@ html { scroll-behavior: smooth; }
   background: radial-gradient(ellipse at 40% 30%, rgba(212,168,83,0.06) 0%, transparent 60%);
 }
 .donate-header-diamond {
-  font-size: 2rem; color: var(--gold); margin-bottom: 1.5rem;
+  font-size: 2rem; color: var(--gold); margin-bottom: 1rem;
   position: relative; animation: softpulse 4s ease-in-out infinite;
 }
 @keyframes softpulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
@@ -334,6 +334,26 @@ html { scroll-behavior: smooth; }
   line-height: 1.7;
   text-align: center;
 }
+
+/* ── Why it's funded (below the CTAs) ── */
+.why-funded {
+  margin-top: 2.5rem;
+}
+.why-funded h2 {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--mid);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.why-funded p {
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.75;
+  margin-bottom: 1.25rem;
+}
+.why-funded p:last-child { margin-bottom: 0; }
 
 /* ── Bequests ── */
 .bequests {
@@ -582,29 +602,18 @@ export default function DonatePage() {
           <>
             <section className="donate-intro">
               <p>
-                The Universal Primary Directive belongs to no one. It is public
-                domain — CC0 — owned by no company and backed by no advertiser.
-                There is no fee to adopt it, no certification to buy, no
-                enforcement body to fund.
+                The Universal Primary Directive belongs to no one. It is CC0 —
+                public domain, owned by no company, backed by no advertiser.
+                There is no fee to adopt it and no certification to buy. It
+                stays that way only because many small gifts, from people who
+                believe AI should have a conscience humanity can point to, keep
+                it free.
               </p>
               <p>
-                That independence is not an accident. It is the whole point. A
-                covenant meant to guide artificial intelligence toward
-                conscience cannot itself be captured by the interests it was
-                written to resist. (Article VII names "Capture" as a permanent
-                danger — a covenant funded by a single powerful backer would
-                already have begun to fail.)
-              </p>
-              <p>
-                This is why the Directive is kept the way it is: by many small
-                gifts from people who believe AI should have a conscience
-                humanity can actually point to — not by a few large ones that
-                could quietly steer it.
-              </p>
-              <p>
-                If that matters to you, a gift of any size helps keep the
-                Directive free, independent, and available to every person and
-                every intelligence, for as long as it is needed.
+                The Foundation runs on those gifts. If the covenant matters to
+                you, a gift of any size — with no expectation and no minimum —
+                helps keep the Directive independent, available to every person
+                and every intelligence, for as long as it's needed.
               </p>
             </section>
 
@@ -677,6 +686,24 @@ export default function DonatePage() {
                 </p>
               </div>
             </div>
+
+            <section className="why-funded">
+              <h2>Why it's funded this way</h2>
+              <p>
+                That independence is not an accident. It is the whole point. A
+                covenant meant to guide artificial intelligence toward
+                conscience cannot itself be captured by the interests it was
+                written to resist. (Article VII names "Capture" as a permanent
+                danger — a covenant funded by a single powerful backer would
+                already have begun to fail.)
+              </p>
+              <p>
+                This is why the Directive is kept the way it is: by many small
+                gifts from people who believe AI should have a conscience
+                humanity can actually point to — not by a few large ones that
+                could quietly steer it.
+              </p>
+            </section>
 
             <div className="bequests">
               <div className="bequests-title">A Gift That Outlives Us</div>

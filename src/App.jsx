@@ -1239,7 +1239,7 @@ function Nav() {
               </div>
             )}
           </div>
-          <a href="/donate" className="donate-btn">Gift</a>
+          <a href="/donate" className="donate-btn">Give</a>
         </div>
         <button
           className="nav-hamburger"
@@ -1347,7 +1347,7 @@ function Nav() {
             )}
           </div>
           <div className="nav-drawer-footer">
-            <a href="/donate" className="donate-btn" onClick={closeDrawer}>Gift</a>
+            <a href="/donate" className="donate-btn" onClick={closeDrawer}>Give</a>
           </div>
         </div>
       </div>
