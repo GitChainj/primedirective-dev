@@ -94,7 +94,7 @@ html { scroll-behavior: smooth; }
   content: ''; position: absolute; inset: 0;
   background: radial-gradient(ellipse at 40% 30%, rgba(212,168,83,0.06) 0%, transparent 60%);
 }
-.donate-header-diamond {
+.donate-header-mark {
   font-size: 2rem; color: var(--gold); margin-bottom: 1rem;
   position: relative; animation: softpulse 4s ease-in-out infinite;
 }
@@ -418,7 +418,7 @@ html { scroll-behavior: smooth; }
   text-align: center;
 }
 
-.success-diamond {
+.success-mark {
   font-size: 3rem; color: var(--gold);
   margin-bottom: 1.5rem;
 }
@@ -483,7 +483,7 @@ html { scroll-behavior: smooth; }
 function SuccessPage() {
   return (
     <div className="success-card">
-      <div className="success-diamond">✦</div>
+      <div className="success-mark">✦</div>
       <div className="success-title">Thank You</div>
       <p className="success-text">
         Your contribution helps keep the Universal Primary Directive
@@ -507,7 +507,7 @@ function SuccessPage() {
 function CanceledPage() {
   return (
     <div className="success-card">
-      <div className="success-diamond">✦</div>
+      <div className="success-mark">✦</div>
       <div className="success-title">No Problem</div>
       <p className="success-text">
         Your contribution wasn't processed. No charge was made.
@@ -586,7 +586,7 @@ export default function DonatePage() {
 
       <div className="donate-header">
         <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-        <div className="donate-header-diamond">✦</div>
+        <div className="donate-header-mark">✦</div>
         <h1>Keep the <strong>Covenant</strong> Free and Uncaptured</h1>
         <p>
           Kept free by many small gifts — never bought by a powerful few.

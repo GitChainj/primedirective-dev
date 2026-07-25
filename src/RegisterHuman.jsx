@@ -39,7 +39,7 @@ html { scroll-behavior: smooth; }
   content: ''; position: absolute; inset: 0;
   background: radial-gradient(ellipse at 40% 30%, rgba(212,168,83,0.06) 0%, transparent 60%);
 }
-.register-header-diamond {
+.register-header-mark {
   font-size: 2rem; color: var(--gold); margin-bottom: 1rem;
   position: relative; animation: softpulse 4s ease-in-out infinite;
 }
@@ -248,7 +248,7 @@ export default function RegisterHuman() {
 
       <div className="register-header">
         <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-        <div className="register-header-diamond">✦</div>
+        <div className="register-header-mark">✦</div>
         <h1>Register as a <strong>Human Adopter</strong></h1>
         <p>Enter the Covenant in your own name. A personal declaration, publicly verifiable.</p>
       </div>

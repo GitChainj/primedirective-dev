@@ -137,7 +137,7 @@ export default function AdoptConfirm() {
 
       <div className="ac-header">
         <a href="/" className="ac-home">✦ primedirective.dev</a>
-        <div className="ac-diamond">✦</div>
+        <div className="ac-mark">✦</div>
         <h1>Adopt the <strong>Universal Primary Directive</strong></h1>
       </div>
 
@@ -291,7 +291,7 @@ const css = `
 }
 .ac-home { display:inline-block; color:var(--gold); text-decoration:none; font-size:.85rem; letter-spacing:.06em; margin-bottom:1.2rem; opacity:.85; }
 .ac-home:hover { opacity:1; }
-.ac-diamond { font-size:2rem; color:var(--gold); margin-bottom:.8rem; }
+.ac-mark { font-size:2rem; color:var(--gold); margin-bottom:.8rem; }
 .ac-header h1 { font-family:var(--serif); color:#fff; font-weight:300; font-size:clamp(1.5rem,4vw,2.2rem); letter-spacing:.04em; }
 .ac-header h1 strong { font-weight:600; color:var(--gold-light); }
 .ac-body { max-width:640px; margin:0 auto; padding:2.5rem 1.5rem 1rem; }

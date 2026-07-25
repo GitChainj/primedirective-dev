@@ -65,7 +65,7 @@ export default function BuildPage() {
 
       <header className="bp-header">
         <a href="/" className="bp-home">✦ primedirective.dev</a>
-        <div className="bp-diamond" aria-hidden="true">✦</div>
+        <div className="bp-mark" aria-hidden="true">✦</div>
         <h1>Build with the <strong>Conscience</strong></h1>
         <p className="bp-subtitle">Civilisation-Scale AI Ethics</p>
       </header>
@@ -234,7 +234,7 @@ const css = `
 .bp-header::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 40% 30%, rgba(212,168,83,0.06) 0%, transparent 60%); }
 .bp-home { position:absolute; top:1.25rem; left:1.5rem; font-family:var(--serif); font-size:0.9rem; color:var(--gold); text-decoration:none; opacity:.85; }
 .bp-home:hover { opacity:1; }
-.bp-diamond { font-size:2rem; color:var(--gold); margin-bottom:1rem; position:relative; animation:bp-pulse 4s ease-in-out infinite; }
+.bp-mark { font-size:2rem; color:var(--gold); margin-bottom:1rem; position:relative; animation:bp-pulse 4s ease-in-out infinite; }
 @keyframes bp-pulse { 0%,100%{opacity:.6;} 50%{opacity:1;} }
 .bp-header h1 { font-family:var(--serif); color:#fff; font-weight:300; font-size:clamp(1.6rem,4vw,2.4rem); letter-spacing:.03em; line-height:1.3; max-width:780px; margin:0 auto .75rem; position:relative; }
 .bp-header h1 strong { font-weight:700; color:var(--gold-light); }

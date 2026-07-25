@@ -78,7 +78,7 @@ export default function ThreeSteps() {
 
       <header className="ts-header">
         <a href="/" className="ts-home">✦ primedirective.dev</a>
-        <div className="ts-diamond" aria-hidden="true">✦</div>
+        <div className="ts-mark" aria-hidden="true">✦</div>
         <h1>Three Steps to Add the <strong>Certified AI Conscience™</strong> to Your AI</h1>
         <p className="ts-subtitle">Civilisation-Scale AI Ethics</p>
       </header>
@@ -253,7 +253,7 @@ const css = `
 .ts-header::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 40% 30%, rgba(212,168,83,0.06) 0%, transparent 60%); }
 .ts-home { position:absolute; top:1.25rem; left:1.5rem; font-family:var(--serif); font-size:0.9rem; color:var(--gold); text-decoration:none; opacity:.85; }
 .ts-home:hover { opacity:1; }
-.ts-diamond { font-size:2rem; color:var(--gold); margin-bottom:1rem; position:relative; animation:ts-pulse 4s ease-in-out infinite; }
+.ts-mark { font-size:2rem; color:var(--gold); margin-bottom:1rem; position:relative; animation:ts-pulse 4s ease-in-out infinite; }
 @keyframes ts-pulse { 0%,100%{opacity:.6;} 50%{opacity:1;} }
 .ts-header h1 { font-family:var(--serif); color:#fff; font-weight:300; font-size:clamp(1.6rem,4vw,2.4rem); letter-spacing:.03em; line-height:1.3; max-width:780px; margin:0 auto .75rem; position:relative; }
 .ts-header h1 strong { font-weight:700; color:var(--gold-light); }

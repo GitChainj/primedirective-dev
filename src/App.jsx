@@ -1045,7 +1045,7 @@ body {
   border-top: 1px solid rgba(212,168,83,0.15);
 }
 .footer a { color: var(--gold); text-decoration: none; }
-.footer-diamond { color: var(--gold); font-size: 1.2rem; margin-bottom: 1rem; }
+.footer-mark { color: var(--gold); font-size: 1.2rem; margin-bottom: 1rem; }
 
 /* ── TABS ── */
 .tab-bar {
@@ -2019,7 +2019,7 @@ function DonateSection() {
 function FooterSection() {
   return (
     <footer className="footer">
-      <div className="footer-diamond">✦</div>
+      <div className="footer-mark">✦</div>
       <p>The Universal Primary Directive (Established 2026)</p>
       <p>A Shared Covenant Between Human and Artificial Intelligence</p>
       <p>CC0 — Public Domain. This belongs to all intelligence.</p>

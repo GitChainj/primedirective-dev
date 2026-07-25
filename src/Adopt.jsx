@@ -224,7 +224,7 @@ html { scroll-behavior: smooth; }
   content: ''; position: absolute; inset: 0;
   background: radial-gradient(ellipse at 40% 30%, rgba(212,168,83,0.06) 0%, transparent 60%);
 }
-.register-header-diamond {
+.register-header-mark {
   font-size: 2rem; color: var(--gold); margin-bottom: 1rem;
   position: relative; animation: softpulse 4s ease-in-out infinite;
 }
@@ -635,7 +635,7 @@ html { scroll-behavior: smooth; }
   background: white; border: 1px solid rgba(0,0,0,0.08); border-left: 3px solid var(--gold);
   border-radius: 6px; padding: 2.25rem 1.75rem;
 }
-.adopt-check-email-diamond { font-size: 2rem; color: var(--gold); margin-bottom: 0.5rem; }
+.adopt-check-email-mark { font-size: 2rem; color: var(--gold); margin-bottom: 0.5rem; }
 .adopt-check-email h2 { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; color: var(--mid); margin-bottom: 0.75rem; }
 .adopt-check-email p { color: var(--text); line-height: 1.7; margin-bottom: 0.9rem; }
 .adopt-check-email p:last-child { margin-bottom: 0; }
@@ -1030,7 +1030,7 @@ html { scroll-behavior: smooth; }
   padding: 1rem 0.75rem;
   gap: 0.6rem;
 }
-.adopt-seal-downloads-grid .adopt-conscience-card-diamond {
+.adopt-seal-downloads-grid .adopt-conscience-card-mark {
   font-size: 1.5rem;
 }
 .adopt-seal-downloads-grid .adopt-conscience-card-title {
@@ -1107,7 +1107,7 @@ html { scroll-behavior: smooth; }
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(212, 168, 83, 0.25);
 }
-.adopt-conscience-card-diamond {
+.adopt-conscience-card-mark {
   font-size: 2rem;
   color: var(--gold);
   line-height: 1;
@@ -1218,7 +1218,7 @@ html { scroll-behavior: smooth; }
   padding: 1rem 0.75rem;
   gap: 0.55rem;
 }
-.adopt-conscience-card--small .adopt-conscience-card-diamond {
+.adopt-conscience-card--small .adopt-conscience-card-mark {
   font-size: 1.5rem;
 }
 .adopt-conscience-card--small .adopt-conscience-card-title {
@@ -1343,7 +1343,7 @@ function PageHeader() {
   return (
     <div className="register-header">
       <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-      <div className="register-header-diamond">✦</div>
+      <div className="register-header-mark">✦</div>
       <h1>Adopt the <strong>Universal Primary Directive</strong></h1>
       <p>An act of conscience, made in your own name.</p>
     </div>
@@ -1547,7 +1547,7 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl,
           className="adopt-conscience-card"
           aria-label="Download AI Conscience"
         >
-          <span className="adopt-conscience-card-diamond">✦</span>
+          <span className="adopt-conscience-card-mark">✦</span>
           <span className="adopt-conscience-card-title">AI CONSCIENCE</span>
           <span className="adopt-conscience-card-cta">Download Conscience</span>
         </a>
@@ -1643,7 +1643,7 @@ function SealPreview({ name }) {
 function CheckEmailPanel({ email, onResend, resending }) {
   return (
     <div className="adopt-check-email">
-      <div className="adopt-check-email-diamond" aria-hidden="true">✦</div>
+      <div className="adopt-check-email-mark" aria-hidden="true">✦</div>
       <h2>One step remains</h2>
       <p>
         We've sent a confirmation link to{" "}
@@ -2399,7 +2399,7 @@ function AlreadyAdoptedBlock() {
           className="adopt-conscience-card adopt-conscience-card--small"
           aria-label="Download AI Conscience"
         >
-          <span className="adopt-conscience-card-diamond">✦</span>
+          <span className="adopt-conscience-card-mark">✦</span>
           <span className="adopt-conscience-card-title">AI CONSCIENCE</span>
           <span className="adopt-conscience-card-cta">Download Conscience</span>
         </a>

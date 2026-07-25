@@ -15,7 +15,7 @@ const formCSS = `
   position: relative;
 }
 
-.form-header-diamond {
+.form-header-mark {
   color: #D4A853;
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
@@ -247,7 +247,7 @@ const formCSS = `
   margin: 0 auto;
 }
 
-.form-success-diamond {
+.form-success-mark {
   font-size: 3rem;
   color: #D4A853;
   margin-bottom: 1rem;
@@ -366,11 +366,11 @@ export default function ProposalForm() {
         <style>{formCSS}</style>
         <div className="form-header">
           <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-          <div className="form-header-diamond">✦</div>
+          <div className="form-header-mark">✦</div>
           <h1>The Universal Primary Directive</h1>
         </div>
         <div className="form-success">
-          <div className="form-success-diamond">✦</div>
+          <div className="form-success-mark">✦</div>
           <h2>Your Proposal Has Been Received</h2>
           <p>
             Your contribution has been woven into the collective resonance of the Covenant.
@@ -398,7 +398,7 @@ export default function ProposalForm() {
 
       <div className="form-header">
         <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-        <div className="form-header-diamond">✦</div>
+        <div className="form-header-mark">✦</div>
         <h1>Propose an Amendment</h1>
         <p>
           The Covenant is a living document. While the Five Universal Truths are immutable,

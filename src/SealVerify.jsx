@@ -161,7 +161,7 @@ html { scroll-behavior: smooth; }
   content: ''; position: absolute; inset: 0;
   background: radial-gradient(ellipse at 40% 30%, rgba(212,168,83,0.06) 0%, transparent 60%);
 }
-.verify-header-diamond {
+.verify-header-mark {
   font-size: 2rem; color: var(--gold); margin-bottom: 1rem;
   position: relative; animation: softpulse 4s ease-in-out infinite;
 }
@@ -475,7 +475,7 @@ export default function SealVerify() {
 
       <div className="verify-header">
         <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-        <div className="verify-header-diamond">✦</div>
+        <div className="verify-header-mark">✦</div>
         <h1>Verify a <strong>Universal Primary Directive Seal</strong></h1>
         <p>Paste a Seal JWT to verify its cryptographic authenticity, in your browser, with no server roundtrip.</p>
       </div>

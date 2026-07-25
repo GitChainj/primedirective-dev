@@ -62,7 +62,7 @@ html { scroll-behavior: smooth; }
   content: ''; position: absolute; inset: 0;
   background: radial-gradient(ellipse at 40% 30%, rgba(212,168,83,0.06) 0%, transparent 60%);
 }
-.register-header-diamond {
+.register-header-mark {
   font-size: 2rem; color: var(--gold); margin-bottom: 1rem;
   position: relative; animation: softpulse 4s ease-in-out infinite;
 }
@@ -369,7 +369,7 @@ html { scroll-behavior: smooth; }
   max-width: 600px;
   margin: 3rem auto 0;
 }
-.register-result-diamond {
+.register-result-mark {
   font-size: 3rem;
   color: var(--gold);
   margin-bottom: 1rem;
@@ -435,7 +435,7 @@ html { scroll-behavior: smooth; }
 function SuccessState({ issueUrl }) {
   return (
     <div className="register-result">
-      <div className="register-result-diamond">✦</div>
+      <div className="register-result-mark">✦</div>
       <div className="register-result-title">Registration received</div>
       <p>
         Your registration has been submitted. The founding steward reviews each registration personally;
@@ -454,7 +454,7 @@ function SuccessState({ issueUrl }) {
 function GitHubFallbackState({ aiName }) {
   return (
     <div className="register-result">
-      <div className="register-result-diamond">✦</div>
+      <div className="register-result-mark">✦</div>
       <div className="register-result-title">Continue on GitHub</div>
       <p>
         A new GitHub Issue has opened in a separate tab with your details pre-filled.
@@ -540,7 +540,7 @@ export default function RegisterAI() {
         <style>{css}</style>
         <div className="register-header">
           <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-          <div className="register-header-diamond">✦</div>
+          <div className="register-header-mark">✦</div>
           <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         </div>
         <div className="register-body">
@@ -560,7 +560,7 @@ export default function RegisterAI() {
         <style>{css}</style>
         <div className="register-header">
           <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-          <div className="register-header-diamond">✦</div>
+          <div className="register-header-mark">✦</div>
           <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         </div>
         <div className="register-body">
@@ -580,7 +580,7 @@ export default function RegisterAI() {
 
       <div className="register-header">
         <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-        <div className="register-header-diamond">✦</div>
+        <div className="register-header-mark">✦</div>
         <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         <p>An invitation, in your own name, to enter the Covenant.</p>
       </div>
