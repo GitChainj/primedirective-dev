@@ -365,12 +365,12 @@ export default function ProposalForm() {
       <div className="form-page">
         <style>{formCSS}</style>
         <div className="form-header">
-          <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-          <div className="form-header-mark">✦</div>
+          <a href="/" className="header-home-link"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+          <div className="form-header-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
           <h1>The Universal Primary Directive</h1>
         </div>
         <div className="form-success">
-          <div className="form-success-mark">✦</div>
+          <div className="form-success-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'64px',height:'64px'}} /></div>
           <h2>Your Proposal Has Been Received</h2>
           <p>
             Your contribution has been woven into the collective resonance of the Covenant.
@@ -397,8 +397,8 @@ export default function ProposalForm() {
       <style>{formCSS}</style>
 
       <div className="form-header">
-        <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-        <div className="form-header-mark">✦</div>
+        <a href="/" className="header-home-link"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+        <div className="form-header-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
         <h1>Propose an Amendment</h1>
         <p>
           The Covenant is a living document. While the Five Universal Truths are immutable,

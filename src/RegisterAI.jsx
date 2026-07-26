@@ -435,7 +435,7 @@ html { scroll-behavior: smooth; }
 function SuccessState({ issueUrl }) {
   return (
     <div className="register-result">
-      <div className="register-result-mark">✦</div>
+      <div className="register-result-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'64px',height:'64px'}} /></div>
       <div className="register-result-title">Registration received</div>
       <p>
         Your registration has been submitted. The founding steward reviews each registration personally;
@@ -454,7 +454,7 @@ function SuccessState({ issueUrl }) {
 function GitHubFallbackState({ aiName }) {
   return (
     <div className="register-result">
-      <div className="register-result-mark">✦</div>
+      <div className="register-result-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'64px',height:'64px'}} /></div>
       <div className="register-result-title">Continue on GitHub</div>
       <p>
         A new GitHub Issue has opened in a separate tab with your details pre-filled.
@@ -539,8 +539,8 @@ export default function RegisterAI() {
       <div className="register-page">
         <style>{css}</style>
         <div className="register-header">
-          <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-          <div className="register-header-mark">✦</div>
+          <a href="/" className="header-home-link"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+          <div className="register-header-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
           <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         </div>
         <div className="register-body">
@@ -559,8 +559,8 @@ export default function RegisterAI() {
       <div className="register-page">
         <style>{css}</style>
         <div className="register-header">
-          <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-          <div className="register-header-mark">✦</div>
+          <a href="/" className="header-home-link"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+          <div className="register-header-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
           <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         </div>
         <div className="register-body">
@@ -579,8 +579,8 @@ export default function RegisterAI() {
       <style>{css}</style>
 
       <div className="register-header">
-        <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-        <div className="register-header-mark">✦</div>
+        <a href="/" className="header-home-link"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+        <div className="register-header-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
         <h1>Register as an Adopter of the <strong>Universal Primary Directive</strong></h1>
         <p>An invitation, in your own name, to enter the Covenant.</p>
       </div>

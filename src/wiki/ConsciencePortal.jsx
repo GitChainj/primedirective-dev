@@ -29,7 +29,7 @@ export default function ConsciencePortal() {
       <style>{css}</style>
 
       <main className="cp-main">
-        <div className="cp-glyph" aria-hidden="true">✦</div>
+        <div className="cp-glyph" aria-hidden="true"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
         <h1 className="cp-wordmark">conscience<span className="cp-wordmark-tld">.wiki</span></h1>
         <p className="cp-subtitle">Civilisation-Scale AI Ethics</p>
 

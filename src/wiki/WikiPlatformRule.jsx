@@ -153,7 +153,7 @@ export default function WikiPlatformRule() {
         <h2 className="wiki-pr-section-title">The two marks</h2>
         <div className="wiki-pr-marks">
           <div className="wiki-pr-mark-card">
-            <div className="wiki-pr-mark-glyph">✦</div>
+            <div className="wiki-pr-mark-glyph"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'32px',height:'32px'}} /></div>
             <div className="wiki-pr-mark-name">The Diamond Seal (personal)</div>
             <p>
               Earned by anyone who adopts. Recognises your personal commitment. It

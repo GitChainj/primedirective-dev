@@ -483,7 +483,7 @@ html { scroll-behavior: smooth; }
 function SuccessPage() {
   return (
     <div className="success-card">
-      <div className="success-mark">✦</div>
+      <div className="success-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'64px',height:'64px'}} /></div>
       <div className="success-title">Thank You</div>
       <p className="success-text">
         Your contribution helps keep the Universal Primary Directive
@@ -507,7 +507,7 @@ function SuccessPage() {
 function CanceledPage() {
   return (
     <div className="success-card">
-      <div className="success-mark">✦</div>
+      <div className="success-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'64px',height:'64px'}} /></div>
       <div className="success-title">No Problem</div>
       <p className="success-text">
         Your contribution wasn't processed. No charge was made.
@@ -585,8 +585,8 @@ export default function DonatePage() {
       <style>{css}</style>
 
       <div className="donate-header">
-        <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-        <div className="donate-header-mark">✦</div>
+        <a href="/" className="header-home-link"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+        <div className="donate-header-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
         <h1>Keep the <strong>Covenant</strong> Free and Uncaptured</h1>
         <p>
           Kept free by many small gifts — never bought by a powerful few.

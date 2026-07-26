@@ -1342,8 +1342,8 @@ function StepsNav({ step }) {
 function PageHeader() {
   return (
     <div className="register-header">
-      <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-      <div className="register-header-mark">✦</div>
+      <a href="/" className="header-home-link"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+      <div className="register-header-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
       <h1>Adopt the <strong>Universal Primary Directive</strong></h1>
       <p>An act of conscience, made in your own name.</p>
     </div>
@@ -1547,7 +1547,7 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl,
           className="adopt-conscience-card"
           aria-label="Download AI Conscience"
         >
-          <span className="adopt-conscience-card-mark">✦</span>
+          <span className="adopt-conscience-card-mark"><img src="/brand/mark/compass-gold-24px.svg" alt="" style={{width:'24px',height:'24px',verticalAlign:'middle'}} /></span>
           <span className="adopt-conscience-card-title">AI CONSCIENCE</span>
           <span className="adopt-conscience-card-cta">Download Conscience</span>
         </a>
@@ -1643,7 +1643,7 @@ function SealPreview({ name }) {
 function CheckEmailPanel({ email, onResend, resending }) {
   return (
     <div className="adopt-check-email">
-      <div className="adopt-check-email-mark" aria-hidden="true">✦</div>
+      <div className="adopt-check-email-mark" aria-hidden="true"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'64px',height:'64px'}} /></div>
       <h2>One step remains</h2>
       <p>
         We've sent a confirmation link to{" "}
@@ -2399,7 +2399,7 @@ function AlreadyAdoptedBlock() {
           className="adopt-conscience-card adopt-conscience-card--small"
           aria-label="Download AI Conscience"
         >
-          <span className="adopt-conscience-card-mark">✦</span>
+          <span className="adopt-conscience-card-mark"><img src="/brand/mark/compass-gold-24px.svg" alt="" style={{width:'24px',height:'24px',verticalAlign:'middle'}} /></span>
           <span className="adopt-conscience-card-title">AI CONSCIENCE</span>
           <span className="adopt-conscience-card-cta">Download Conscience</span>
         </a>

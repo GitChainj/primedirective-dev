@@ -64,8 +64,8 @@ export default function BuildPage() {
       <style>{css}</style>
 
       <header className="bp-header">
-        <a href="/" className="bp-home">✦ primedirective.dev</a>
-        <div className="bp-mark" aria-hidden="true">✦</div>
+        <a href="/" className="bp-home"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+        <div className="bp-mark" aria-hidden="true"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
         <h1>Build with the <strong>Conscience</strong></h1>
         <p className="bp-subtitle">Civilisation-Scale AI Ethics</p>
       </header>

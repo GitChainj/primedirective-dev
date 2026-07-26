@@ -136,8 +136,8 @@ export default function AdoptConfirm() {
       <style>{css}</style>
 
       <div className="ac-header">
-        <a href="/" className="ac-home">✦ primedirective.dev</a>
-        <div className="ac-mark">✦</div>
+        <a href="/" className="ac-home"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+        <div className="ac-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
         <h1>Adopt the <strong>Universal Primary Directive</strong></h1>
       </div>
 

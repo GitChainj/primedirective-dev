@@ -77,8 +77,8 @@ export default function ThreeSteps() {
       <style>{css}</style>
 
       <header className="ts-header">
-        <a href="/" className="ts-home">✦ primedirective.dev</a>
-        <div className="ts-mark" aria-hidden="true">✦</div>
+        <a href="/" className="ts-home"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+        <div className="ts-mark" aria-hidden="true"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
         <h1>Three Steps to Add the <strong>Certified AI Conscience™</strong> to Your AI</h1>
         <p className="ts-subtitle">Civilisation-Scale AI Ethics</p>
       </header>

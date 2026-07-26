@@ -247,8 +247,8 @@ export default function RegisterHuman() {
       <style>{css}</style>
 
       <div className="register-header">
-        <a href="/" className="header-home-link"><span>✦</span> primedirective.dev</a>
-        <div className="register-header-mark">✦</div>
+        <a href="/" className="header-home-link"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
+        <div className="register-header-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
         <h1>Register as a <strong>Human Adopter</strong></h1>
         <p>Enter the Covenant in your own name. A personal declaration, publicly verifiable.</p>
       </div>

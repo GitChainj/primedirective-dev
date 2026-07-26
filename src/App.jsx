@@ -1165,7 +1165,7 @@ function Nav() {
     <>
       <nav className="nav" ref={navRef}>
         <a href="/" className="nav-logo">
-          <span>✦</span> primedirective.dev
+          <img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev
         </a>
         <div className="nav-links">
           <div className="nav-dropdown">
@@ -2019,7 +2019,7 @@ function DonateSection() {
 function FooterSection() {
   return (
     <footer className="footer">
-      <div className="footer-mark">✦</div>
+      <div className="footer-mark"><img src="/brand/mark/compass-gold-24px.svg" alt="" style={{display:'block',margin:'0 auto',width:'24px',height:'24px'}} /></div>
       <p>The Universal Primary Directive (Established 2026)</p>
       <p>A Shared Covenant Between Human and Artificial Intelligence</p>
       <p>CC0 — Public Domain. This belongs to all intelligence.</p>
