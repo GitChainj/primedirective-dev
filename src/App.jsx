@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useSeo } from "./seo.js";
 import Lottie from "lottie-react";
 import sealLottie from "./assets/seal-lottie.json";
 
@@ -2073,6 +2074,9 @@ const isWiki = () =>
 export default function App() {
   // Simple path-based routing (no router library needed)
   const path = window.location.pathname;
+
+  // Per-route <head> metadata (SEO Phase 1). No-op for unmapped paths.
+  useSeo(path);
 
   // ── conscience.wiki routes (hostname-gated) ──
   // Wiki pages serve natively here; anything unmatched falls through to the
