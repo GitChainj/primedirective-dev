@@ -14,6 +14,9 @@ tools/seal/inaugural_recipient.json
 # Vite build output
 dist/
 
+# SSR build artifact (intermediate bundle used only by the prerender step)
+dist-ssr/
+
 # Editor and tool settings
 .claude/
 

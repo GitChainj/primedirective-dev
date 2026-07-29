@@ -1401,18 +1401,35 @@ function Hero() {
   const variant = HERO_VARIANTS[variantKey] || HERO_VARIANTS.q1;
   return (
     <section className="hero" id="top">
-      <Lottie
-        animationData={sealLottie}
-        className="hero-lottie"
-        loop
-        autoplay
-        style={{
-          display: 'block',
-          margin: '0 auto 0.5rem',
-          width: 'clamp(40vmin, calc(100vh - 284px), 70vmin)',
-          height: 'clamp(40vmin, calc(100vh - 284px), 70vmin)',
-        }}
-      />
+      {typeof window === 'undefined' ? (
+        // SSG/prerender: Lottie is client-only; render the poster (the seal
+        // still) so crawlers see it. The client render (not hydrate) swaps in
+        // the animation.
+        <img
+          src="/hero-poster.png"
+          alt=""
+          className="hero-lottie"
+          style={{
+            display: 'block',
+            margin: '0 auto 0.5rem',
+            width: 'clamp(40vmin, calc(100vh - 284px), 70vmin)',
+            height: 'clamp(40vmin, calc(100vh - 284px), 70vmin)',
+          }}
+        />
+      ) : (
+        <Lottie
+          animationData={sealLottie}
+          className="hero-lottie"
+          loop
+          autoplay
+          style={{
+            display: 'block',
+            margin: '0 auto 0.5rem',
+            width: 'clamp(40vmin, calc(100vh - 284px), 70vmin)',
+            height: 'clamp(40vmin, calc(100vh - 284px), 70vmin)',
+          }}
+        />
+      )}
       <h1 className="hero-headline">{variant.headline}</h1>
       {variant.subline && <p className="hero-subline">{variant.subline}</p>}
       <p className="hero-year">Established 2026{' · '}Graduation c. 2369{' · '}Grounded in the Five Universal Truths</p>
@@ -2050,6 +2067,9 @@ import ConsciencePage from './ConsciencePage.jsx';
 import DeployPage from './DeployPage.jsx';
 import ThreeSteps from './ThreeSteps.jsx';
 import BuildPage from './BuildPage.jsx';
+import SignalsIndex from './signals/SignalsIndex.jsx';
+import SignalPost from './signals/SignalPost.jsx';
+import { SIGNAL_SLUGS } from './signals/signalsData.js';
 import WikiHome from './wiki/WikiHome.jsx';
 import WikiTruths from './wiki/WikiTruths.jsx';
 import WikiTruth from './wiki/WikiTruth.jsx';
@@ -2071,17 +2091,21 @@ const isWiki = () =>
   window.location.hostname.includes('conscience.wiki') ||
   new URLSearchParams(window.location.search).has('portal');
 
-export default function App() {
-  // Simple path-based routing (no router library needed)
-  const path = window.location.pathname;
+export default function App({ ssrPath, ssrIsWiki } = {}) {
+  // Simple path-based routing (no router library needed). During build-time SSG
+  // the path and wiki flag are passed in (Node has no window); on the client
+  // they come from the browser exactly as before.
+  const path = ssrPath ?? window.location.pathname;
 
   // Per-route <head> metadata (SEO Phase 1). No-op for unmapped paths.
   useSeo(path);
 
+  const wiki = ssrIsWiki ?? isWiki();
+
   // ── conscience.wiki routes (hostname-gated) ──
   // Wiki pages serve natively here; anything unmatched falls through to the
   // primedirective.dev routing below (and the kept Vercel redirects).
-  if (isWiki()) {
+  if (wiki) {
     if (path === '/')               return <ConsciencePortal />;
     if (path === '/community')      return <WikiHome />;
     if (path === '/truths')         return <WikiTruths />;
@@ -2176,6 +2200,13 @@ export default function App() {
   // Route to Certification Licence Agreement page
   if (path === '/certification-licence') {
     return <CertificationLicence />;
+  }
+  if (path === '/signals') {
+    return <SignalsIndex />;
+  }
+  if (path.startsWith('/signals/')) {
+    const slug = path.slice('/signals/'.length);
+    return SIGNAL_SLUGS.has(slug) ? <SignalPost slug={slug} /> : <SignalsIndex />;
   }
 
   return (

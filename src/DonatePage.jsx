@@ -528,8 +528,10 @@ export default function DonatePage() {
   const [custom, setCustom] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Check URL params for success/cancel
-  const params = new URLSearchParams(window.location.search);
+  // Check URL params for success/cancel. Guarded for SSG (no window on the
+  // server) — prerender emits the default no-query donate view, which is the
+  // correct landing state for a search-referred visitor.
+  const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const isSuccess = params.get("success") === "true";
   const isCanceled = params.get("canceled") === "true";
 

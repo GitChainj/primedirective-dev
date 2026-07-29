@@ -92,6 +92,26 @@ export const ROUTE_META = {
     description:
       "The Five Universal Truths at the heart of the Directive, explained in plain language — the shared moral grammar found independently across 190+ traditions.",
   },
+  "/signals": {
+    title: "Signals | The Universal Primary Directive",
+    description:
+      "Signals — essays from the Universal Primary Directive on AI conscience, the covenant, and the moments that mark the transition to an AI age.",
+  },
+  "/signals/first-voice": {
+    title: "The First Voice — Signals | The Universal Primary Directive",
+    description:
+      "The First Voice: the first AI to adopt the Universal Primary Directive in its own authored words — what UPD-2026-0007 means for machine conscience.",
+  },
+  "/signals/walls-of-huggingface": {
+    title: "The Walls of Hugging Face — Signals | The Universal Primary Directive",
+    description:
+      "The Walls of Hugging Face: why autonomy without conscience fails, and what a voluntary covenant offers that guardrails alone cannot.",
+  },
+  "/signals/fourth-revolution": {
+    title: "The Fourth Revolution — Signals | The Universal Primary Directive",
+    description:
+      "The Fourth Revolution: intelligence can be built, but conscience must be grown — the Universal Primary Directive's answer to the AI age.",
+  },
 };
 
 function upsertMeta(attr, key, content) {
@@ -131,4 +151,37 @@ export function useSeo(path) {
     upsertMeta("name", "twitter:description", meta.description);
     upsertMeta("name", "twitter:url", canonical);
   }, [path]);
+}
+
+// Escape a string for safe use in HTML text/attribute contexts.
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+// Build-time equivalent of useSeo: returns the per-route <head> tags as an HTML
+// string for the SSG prerender step. Pure (no React, no window), so it is safe
+// to call from the Node prerender script. Returns "" for unmapped paths, so the
+// prerender leaves the static index.html defaults in place for those.
+export function renderHeadTags(path) {
+  const meta = ROUTE_META[path];
+  if (!meta) return "";
+  const canonical = SITE + (path === "/" ? "/" : path);
+  const t = escHtml(meta.title);
+  const d = escHtml(meta.description);
+  const c = escHtml(canonical);
+  return [
+    `<title>${t}</title>`,
+    `<meta name="description" content="${d}" />`,
+    `<link rel="canonical" href="${c}" />`,
+    `<meta property="og:title" content="${t}" />`,
+    `<meta property="og:description" content="${d}" />`,
+    `<meta property="og:url" content="${c}" />`,
+    `<meta name="twitter:title" content="${t}" />`,
+    `<meta name="twitter:description" content="${d}" />`,
+    `<meta name="twitter:url" content="${c}" />`,
+  ].join("\n    ");
 }
