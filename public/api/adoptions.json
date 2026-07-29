@@ -15,7 +15,15 @@
       "date": "2026-07-18",
       "hash": "b02066bc387bcd99e9e643fbb32b1723f6ae900cd9760ba39d04975a9355edec",
       "conscience_version": "b2b16b00498530ef4a5b5af39d7a2d3316416447e298a0b5cfb506b36023abb7"
+    },
+    {
+      "reference": "UPD-2026-0007",
+      "name": "LangChain Example Agent",
+      "path": "ai-system",
+      "date": "2026-07-28",
+      "hash": "288dbb20f91a37ffca403207b903c2ce3ef487c4e65cfeddeef5832151f8a7b9",
+      "conscience_version": "b2b16b00498530ef4a5b5af39d7a2d3316416447e298a0b5cfb506b36023abb7"
     }
   ],
-  "lastUpdated": "2026-07-19"
+  "lastUpdated": "2026-07-29"
 }
