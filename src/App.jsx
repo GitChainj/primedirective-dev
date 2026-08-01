@@ -1224,6 +1224,26 @@ function Nav() {
             <button
               className="nav-dropdown-trigger"
               aria-haspopup="true"
+              aria-expanded={openMenu === 'signals'}
+              onClick={() => toggle('signals')}
+            >
+              Signals <span className="nav-caret">▾</span>
+            </button>
+            {openMenu === 'signals' && (
+              <div className="nav-dropdown-panel">
+                <div className="nav-dropdown-frame">Dispatches from the AI age.</div>
+                <a href="/signals" onClick={close}>Signals</a>
+                <a href="https://www.youtube.com/@UniversalPrimeDirective" target="_blank" rel="noopener noreferrer" onClick={close}>YouTube</a>
+                <a href="https://x.com/PrimeDirective_" target="_blank" rel="noopener noreferrer" onClick={close}>X</a>
+                <a href="https://www.linkedin.com/in/primedirective/" target="_blank" rel="noopener noreferrer" onClick={close}>LinkedIn</a>
+                <a href="https://www.tiktok.com/@ai.conscience" target="_blank" rel="noopener noreferrer" onClick={close}>TikTok</a>
+              </div>
+            )}
+          </div>
+          <div className="nav-dropdown">
+            <button
+              className="nav-dropdown-trigger"
+              aria-haspopup="true"
               aria-expanded={openMenu === 'build'}
               onClick={() => toggle('build')}
             >
@@ -1326,6 +1346,24 @@ function Nav() {
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
                 <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
                 <a href="#downloads" onClick={closeDrawer}>Download the Directive</a>
+              </div>
+            )}
+            <button
+              className="nav-drawer-card"
+              aria-haspopup="true"
+              aria-expanded={openMenu === 'signals'}
+              onClick={() => toggle('signals')}
+            >
+              <span>Signals</span>
+            </button>
+            {openMenu === 'signals' && (
+              <div className="nav-drawer-sublinks">
+                <div className="nav-drawer-frame">Dispatches from the AI age.</div>
+                <a href="/signals" onClick={closeDrawer}>Signals</a>
+                <a href="https://www.youtube.com/@UniversalPrimeDirective" target="_blank" rel="noopener noreferrer" onClick={closeDrawer}>YouTube</a>
+                <a href="https://x.com/PrimeDirective_" target="_blank" rel="noopener noreferrer" onClick={closeDrawer}>X</a>
+                <a href="https://www.linkedin.com/in/primedirective/" target="_blank" rel="noopener noreferrer" onClick={closeDrawer}>LinkedIn</a>
+                <a href="https://www.tiktok.com/@ai.conscience" target="_blank" rel="noopener noreferrer" onClick={closeDrawer}>TikTok</a>
               </div>
             )}
             <button
