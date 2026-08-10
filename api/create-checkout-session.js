@@ -30,8 +30,8 @@ export default async function handler(req, res) {
         },
       ],
       mode: 'payment',
-      success_url: `${req.headers.origin}/donate?success=true`,
-      cancel_url: `${req.headers.origin}/donate?canceled=true`,
+      success_url: `${req.headers.origin}/give?success=true`,
+      cancel_url: `${req.headers.origin}/give?canceled=true`,
     });
 
     res.status(200).json({ url: session.url });

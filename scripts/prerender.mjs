@@ -32,7 +32,7 @@ const ROUTES = [
   "/certification-licence",
   "/conscience",
   "/deploy",
-  "/donate",
+  "/give",
   "/integrate",
   "/organizations",
   "/privacy",

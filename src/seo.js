@@ -57,7 +57,7 @@ export const ROUTE_META = {
     description:
       "Deploy the Certified AI Conscience into a live AI system and test that it holds — practical steps to add the Universal Primary Directive to any model.",
   },
-  "/donate": {
+  "/give": {
     title: "Give | The Universal Primary Directive",
     description:
       "Keep the Universal Primary Directive free and uncaptured — funded by many small gifts, never bought by a powerful few. Support a public-domain covenant for AI.",
@@ -70,7 +70,7 @@ export const ROUTE_META = {
   "/organizations": {
     title: "For Organisations | The Universal Primary Directive",
     description:
-      "Adopt the Universal Primary Directive as an organisation — a public AI-ethics standard your customers can verify and your competitors will eventually adopt.",
+      "Adopt the Universal Primary Directive as an organisation — a public AI-ethics standard your customers can verify and hold you to.",
   },
   "/privacy": {
     title: "Privacy Policy | The Universal Primary Directive",
