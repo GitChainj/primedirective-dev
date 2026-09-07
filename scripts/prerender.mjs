@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// scripts/prerender.mjs — build-time SSG for the 17 primedirective.dev routes
+// scripts/prerender.mjs — build-time SSG for the 16 primedirective.dev routes
 // (SEO Phase 2). Runs after `vite build` (client → dist/) and
 // `vite build --ssr src/entry-server.jsx --outDir dist-ssr`.
 //
@@ -24,7 +24,7 @@ const SSR_ENTRY = join(ROOT, "dist-ssr", "entry-server.js");
 
 const DRY_RUN = process.argv.includes("--dry-run");
 
-// Exactly the 17 target routes — explicit, never wiki / /verify / /adopt/confirm.
+// Exactly the 16 target routes — explicit, never wiki / /verify / /adopt/confirm.
 const ROUTES = [
   "/",
   "/adopt",
@@ -36,7 +36,6 @@ const ROUTES = [
   "/integrate",
   "/organizations",
   "/privacy",
-  "/propose-amendment",
   "/terms",
   "/truths-explained",
   "/signals",

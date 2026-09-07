@@ -1191,7 +1191,6 @@ function Nav() {
                 <a href="/integrate" onClick={close}>Three Steps to Integrate</a>
                 <a href="/conscience" onClick={close}>How AI Conscience Works</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
-                <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
                 <a href="#downloads" onClick={close}>Download the Directive</a>
               </div>
             )}
@@ -1215,7 +1214,6 @@ function Nav() {
                 <a href="/integrate" onClick={close}>Three Steps to Integrate</a>
                 <a href="#bells" onClick={close}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={close}>Verify a Seal</a>
-                <a href="/propose-amendment" onClick={close}>Propose an Amendment</a>
                 <a href="#downloads" onClick={close}>Download the Directive</a>
               </div>
             )}
@@ -1260,6 +1258,7 @@ function Nav() {
               </div>
             )}
           </div>
+          <a href="https://conscience.wiki/shape">Shape</a>
           <a href="/give" className="donate-btn">Give</a>
         </div>
         <button
@@ -1321,7 +1320,6 @@ function Nav() {
                 <a href="/integrate" onClick={closeDrawer}>Three Steps to Integrate</a>
                 <a href="/conscience" onClick={closeDrawer}>How AI Conscience Works</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
-                <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
                 <a href="#downloads" onClick={closeDrawer}>Download the Directive</a>
               </div>
             )}
@@ -1344,7 +1342,6 @@ function Nav() {
                 <a href="/integrate" onClick={closeDrawer}>Three Steps to Integrate</a>
                 <a href="#bells" onClick={closeDrawer}>Read the Seven Bells</a>
                 <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
-                <a href="/propose-amendment" onClick={closeDrawer}>Propose an Amendment</a>
                 <a href="#downloads" onClick={closeDrawer}>Download the Directive</a>
               </div>
             )}
@@ -1386,6 +1383,7 @@ function Nav() {
             )}
           </div>
           <div className="nav-drawer-footer">
+            <a href="https://conscience.wiki/shape" onClick={closeDrawer}>Shape</a>
             <a href="/give" className="donate-btn" onClick={closeDrawer}>Give</a>
           </div>
         </div>
@@ -2161,16 +2159,12 @@ export default function App({ ssrPath, ssrIsWiki } = {}) {
     if (path === '/certification-licence') return <CertificationLicence wiki={true} />;
     if (path === '/verify' || path.startsWith('/verify/')) return <WikiVerify />;
     if (path === '/deploy')         return <DeployPage wiki={true} />;
+    if (path === '/shape')          return <ProposalForm />;
   }
 
   // Route to donate page
   if (path === '/give') {
     return <DonatePage />;
-  }
-
-  // Route to proposal form
-  if (path === '/propose-amendment') {
-    return <ProposalForm />;
   }
 
   // Route to seal verifier

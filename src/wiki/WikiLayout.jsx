@@ -177,6 +177,7 @@ const NAV_ITEMS = [
   { key: "deploy", label: "Deploy", href: "/deploy" },
   { key: "safe-words", label: "Safe Words", href: "/safe-words" },
   { key: "contribute", label: "Contribute", href: "/contribute" },
+  { key: "shape", label: "Shape", href: "/shape" },
 ];
 
 export default function WikiLayout({ title, tagline, activeNav, children }) {

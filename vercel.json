@@ -6,11 +6,12 @@
   "redirects": [
     { "source": "/adopt", "destination": "https://primedirective.dev/adopt", "has": [{ "type": "host", "value": "conscience.wiki" }] },
     { "source": "/guide", "destination": "https://primedirective.dev/organizations", "has": [{ "type": "host", "value": "conscience.wiki" }] },
-    { "source": "/donate", "destination": "/give", "permanent": true }
+    { "source": "/donate", "destination": "/give", "permanent": true },
+    { "source": "/propose-amendment", "destination": "https://conscience.wiki/shape", "permanent": true }
   ],
   "rewrites": [
     { "source": "/give", "destination": "/index.html" },
-    { "source": "/propose-amendment", "destination": "/index.html" },
+    { "source": "/shape", "destination": "/index.html" },
     { "source": "/governance", "destination": "/index.html" },
     { "source": "/contribute", "destination": "/index.html" },
     { "source": "/community", "destination": "/index.html" },

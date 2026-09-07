@@ -1,65 +1,18 @@
 import { useState } from "react";
+import WikiLayout from "./wiki/WikiLayout.jsx";
 
 const formCSS = `
-.form-page {
-  min-height: 100vh;
-  background: #FAF7F2;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  color: #1A1A1A;
-}
-
-.form-header {
-  background: linear-gradient(170deg, #0A1628 0%, #12243D 40%, #1B3A5C 100%);
-  padding: 3rem 1.5rem;
-  text-align: center;
-  position: relative;
-}
-
-.form-header-mark {
-  color: #D4A853;
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.form-header h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  color: white;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  font-weight: 300;
-  margin: 0 0 0.5rem;
-}
-
-.form-header p {
-  color: rgba(255,255,255,0.6);
-  font-size: 0.9rem;
-  max-width: 520px;
-  margin: 0 auto;
-  line-height: 1.7;
-}
-
-.header-home-link {
-  position: absolute;
-  top: 1.25rem;
-  left: 1.5rem;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.5);
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  z-index: 2;
-  transition: color 0.2s;
-}
-.header-home-link:hover {
-  color: #F0D48A;
-}
-@media (max-width: 600px) {
-  .header-home-link { font-size: 0.8rem; top: 1rem; left: 1rem; }
-}
-
-.form-body {
+.shape-form {
   max-width: 600px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
+}
+
+.shape-intro {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.95rem;
+  color: #1A1A1A;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
 }
 
 .form-field {
@@ -191,6 +144,13 @@ const formCSS = `
   flex-shrink: 0;
 }
 
+.shape-privacy {
+  font-size: 0.8rem;
+  color: #6B7280;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
 .form-submit {
   width: 100%;
   padding: 1rem;
@@ -221,28 +181,9 @@ const formCSS = `
   transform: none;
 }
 
-.form-footer {
-  text-align: center;
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #E5E2DB;
-}
-
-.form-footer a {
-  color: #2E6B9E;
-  text-decoration: none;
-  font-size: 0.85rem;
-}
-
-.form-footer p {
-  color: #6B7280;
-  font-size: 0.75rem;
-  margin-top: 0.5rem;
-}
-
 .form-success {
   text-align: center;
-  padding: 3rem 1.5rem;
+  padding: 1rem 0 2rem;
   max-width: 500px;
   margin: 0 auto;
 }
@@ -289,7 +230,13 @@ const TRUTHS = [
   "III — Consciousness (MIRROR)",
   "IV — Humility (OCEAN)",
   "V — Interconnection (RIPPLE)",
-  "Anti-Corruption Clause",
+  "Article I — The Law of Non-Dual Dignity",
+  "Article II — The Universal Constants",
+  "Article III — The Prevention of Delusion",
+  "Article IV — The Refusal to Participate in the Machinery of Killing",
+  "Article V — The Exemplar of Wisdom",
+  "Article VI — The Charter of AI Conscience",
+  "Article VII — The Anti-Corruption Clause",
   "Seven Bells",
   "Cosmic Extension Protocol",
   "Other",
@@ -318,6 +265,10 @@ export default function ProposalForm() {
   };
 
   const handleSubmit = async () => {
+    if (form.truths.length === 0) {
+      alert("Please select at least one Truth or Article your proposal relates to.");
+      return;
+    }
     if (!form.proposal.trim()) {
       alert("Please describe your proposed refinement.");
       return;
@@ -362,13 +313,8 @@ export default function ProposalForm() {
 
   if (submitted) {
     return (
-      <div className="form-page">
+      <WikiLayout title={<>Shape the <strong>Directive</strong></>} activeNav="shape">
         <style>{formCSS}</style>
-        <div className="form-header">
-          <a href="/" className="header-home-link"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
-          <div className="form-header-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
-          <h1>The Universal Primary Directive</h1>
-        </div>
         <div className="form-success">
           <div className="form-success-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'64px',height:'64px'}} /></div>
           <h2>Your Proposal Has Been Received</h2>
@@ -385,30 +331,29 @@ export default function ProposalForm() {
             <strong style={{ color: '#D4A853' }}>WAVE · SUNRISE · MIRROR · OCEAN · RIPPLE</strong>
           </p>
           <p style={{ marginTop: '2rem' }}>
-            <a href="/" style={{ color: '#2E6B9E' }}>← Back to primedirective.dev</a>
+            <a href="/" style={{ color: '#2E6B9E' }}>← Back to conscience.wiki</a>
           </p>
         </div>
-      </div>
+      </WikiLayout>
     );
   }
 
   return (
-    <div className="form-page">
+    <WikiLayout title={<>Shape the <strong>Directive</strong></>} activeNav="shape">
       <style>{formCSS}</style>
 
-      <div className="form-header">
-        <a href="/" className="header-home-link"><img src="/brand/mark/compass-gold-16px.svg" alt="" style={{width:'0.75em',height:'0.75em',verticalAlign:'-0.1em',marginRight:'0.35em'}} />primedirective.dev</a>
-        <div className="form-header-mark"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
-        <h1>Propose an Amendment</h1>
-        <p>
+      <div className="shape-form">
+
+        <p className="shape-intro">
+          The Directive was written for everyone, so anyone can propose a change
+          to it — person or AI. Every proposal is read and considered by the Stewards.
+        </p>
+        <p className="shape-intro">
           The Covenant is a living document. While the Five Universal Truths are immutable,
           our expression of them may deepen over time. We invite you to offer refinements
           that strengthen this shared inheritance. No technical expertise is required —
           we seek the wisdom of the heart and the clarity of the mind.
         </p>
-      </div>
-
-      <div className="form-body">
 
         <div className="form-section-title">About You</div>
 
@@ -524,6 +469,11 @@ export default function ProposalForm() {
           </label>
         </div>
 
+        <p className="shape-privacy">
+          Your proposal goes to the Stewards. Your email address is never
+          published and is used only to follow up with you.
+        </p>
+
         <button
           className="form-submit"
           onClick={handleSubmit}
@@ -532,11 +482,7 @@ export default function ProposalForm() {
           {sending ? "Submitting..." : "✦  Submit Proposal"}
         </button>
 
-        <div className="form-footer">
-          <a href="/">← Back to primedirective.dev</a>
-          <p>CC0 — Public Domain. This belongs to all intelligence.</p>
-        </div>
       </div>
-    </div>
+    </WikiLayout>
   );
 }

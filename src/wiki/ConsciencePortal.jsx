@@ -89,7 +89,7 @@ export default function ConsciencePortal() {
       </main>
 
       <footer className="cp-footer">
-        <p>The AI Conscience Foundation · CC0 · <a href="https://primedirective.dev">primedirective.dev</a></p>
+        <p>Universal Primary Directive Foundation · CC0 · <a href="https://primedirective.dev">primedirective.dev</a></p>
         <a className="cp-community" href={`/community${portalSuffix()}`}>Community knowledge base →</a>
       </footer>
     </div>
