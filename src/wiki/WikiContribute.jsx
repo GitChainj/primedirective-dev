@@ -124,9 +124,11 @@ export default function WikiContribute() {
       <style>{css}</style>
 
       <p className="wiki-contribute-intro">
-        Contributions are welcome from anyone — no account, no permission needed.
-        The community proposes; the steward verifies and publishes. Choose a
-        contribution type below to open its form, or{" "}
+        This page is for adding to the material that surrounds the Directive —
+        commentary on the Truths, Safe Word test results, and deployment
+        guides. Contributions are welcome from anyone — no account, no
+        permission needed. The community proposes; the steward verifies and
+        publishes. Choose a contribution type below to open its form, or{" "}
         <a href="/guidelines" style={{ color: "var(--sky)" }}>
           read the full contribution guidelines →
         </a>

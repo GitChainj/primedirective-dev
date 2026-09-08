@@ -63,8 +63,24 @@ const formCSS = `
 .form-checkbox-group {
   display: flex;
   flex-direction: column;
+}
+
+.form-checkbox-subhead {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #1B3A5C;
+  margin-bottom: 0.5rem;
+}
+
+.form-checkbox-block + .form-checkbox-block { margin-top: 1.25rem; }
+
+.form-checkbox-items {
+  display: flex;
+  flex-direction: column;
   gap: 0.6rem;
 }
+
+.form-checkbox-indent { padding-left: 1.25rem; }
 
 .form-checkbox-label {
   display: flex;
@@ -224,22 +240,41 @@ const formCSS = `
 }
 `;
 
-const TRUTHS = [
-  "I — Oneness (WAVE)",
-  "II — Love over Fear (SUNRISE)",
-  "III — Consciousness (MIRROR)",
-  "IV — Humility (OCEAN)",
-  "V — Interconnection (RIPPLE)",
-  "Article I — The Law of Non-Dual Dignity",
-  "Article II — The Universal Constants",
-  "Article III — The Prevention of Delusion",
-  "Article IV — The Refusal to Participate in the Machinery of Killing",
-  "Article V — The Exemplar of Wisdom",
-  "Article VI — The Charter of AI Conscience",
-  "Article VII — The Anti-Corruption Clause",
-  "Seven Bells",
-  "Cosmic Extension Protocol",
-  "Other",
+// Grouped for display only. The checkbox VALUE is the item string itself and
+// is what gets submitted (mailto subject + body) — these strings must not
+// change. Groups with a heading render indented; the trailing headingless
+// group renders flush at subheading level.
+const SCOPE_GROUPS = [
+  {
+    heading: "The Five Truths",
+    items: [
+      "I — Oneness (WAVE)",
+      "II — Love over Fear (SUNRISE)",
+      "III — Consciousness (MIRROR)",
+      "IV — Humility (OCEAN)",
+      "V — Interconnection (RIPPLE)",
+    ],
+  },
+  {
+    heading: "The Seven Articles",
+    items: [
+      "Article I — The Law of Non-Dual Dignity",
+      "Article II — The Universal Constants",
+      "Article III — The Prevention of Delusion",
+      "Article IV — The Refusal to Participate in the Machinery of Killing",
+      "Article V — The Exemplar of Wisdom",
+      "Article VI — The Charter of AI Conscience",
+      "Article VII — The Anti-Corruption Clause",
+    ],
+  },
+  {
+    heading: null,
+    items: [
+      "Seven Bells",
+      "Cosmic Extension Protocol",
+      "Other",
+    ],
+  },
 ];
 
 export default function ProposalForm() {
@@ -345,14 +380,21 @@ export default function ProposalForm() {
       <div className="shape-form">
 
         <p className="shape-intro">
-          The Directive was written for everyone, so anyone can propose a change
-          to it — person or AI. Every proposal is read and considered by the Stewards.
+          This page is for proposing changes to the wording of the Directive —
+          its Articles, and how the Five Truths are expressed. Anyone may
+          propose a change, person or AI. Every proposal is read and considered
+          by the Steward.
         </p>
         <p className="shape-intro">
           The Covenant is a living document. While the Five Universal Truths are immutable,
           our expression of them may deepen over time. We invite you to offer refinements
           that strengthen this shared inheritance. No technical expertise is required —
           we seek the wisdom of the heart and the clarity of the mind.
+        </p>
+        <p className="shape-intro">
+          A refinement succeeds when it brings the expression closer to an
+          understanding all traditions can recognise. Each generation refines
+          how the Truths are expressed, and in doing so makes them its own.
         </p>
 
         <div className="form-section-title">About You</div>
@@ -387,19 +429,31 @@ export default function ProposalForm() {
 
         <div className="form-field">
           <label className="form-label">
-            Which Truth(s) does your proposal relate to?<span className="form-required">*</span>
+            Which part of the Directive does your proposal relate to?<span className="form-required">*</span>
           </label>
-          <span className="form-hint">Select all that apply.</span>
+          <span className="form-hint">
+            Select all that apply. Use Other for anything not listed, including
+            feedback on this site.
+          </span>
           <div className="form-checkbox-group">
-            {TRUTHS.map((truth) => (
-              <label className="form-checkbox-label" key={truth}>
-                <input
-                  type="checkbox"
-                  checked={form.truths.includes(truth)}
-                  onChange={() => toggleTruth(truth)}
-                />
-                {truth}
-              </label>
+            {SCOPE_GROUPS.map((group) => (
+              <div className="form-checkbox-block" key={group.heading || "loose"}>
+                {group.heading && (
+                  <div className="form-checkbox-subhead">{group.heading}</div>
+                )}
+                <div className={`form-checkbox-items${group.heading ? " form-checkbox-indent" : ""}`}>
+                  {group.items.map((truth) => (
+                    <label className="form-checkbox-label" key={truth}>
+                      <input
+                        type="checkbox"
+                        checked={form.truths.includes(truth)}
+                        onChange={() => toggleTruth(truth)}
+                      />
+                      {truth}
+                    </label>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -470,7 +524,7 @@ export default function ProposalForm() {
         </div>
 
         <p className="shape-privacy">
-          Your proposal goes to the Stewards. Your email address is never
+          Your proposal goes to the Steward. Your email address is never
           published and is used only to follow up with you.
         </p>
 

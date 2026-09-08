@@ -106,7 +106,7 @@ export default function WikiGuidelines() {
         <h2 className="wiki-guide-section-title">What we don't accept</h2>
         <ul className="wiki-guide-list no-accept">
           <li>Commercial promotion or product placement.</li>
-          <li>Content that contradicts the Five Truths — use <a className="wiki-guide-cta" style={{ display: "inline" }} href="https://primedirective.dev/propose-amendment">propose-amendment</a> for that.</li>
+          <li>Content that contradicts the Five Truths — use <a className="wiki-guide-cta" style={{ display: "inline" }} href="https://conscience.wiki/shape">Shape the Directive</a> for that.</li>
           <li>AI-generated commentaries. The wiki is for human voices.</li>
           <li>Content that names or attacks specific companies. The UPD names gaps, not villains.</li>
           <li>Duplicate submissions.</li>

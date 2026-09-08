@@ -176,7 +176,7 @@ const NAV_ITEMS = [
   { key: "truths", label: "Truths", href: "/truths" },
   { key: "deploy", label: "Deploy", href: "/deploy" },
   { key: "safe-words", label: "Safe Words", href: "/safe-words" },
-  { key: "contribute", label: "Contribute", href: "/contribute" },
+  { key: "contribute", label: "Wiki", href: "/contribute" },
   { key: "shape", label: "Shape", href: "/shape" },
 ];
 
