@@ -9,6 +9,7 @@
 
 import { useState } from "react";
 import PersonalisedSeal from "../PersonalisedSeal.jsx";
+import { NAV_ITEMS } from "./WikiLayout.jsx";
 
 const onWikiHost = () =>
   typeof window !== "undefined" && window.location.hostname.includes("conscience.wiki");
@@ -32,6 +33,14 @@ export default function ConsciencePortal() {
         <div className="cp-glyph" aria-hidden="true"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
         <h1 className="cp-wordmark">conscience<span className="cp-wordmark-tld">.wiki</span></h1>
         <p className="cp-subtitle">Civilisation-Scale AI Ethics</p>
+
+        <nav className="cp-nav">
+          {NAV_ITEMS.map((item) => (
+            <a key={item.key} href={`${item.href}${portalSuffix()}`}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
 
         <div className="cp-marks">
           <figure className="cp-mark">
@@ -124,6 +133,26 @@ const css = `
   font-size:clamp(1.1rem,3.4vw,1.6rem); letter-spacing:.22em; text-transform:uppercase;
   color:var(--gold-light); margin-bottom:3rem;
 }
+
+.cp-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  margin: 0 auto 3rem;
+}
+.cp-nav a {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  opacity: 0.75;
+  text-decoration: none;
+  transition: color 0.2s, opacity 0.2s;
+}
+.cp-nav a:hover { color: var(--gold); opacity: 1; }
 
 .cp-marks {
   display:flex; justify-content:center; align-items:flex-start;

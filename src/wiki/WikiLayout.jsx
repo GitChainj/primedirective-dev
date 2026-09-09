@@ -172,7 +172,7 @@ html { scroll-behavior: smooth; }
 }
 `;
 
-const NAV_ITEMS = [
+export const NAV_ITEMS = [
   { key: "truths", label: "Truths", href: "/truths" },
   { key: "deploy", label: "Deploy", href: "/deploy" },
   { key: "safe-words", label: "Safe Words", href: "/safe-words" },
