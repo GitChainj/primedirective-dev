@@ -5,6 +5,9 @@ node_modules/
 private_*.pem
 tools/seal/private_ed25519.pem
 
+# Throwaway TEST signing keys for tools/attest fixtures — never committed
+tools/attest/fixtures/*.key.pem
+
 # Seal ledger — sensitive issuance records, stored on encrypted volume only
 tools/seal/seal_ledger.jsonl
 

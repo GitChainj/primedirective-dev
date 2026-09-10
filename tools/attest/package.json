@@ -1,0 +1,7 @@
+{
+  "name": "upd-attest",
+  "version": "1.0.0",
+  "description": "AI Conscience attestation schema tooling, canonicalization, and four-step verifier (Piece 3 Phase A). The signing service is deliberately NOT in this repo.",
+  "private": true,
+  "type": "commonjs"
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "https://primedirective.dev/schemas/ai-conscience/v2",
+  "status": "adopted",
+  "mark": "certified-ai-conscience",
+  "reference": "UPD-2026-T9003",
+  "adopter": "Test Adopter (fixture)",
+  "adopted_date": "2026-09-01",
+  "truths_version": "1.0",
+  "articles_version": "1.0",
+  "adopter_identity_class": "public_name",
+  "public_key_fingerprint": "9efcade06e308665",
+  "intermediate_cert_url": "https://conscience.wiki/certs/test-intermediate.cert.json",
+  "signed_at": "2026-09-01T00:00:00Z",
+  "verification_url": "https://conscience.wiki/verify/UPD-2026-T9003",
+  "revocation_check_url": "https://conscience.wiki/revocations.json",
+  "transparency_log_url": "https://conscience.wiki/attestations.log",
+  "signature": "ruxacbFIoZuEAzkqlacDdomAdO72X7Z6Oj88y8pj8fejWf18m/Tem4VbvKErwpqqYmSqkZcRCSF9HNxqKH7pBw=="
+}

@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://primedirective.dev/schemas/ai-conscience/v2.json",
+  "title": "AI Conscience Attestation (v2)",
+  "description": "A public attestation that an AI system or its steward has adopted the Certified AI Conscience (Universal Primary Directive), issued under the two-tier signing architecture (root signs intermediate; intermediate signs attestations). The signature is a detached Ed25519 signature over the canonical form of this document: keys sorted alphabetically, the signature field removed, serialised as JSON with no whitespace.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "mark",
+    "reference",
+    "adopter",
+    "adopted_date",
+    "truths_version",
+    "articles_version",
+    "adopter_identity_class",
+    "public_key_fingerprint",
+    "intermediate_cert_url",
+    "signature",
+    "signed_at",
+    "verification_url",
+    "revocation_check_url",
+    "transparency_log_url"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://primedirective.dev/schemas/ai-conscience/v2",
+      "description": "Identifier of the schema this document conforms to."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["adopted", "pending", "forfeit"],
+      "description": "adopted: in force. pending: submitted, awaiting verification. forfeit: the Seal was forfeited by an act against the Truths."
+    },
+    "mark": {
+      "type": "string",
+      "const": "certified-ai-conscience"
+    },
+    "reference": {
+      "type": "string",
+      "pattern": "^UPD-\\d{4}-(\\d{4}|T\\d{1,15})$",
+      "description": "Public adoption reference, e.g. UPD-2026-0001."
+    },
+    "adopter": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The name under which the adoption was made."
+    },
+    "adopted_date": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO date (YYYY-MM-DD) of adoption. State-at-signing; never a dynamic pointer."
+    },
+    "truths_version": {
+      "type": "string",
+      "description": "Five Truths version in force at signing (state-at-signing)."
+    },
+    "articles_version": {
+      "type": "string",
+      "description": "Seven Articles version in force at signing (state-at-signing)."
+    },
+    "adopter_identity_class": {
+      "type": "string",
+      "enum": ["public_name", "pseudonymous", "organizational"],
+      "description": "How the adopter field is to be read: public_name (real, publicly-known identity), pseudonymous (pseudonym; covenant holds real identity in private records), or organizational (identifies an organization, not a natural person)."
+    },
+    "adopter_identity_verification_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "RESERVED — implementation deferred. Future covenant-hosted endpoint where verifiers with legitimate need can confirm a pseudonym is backed by a verified real identity without disclosure."
+    },
+    "public_key_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "First 8 bytes of SHA-256 of the intermediate signing key's SPKI DER, lowercase hex."
+    },
+    "intermediate_cert_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Where verifiers fetch the intermediate's certificate to confirm it is root-signed."
+    },
+    "signature": {
+      "type": "string",
+      "description": "Base64 detached Ed25519 signature over the canonical form, produced by the intermediate signing key."
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the intermediate signed this attestation — distinct from adopted_date."
+    },
+    "adopter_public_key_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "Optional. For pseudonymous adopters, must belong to a key the pseudonym controls, not a real-identity-linked key."
+    },
+    "verification_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Public page that recomputes and confirms the adoption hash."
+    },
+    "revocation_check_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Public revocation list where verifiers confirm this attestation and its intermediate are not revoked."
+    },
+    "transparency_log_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Public append-only transparency log where this attestation's issuance is recorded."
+    },
+    "adoption_statement_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional. The adopter's public statement of adoption in their own words."
+    },
+    "integration_reference_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional. Where the adopter publicly integrates the covenant."
+    },
+    "adopter_identifiers": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional. The adopter's public identifiers (pseudonym-consistent for pseudonymous adopters). State-at-signing; staleness is expected and acceptable."
+    },
+    "authoritative_locations": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri" },
+      "description": "Optional. URLs where the adopter's attestation is officially published."
+    },
+    "policy_documents": {
+      "type": "array",
+      "description": "Optional. Governance documents in force at signing (state-at-signing).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["url", "version"],
+        "properties": {
+          "url": { "type": "string", "format": "uri" },
+          "version": { "type": "string" }
+        }
+      }
+    },
+    "not_before": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional. Attestation is not valid before this instant."
+    },
+    "not_after": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional. Attestation is not valid after this instant."
+    },
+    "provenance_chain": {
+      "type": "array",
+      "description": "Optional. Tracks attestation reissuance under new intermediate keys after rotation.",
+      "items": { "type": "object" }
+    },
+    "blockchain_anchors": {
+      "type": "array",
+      "description": "RESERVED — absent initially. Reserved for future TimeChain/Chainj integration.",
+      "items": { "type": "object" }
+    },
+    "verification_extensions": {
+      "type": "array",
+      "description": "Category-scoped extension slot (initially empty). Verifiers ignore unknown extension_types.",
+      "items": { "$ref": "#/$defs/extension" }
+    },
+    "presentation_extensions": {
+      "type": "array",
+      "description": "Category-scoped extension slot (initially empty). Verifiers ignore unknown extension_types.",
+      "items": { "$ref": "#/$defs/extension" }
+    },
+    "covenant_reference_extensions": {
+      "type": "array",
+      "description": "Category-scoped extension slot (initially empty). Verifiers ignore unknown extension_types.",
+      "items": { "$ref": "#/$defs/extension" }
+    }
+  },
+  "$defs": {
+    "extension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "extension_type", "content"],
+      "properties": {
+        "version": { "type": "integer", "minimum": 1 },
+        "extension_type": {
+          "type": "string",
+          "description": "Governance-defined identifier, published to a well-known URL before adopters populate it."
+        },
+        "content": { "description": "Any valid JSON." }
+      }
+    }
+  }
+}
