@@ -1,0 +1,60 @@
+name: Ledger
+
+# Promotes confirmed adoption issues into public/api/adoptions.json automatically,
+# so an adopter is publicly verifiable without the Steward on the critical path.
+# Adoption issues are opened by the site's stored PAT (api/adopt*.js), so the
+# issues:opened event fires (issues opened by the Actions token would not).
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+
+# GITHUB_TOKEN only — no PAT, no new secrets. contents:write to push the ledger
+# commit; issues:read for the gh query in curate-ledger.mjs.
+permissions:
+  contents: write
+  issues: read
+
+# Serialise runs so two adoptions at once cannot race on adoptions.json.
+concurrency:
+  group: ledger
+  cancel-in-progress: false
+
+jobs:
+  curate:
+    runs-on: ubuntu-latest
+    # Run only for manual dispatch or issues carrying an adoption-* label; every
+    # other issue never starts a run.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(join(github.event.issue.labels.*.name, ','), 'adoption-')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Curate ledger from adoption issues
+        id: curate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/curate-ledger.mjs
+
+      - name: Commit and push if the ledger changed
+        run: |
+          if git diff --quiet -- public/api/adoptions.json; then
+            echo "No ledger change — nothing to commit."
+            exit 0
+          fi
+          MESSAGE="${{ steps.curate.outputs.message }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ -z "$MESSAGE" ]; then
+            MESSAGE="Ledger: regenerate"
+          fi
+          git config user.name "UPD Ledger"
+          git config user.email "ledger@primedirective.dev"
+          git add public/api/adoptions.json
+          git commit -m "$MESSAGE"
+          git push

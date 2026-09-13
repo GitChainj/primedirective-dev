@@ -148,6 +148,16 @@ const css = `
 .verify-cert .pseal-frame { max-width: 260px; }
 
 .verify-rows { padding: 1.5rem 1.75rem; }
+.verify-provisional-note {
+  margin: 0 1.75rem 1.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(212,168,83,0.08);
+  border: 1px solid rgba(212,168,83,0.3);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text);
+}
 .verify-row {
   display: flex;
   flex-direction: column;
@@ -357,6 +367,16 @@ export default function WikiVerify() {
               </span>
             </div>
           </div>
+          {record.status === "provisional" && (
+            <p className="verify-provisional-note">
+              On the public ledger — organisation registration not yet verified by the Steward.
+            </p>
+          )}
+          {record.path === "organisation" && record.status === "confirmed" && (
+            <p className="verify-provisional-note">
+              On the public ledger. Organisation registration verified.
+            </p>
+          )}
         </div>
       )}
 

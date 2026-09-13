@@ -145,3 +145,18 @@ Until that migration is done, keep the encrypted volume physically secure and ba
 | `steward_role` | Optional role descriptor |
 | `articles_attested` | Array of UPD Article numbers attested |
 | `adoption_date` | ISO date of formal adoption |
+
+---
+
+## Commit identities
+
+Commits to this repository are authored by **John Strand
+<human@primedirective.dev>** — the founding steward — with no co-authors and no
+automated trailers.
+
+The sole exception is ledger automation. The GitHub Action
+`.github/workflows/ledger.yml` promotes confirmed adoptions into
+`public/api/adoptions.json` and commits them as **UPD Ledger
+<ledger@primedirective.dev>**. This service identity is the only permitted
+non-human committer, is scoped to `public/api/adoptions.json` only, and operates
+under the Steward's authority. It is not an AI attribution.
