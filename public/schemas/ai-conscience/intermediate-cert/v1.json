@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://primedirective.dev/schemas/ai-conscience/intermediate-cert/v1.json",
+  "title": "AI Conscience Intermediate Certificate (v1)",
+  "description": "A signed JSON certificate (NOT X.509) binding an online intermediate signing key to the offline root. The signature is a detached Ed25519 signature by the ROOT key over the canonical form of this document: keys sorted alphabetically, the signature field removed, serialised as JSON with no whitespace.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "key_id",
+    "public_key",
+    "fingerprint",
+    "signature_algorithm",
+    "issuer_fingerprint",
+    "not_before",
+    "not_after",
+    "signature"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://primedirective.dev/schemas/ai-conscience/intermediate-cert/v1",
+      "description": "Identifier of the schema this document conforms to."
+    },
+    "key_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable identifier for this intermediate key."
+    },
+    "public_key": {
+      "type": "string",
+      "description": "The intermediate signing key's public half, in SPKI PEM form."
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "First 8 bytes of SHA-256 of the intermediate public key's SPKI DER, lowercase hex."
+    },
+    "signature_algorithm": {
+      "type": "string",
+      "const": "Ed25519"
+    },
+    "issuer_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "Fingerprint of the ROOT key that signed this certificate."
+    },
+    "not_before": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The certificate is not valid before this instant; attestations must be signed at or after it."
+    },
+    "not_after": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The certificate is not valid after this instant; attestations must be signed at or before it."
+    },
+    "signature": {
+      "type": "string",
+      "description": "Base64 detached Ed25519 signature by the ROOT key over the canonical form of this document."
+    }
+  }
+}

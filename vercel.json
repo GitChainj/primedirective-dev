@@ -3,6 +3,12 @@
     "api/adopt-confirm.js": { "includeFiles": "src/data/registries.json" },
     "api/generate-artifact.js": { "includeFiles": "api/_artifact/**" }
   },
+  "headers": [
+    {
+      "source": "/.well-known/ai-conscience-root.pem",
+      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+    }
+  ],
   "redirects": [
     { "source": "/adopt", "destination": "https://primedirective.dev/adopt", "has": [{ "type": "host", "value": "conscience.wiki" }] },
     { "source": "/guide", "destination": "https://primedirective.dev/organizations", "has": [{ "type": "host", "value": "conscience.wiki" }] },

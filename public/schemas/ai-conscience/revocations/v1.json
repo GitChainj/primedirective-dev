@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://primedirective.dev/schemas/ai-conscience/revocations/v1.json",
+  "title": "AI Conscience Revocation List (v1)",
+  "description": "A signed, structured list of revoked attestations and/or intermediate keys. The signature is a detached Ed25519 signature over the canonical form (keys sorted, signature removed, no whitespace). Attestation-level revocations are signed by the intermediate key; intermediate-level revocations are signed by the root key. signed_by_fingerprint tells the verifier which key to check. No personal data appears in any entry.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "issued_at", "entries", "signed_by_fingerprint", "signature"],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://primedirective.dev/schemas/ai-conscience/revocations/v1"
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this revocation list was issued."
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "revoked_at", "reason"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The revoked attestation reference (UPD-YYYY-NNNN) or intermediate key fingerprint (16 hex)."
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["attestation", "intermediate"]
+          },
+          "revoked_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason": {
+            "type": "string",
+            "enum": ["compromise", "fraud", "forfeit", "erasure_request", "superseded"]
+          }
+        }
+      }
+    },
+    "signed_by_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "Fingerprint of the key that signed this list — the intermediate (for attestation revocations) or the root (for intermediate revocations)."
+    },
+    "signature": {
+      "type": "string",
+      "description": "Base64 detached Ed25519 signature over the canonical form of this document."
+    }
+  }
+}

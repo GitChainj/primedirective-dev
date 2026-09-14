@@ -8,13 +8,22 @@
 //
 // Do NOT change this without re-running the tools/attest tests — public
 // verification depends on byte-for-byte identity with what was signed.
-function canonicalize(doc) {
+//
+// canonicalizeOmitting is the general form: sort keys, drop one named key,
+// serialise with no whitespace. canonicalize omits "signature" (the document's
+// own detached signature); the transparency log omits "entry_hash" instead —
+// there the "signature" field is data that MUST be hashed, so it is kept.
+function canonicalizeOmitting(doc, omitKey) {
   const out = {};
   for (const k of Object.keys(doc).sort()) {
-    if (k === 'signature') continue;
+    if (k === omitKey) continue;
     out[k] = doc[k];
   }
   return JSON.stringify(out);
 }
 
-module.exports = { canonicalize };
+function canonicalize(doc) {
+  return canonicalizeOmitting(doc, 'signature');
+}
+
+module.exports = { canonicalize, canonicalizeOmitting };

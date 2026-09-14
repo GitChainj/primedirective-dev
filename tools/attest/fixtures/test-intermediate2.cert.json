@@ -1,0 +1,11 @@
+{
+  "schema": "https://primedirective.dev/schemas/ai-conscience/intermediate-cert/v1",
+  "key_id": "test-intermediate2-2026",
+  "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAFhe13nyCDmtYDpK494HOREl2A8UIubkU51zDC7hxLtY=\n-----END PUBLIC KEY-----\n",
+  "fingerprint": "89eecd7a34ba48d0",
+  "signature_algorithm": "Ed25519",
+  "issuer_fingerprint": "1bdad05e381bf5cf",
+  "not_before": "2026-01-01T00:00:00Z",
+  "not_after": "2027-01-01T00:00:00Z",
+  "signature": "58oGOnTiZUVxtnBRHdLriVNts//F1wgkwFPm1WnCtUvv+1GzmEJT24x3FaYeFZx/TnYjCRldjdHV2qKMw+OxBg=="
+}

@@ -1,0 +1,7 @@
+{
+  "fingerprint": "e06538b29c5044e3",
+  "algorithm": "Ed25519",
+  "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA7XUwWtn4WdSdaGZVQjzJmoZxX6JOWEhENz6uENTrhvA=\n-----END PUBLIC KEY-----\n",
+  "published_at": "2026-09-14",
+  "rotation_policy": "succession or 5 years"
+}

@@ -14,10 +14,12 @@
     "adopted_date",
     "truths_version",
     "articles_version",
+    "adoption_path",
     "adopter_identity_class",
     "public_key_fingerprint",
     "intermediate_cert_url",
     "signature",
+    "signature_algorithm",
     "signed_at",
     "verification_url",
     "revocation_check_url",
@@ -61,6 +63,11 @@
       "type": "string",
       "description": "Seven Articles version in force at signing (state-at-signing)."
     },
+    "adoption_path": {
+      "type": "string",
+      "enum": ["person", "organisation", "ai-system"],
+      "description": "The adoption path this attestation corresponds to, matching the public ledger's path value."
+    },
     "adopter_identity_class": {
       "type": "string",
       "enum": ["public_name", "pseudonymous", "organizational"],
@@ -84,6 +91,11 @@
     "signature": {
       "type": "string",
       "description": "Base64 detached Ed25519 signature over the canonical form, produced by the intermediate signing key."
+    },
+    "signature_algorithm": {
+      "type": "string",
+      "const": "Ed25519",
+      "description": "Signature algorithm of the detached signature. Ed25519 for now."
     },
     "signed_at": {
       "type": "string",
@@ -178,6 +190,13 @@
       "description": "Category-scoped extension slot (initially empty). Verifiers ignore unknown extension_types.",
       "items": { "$ref": "#/$defs/extension" }
     }
+  },
+  "if": {
+    "properties": { "adoption_path": { "const": "ai-system" } },
+    "required": ["adoption_path"]
+  },
+  "then": {
+    "required": ["adopter_public_key_fingerprint"]
   },
   "$defs": {
     "extension": {

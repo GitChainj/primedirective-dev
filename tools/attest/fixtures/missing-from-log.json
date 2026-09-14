@@ -7,12 +7,15 @@
   "adopted_date": "2026-09-01",
   "truths_version": "1.0",
   "articles_version": "1.0",
+  "adoption_path": "ai-system",
   "adopter_identity_class": "public_name",
-  "public_key_fingerprint": "9efcade06e308665",
+  "adopter_public_key_fingerprint": "014cf95897b26274",
+  "public_key_fingerprint": "f5e898bb83e13cd6",
   "intermediate_cert_url": "https://conscience.wiki/certs/test-intermediate.cert.json",
+  "signature_algorithm": "Ed25519",
   "signed_at": "2026-09-01T00:00:00Z",
   "verification_url": "https://conscience.wiki/verify/UPD-2026-T9004",
   "revocation_check_url": "https://conscience.wiki/revocations.json",
   "transparency_log_url": "https://conscience.wiki/attestations.log",
-  "signature": "62qMxsvx63XXlduNL6VmS/s5bcWdjJa56xGytYXzCNnsPsIXwYUWFRdKbXMvRxnKcFaeh7rnVGR4A7LPfhyjAg=="
+  "signature": "LqBBVy7ikCsFD5V6UHTHT3G1whphpTQBqnr9uIMP6xJ9IDw419/VzT0MvYWhvM4f/9EIeO67/ArGl0CJ3Nc6Cw=="
 }

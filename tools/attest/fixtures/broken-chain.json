@@ -2,7 +2,7 @@
   "schema": "https://primedirective.dev/schemas/ai-conscience/v2",
   "status": "adopted",
   "mark": "certified-ai-conscience",
-  "reference": "UPD-2026-T9002",
+  "reference": "UPD-2026-T9005",
   "adopter": "Test Adopter (fixture)",
   "adopted_date": "2026-09-01",
   "truths_version": "1.0",
@@ -14,8 +14,8 @@
   "intermediate_cert_url": "https://conscience.wiki/certs/test-intermediate.cert.json",
   "signature_algorithm": "Ed25519",
   "signed_at": "2026-09-01T00:00:00Z",
-  "verification_url": "https://conscience.wiki/verify/UPD-2026-T9002",
+  "verification_url": "https://conscience.wiki/verify/UPD-2026-T9005",
   "revocation_check_url": "https://conscience.wiki/revocations.json",
   "transparency_log_url": "https://conscience.wiki/attestations.log",
-  "signature": "dGFtcGVyZWQtbm90LWEtcmVhbC1zaWduYXR1cmU="
+  "signature": "hPfKsnuo7nRtkCP7UqluWodYpTeaDyynCOpnVdya7TupK5z7JgloW4gcQj0F94YfYefcOFgULeKjzGiGBSivAA=="
 }

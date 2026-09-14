@@ -1,0 +1,14 @@
+{
+  "schema": "https://primedirective.dev/schemas/ai-conscience/revocations/v1",
+  "issued_at": "2026-09-02T00:00:00Z",
+  "entries": [
+    {
+      "id": "89eecd7a34ba48d0",
+      "kind": "intermediate",
+      "revoked_at": "2026-09-02T00:00:00Z",
+      "reason": "compromise"
+    }
+  ],
+  "signed_by_fingerprint": "1bdad05e381bf5cf",
+  "signature": "k5r7eVo+oMS/wbhY/FqJvUBCs6z72rUw7Li7IhmKmRyHz7hAeuPtA0GGDHxTLjsczlGACRiAOvwyRC4ha6pEBw=="
+}
