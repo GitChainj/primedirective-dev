@@ -1,220 +1,963 @@
-// conscience.wiki/ — the verification portal (institutional landing).
+// conscience.wiki — the Conscience Portal. One page, one door.
 //
-// Distinct from the community knowledge base (now at /community). No main-site
-// nav: a single, verification-focused page. The two marks are rendered generic
-// (blank fields) from the existing PersonalisedSeal templates — final logo files
-// will replace them later. The search field routes to /verify/{reference} (the
-// same route WikiVerify serves); off the real conscience.wiki host it preserves
-// ?portal=1 so the portal stays testable on localhost.
+// Serves `/` and `/verify` (and `/verify/{reference}`, which pre-fills and runs
+// automatically). This page carries the portal's own chrome rather than
+// WikiLayout's: the portal identity and the verification surface are the same
+// page now, and rendering inside WikiLayout would print the site identity twice.
+//
+// Accepts either of two things in a single field:
+//
+//   * an adoption number (UPD-YYYY-NNNN, or the UPD-YYYY-TNNNN fixture form),
+//     typed or arriving in the URL as /verify/{reference} — looked up in the
+//     public ledger, with the adoption hash recomputed here in the browser;
+//   * a pasted Certified AI Conscience attestation (JSON) — checked against the
+//     published root key with the same four steps tools/attest/verify.js runs.
+//
+// The two paths render into one result panel that says plainly what was checked
+// and what it means. Nothing is asserted that was not computed: a check whose
+// inputs are not published yet reports INCOMPLETE, never a quiet pass.
+//
+// Formerly WikiVerify.jsx — renamed for what it does rather than where it sits.
 
-import { useState } from "react";
-import PersonalisedSeal from "../PersonalisedSeal.jsx";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { NAV_ITEMS } from "./WikiLayout.jsx";
+import PersonalisedSeal from "../PersonalisedSeal.jsx";
+import { computeAdoptionHash, CONSCIENCE_SHA256 } from "../lib/adoptionHash.js";
+import {
+  verifyAttestation,
+  versionOf,
+  fetchRootPem,
+  ed25519Available,
+  ROOT_PEM_URL,
+  PASS,
+  FAIL,
+  INCOMPLETE,
+} from "../lib/attestationVerify.js";
 
-const onWikiHost = () =>
-  typeof window !== "undefined" && window.location.hostname.includes("conscience.wiki");
-const portalSuffix = () => (onWikiHost() ? "" : "?portal=1");
+const PATH_LABELS = {
+  person: "Person",
+  organisation: "Organisation",
+  ai: "AI system",
+  "ai-system": "AI system",
+};
 
-export default function ConsciencePortal() {
-  const [query, setQuery] = useState("");
+// An adoption number. The T-form (UPD-2026-T9001) is included so a fixture
+// verifies on staging exactly as a real adoption does on production.
+const REFERENCE_PATTERN = /^UPD-\d{4}-[A-Z0-9]{4,}$/;
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const q = query.trim();
-    if (!q) return;
-    window.location.href = `/verify/${encodeURIComponent(q)}${portalSuffix()}`;
-  };
+// Never "not found" for a name: that would leak whether a named party has
+// registered. The field's contract is numbers and attestations, so the refusal
+// says so and says nothing else.
+const REJECTION = "Search adoptions by number not name.";
+const ROOT_UNAVAILABLE =
+  "Root key unavailable — verification cannot complete.";
+const NO_ED25519 =
+  "This browser cannot check Ed25519 signatures. Attestation checking needs a recent version of Chrome, Firefox, or Safari; adoption numbers still work here.";
+const V1_NOTE =
+  "v1 attestation — signature verified against the root key. This format predates the intermediate certificate chain and the transparency log; only the signature check applies.";
+const V2_PRE_PHASE_B =
+  "This attestation's signature and certificate chain are valid. Revocation and log inclusion checks require the transparency log and revocation list to be published — a Phase B step. Real v2 attestations issued after B2 will resolve those checks automatically.";
+const V2_NO_CERTIFICATE =
+  "The intermediate certificate this attestation names is not published, so the signature and certificate chain cannot be checked yet. Revocation and log inclusion also require Phase B publication.";
 
-  return (
-    <div className="cp">
-      <style>{css}</style>
+// One source for both machine-facing blocks: the block above the fold shows the
+// summary and the two links; the section below the fold shows the whole thing.
+const MACHINE_SUMMARY =
+  "Fetch documents and verify directly — part of the emerging AI-to-AI trust network.";
 
-      <main className="cp-main">
-        <div className="cp-glyph" aria-hidden="true"><img src="/brand/mark/compass-gold-64px.svg" alt="" style={{display:'block',margin:'0 auto',width:'48px',height:'48px'}} /></div>
-        <h1 className="cp-wordmark">conscience<span className="cp-wordmark-tld">.wiki</span></h1>
-        <p className="cp-subtitle">Civilisation-Scale AI Ethics</p>
+const MACHINE_STEPS = [
+  ["1. Signature", "Recompute the attestation's canonical form — keys sorted alphabetically, the signature field removed, serialised with no whitespace — and check the detached Ed25519 signature against the signing key. Change any field and the signature no longer matches."],
+  ["2. Certificate", "Fetch the intermediate certificate the attestation names. Confirm its fingerprint matches its own public key, that the root signed it, and that the attestation was signed inside the certificate's validity window."],
+  ["3. Revocation", "Check the attestation-level revocation list the attestation names, and the root-signed intermediate-level list. Each list must carry a signature that verifies before it is trusted — an unsigned list proves nothing."],
+  ["4. Transparency log", "Walk the hash-chained log from its first entry, recomputing each entry hash, up to the entry matching this attestation. Presence alone is not enough: the chain to it must be intact."],
+];
 
-        <nav className="cp-nav">
-          {NAV_ITEMS.map((item) => (
-            <a key={item.key} href={`${item.href}${portalSuffix()}`}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
+const ENDPOINTS = `Root public key    ${ROOT_PEM_URL}
+Root descriptor    /.well-known/ai-conscience-root.json
+Public ledger      /api/adoptions.json
+Foundation's own   /.well-known/ai-conscience.json
 
-        <div className="cp-marks">
-          <figure className="cp-mark">
-            <div className="cp-mark-art">
-              <PersonalisedSeal kind="mark" mode="display" orientation="vertical" name="" date="" reference="" />
-            </div>
-            <figcaption>For organisations and their AI platforms</figcaption>
-          </figure>
-          <figure className="cp-mark">
-            <div className="cp-mark-art">
-              <PersonalisedSeal kind="seal" mode="display" orientation="vertical" name="" date="" reference="" />
-            </div>
-            <figcaption>For individuals and human adopters</figcaption>
-          </figure>
-        </div>
+Per attestation, from the document itself:
+  intermediate_cert_url   the certificate binding the signing key to the root
+  revocation_check_url    the attestation-level revocation list
+  transparency_log_url    the hash-chained issuance log`;
 
-        <section className="cp-framing">
-          <h2>Two acts. One Covenant. One Verification.</h2>
-          <p>
-            The Adoption Seal is a commitment of conscience. The Trust Mark is a
-            certification of practice. Both are cryptographically signed. Both are
-            publicly verifiable. Both are grounded in the same Five Universal Truths.
-          </p>
-        </section>
+const SNIPPET = `const pem = await (await fetch("${ROOT_PEM_URL}")).text();
+const der = Uint8Array.from(
+  atob(pem.replace(/-----[^-]+-----|\\s/g, "")), c => c.charCodeAt(0));
+const key = await crypto.subtle.importKey(
+  "spki", der, { name: "Ed25519" }, false, ["verify"]);
 
-        <form className="cp-verify" onSubmit={onSubmit} role="search">
-          <label className="cp-verify-label" htmlFor="cp-verify-input">Verify an adoption</label>
-          <div className="cp-verify-row">
-            <input
-              id="cp-verify-input"
-              className="cp-verify-input"
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Enter reference number (UPD-YYYY-NNNN) or adopter name"
-              autoComplete="off"
-              spellCheck="false"
-              aria-label="Reference number or adopter name"
-            />
-            <button type="submit" className="cp-verify-btn" disabled={!query.trim()}>Verify</button>
-          </div>
-        </form>
+// Canonical form: keys sorted, "signature" removed, no whitespace.
+const canonical = JSON.stringify(Object.fromEntries(
+  Object.keys(att).sort()
+    .filter(k => k !== "signature")
+    .map(k => [k, att[k]])));
 
-        <p className="cp-explainer">
-          The Universal Primary Directive is a public covenant. Every adoption is
-          cryptographically signed and recorded in an open ledger. This portal
-          recomputes that signature in your browser to confirm whether an adoption
-          is genuine — a real commitment, made in the adopter's name, and unaltered
-          since it was made.
-        </p>
+const ok = await crypto.subtle.verify({ name: "Ed25519" }, key,
+  Uint8Array.from(atob(att.signature), c => c.charCodeAt(0)),
+  new TextEncoder().encode(canonical));`;
 
-        <a className="cp-adopt" href="https://primedirective.dev/adopt">
-          Adopt at primedirective.dev/adopt →
-        </a>
-      </main>
-
-      <footer className="cp-footer">
-        <p>Universal Primary Directive Foundation · CC0 · <a href="https://primedirective.dev">primedirective.dev</a></p>
-        <a className="cp-community" href={`/community${portalSuffix()}`}>Community knowledge base →</a>
-      </footer>
-    </div>
-  );
+// Read the query from /verify/<reference> (path) or /verify?ref=<reference>.
+function queryFromUrl() {
+  const parts = window.location.pathname.split("/").filter(Boolean);
+  if (parts.length >= 2 && parts[0] === "verify") {
+    return decodeURIComponent(parts[1]).trim();
+  }
+  const ref = new URLSearchParams(window.location.search).get("ref");
+  return ref ? ref.trim() : "";
 }
+
+// One field, two kinds of input. An adoption number is recognised by shape;
+// anything else must parse as a JSON object to be an attestation.
+function classify(raw) {
+  const value = String(raw || "").trim();
+  if (!value) return { kind: "empty" };
+  const upper = value.toUpperCase();
+  if (REFERENCE_PATTERN.test(upper)) return { kind: "reference", reference: upper };
+  try {
+    const doc = JSON.parse(value);
+    if (doc && typeof doc === "object" && !Array.isArray(doc)) return { kind: "attestation", doc };
+  } catch {
+    /* not JSON — falls through to unrecognised */
+  }
+  return { kind: "unrecognised" };
+}
+
+function findByReference(ledger, reference) {
+  return ledger.find((a) => String(a.reference).trim().toUpperCase() === reference) || null;
+}
+
+// Preserve ?portal=1 on internal navigation so the portal preview survives on
+// hosts other than conscience.wiki (e.g. localhost).
+function navSuffix() {
+  return window.location.hostname.includes("conscience.wiki") ? "" : "?portal=1";
+}
+
+const longDate = (iso) => {
+  if (!iso) return iso || "";
+  try {
+    return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" })
+      .format(new Date(`${iso}T00:00:00`));
+  } catch { return iso; }
+};
+
+// Organisations carry the Mark; everyone else carries the Seal.
+const markKind = (path) => (path === "organisation" ? "mark" : "seal");
+
+const STEP_LABEL = {
+  [PASS]: "PASS",
+  [FAIL]: "FAIL",
+  [INCOMPLETE]: "INCOMPLETE",
+};
 
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@400;500;600;700&display=swap');
 
+/* ── Portal shell (from the former ConsciencePortal landing page) ── */
 .cp {
   --deep:#0a1628; --ocean:#12243d; --mid:#1b3a5c; --sky:#2e6b9e;
   --gold:#d4a853; --gold-light:#f0d48a; --cream:#faf7f2;
+  --text:#1b2330; --text-light:#5a6472;
   --serif:'Cormorant Garamond',Georgia,serif; --sans:'DM Sans',system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   min-height:100vh;
   background:radial-gradient(120% 90% at 50% -10%, #12243d 0%, var(--deep) 55%);
   color:#e8eaf0; font-family:var(--sans);
   display:flex; flex-direction:column;
 }
 .cp-main {
-  flex:1; width:100%; max-width:720px; margin:0 auto;
-  padding:clamp(3rem,8vw,6rem) 1.5rem 3rem; text-align:center;
+  flex:1; width:100%; max-width:760px; margin:0 auto;
+  padding:clamp(1.5rem,4vw,2.5rem) 1.5rem 3rem; text-align:center;
 }
-.cp-glyph { font-size:2.4rem; color:var(--gold); line-height:1; margin-bottom:1.4rem; }
+.cp-nav { display:flex; justify-content:center; flex-wrap:wrap; gap:0.4rem 1.4rem; margin:0 auto 2rem; }
+.cp-nav a {
+  font-family:var(--sans); font-size:0.75rem; font-weight:600; letter-spacing:0.16em;
+  text-transform:uppercase; color:var(--gold-light); opacity:0.75; text-decoration:none;
+  transition:color 0.2s, opacity 0.2s;
+}
+.cp-nav a:hover { color:var(--gold); opacity:1; }
+.cp-identity { display:flex; align-items:center; justify-content:center; gap:0.6rem; margin-bottom:0.5rem; }
+.cp-identity img { display:block; width:26px; height:26px; }
 .cp-wordmark {
-  font-family:var(--sans); font-weight:600;
-  font-size:clamp(2.3rem,7vw,3.4rem); letter-spacing:-.01em; line-height:1;
-  color:var(--cream); margin-bottom:.85rem;
+  font-family:var(--sans); font-weight:600; font-size:1.25rem; letter-spacing:-.01em;
+  line-height:1; color:var(--cream); margin:0;
 }
 .cp-wordmark-tld { color:rgba(232,234,240,.42); font-weight:500; }
-.cp-subtitle {
-  font-family:var(--sans); font-weight:700;
-  font-size:clamp(1.1rem,3.4vw,1.6rem); letter-spacing:.22em; text-transform:uppercase;
-  color:var(--gold-light); margin-bottom:3rem;
+.cp-tagline {
+  font-family:var(--sans); font-weight:700; font-size:0.68rem; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--gold-light); opacity:.85; margin-bottom:2.25rem;
 }
-
-.cp-nav {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.4rem;
-  margin: 0 auto 3rem;
-}
-.cp-nav a {
-  font-family: var(--sans);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gold-light);
-  opacity: 0.75;
-  text-decoration: none;
-  transition: color 0.2s, opacity 0.2s;
-}
-.cp-nav a:hover { color: var(--gold); opacity: 1; }
-
-.cp-marks {
-  display:flex; justify-content:center; align-items:flex-start;
-  gap:clamp(1.5rem,5vw,3.5rem); margin-bottom:3rem;
-}
-.cp-mark { flex:1 1 0; max-width:240px; margin:0; display:flex; flex-direction:column; align-items:center; }
-.cp-mark-art { width:100%; display:flex; justify-content:center; }
-.cp-mark figcaption {
-  margin-top:1rem; font-family:var(--serif); font-style:italic;
-  font-size:1rem; line-height:1.4; color:rgba(232,234,240,.72);
-}
-
-.cp-framing { margin:0 auto 2.75rem; max-width:560px; }
-.cp-framing h2 {
-  font-family:var(--serif); font-weight:500;
-  font-size:clamp(1.5rem,4vw,2.1rem); color:#fff; letter-spacing:.01em; margin-bottom:1rem;
-}
-.cp-framing p { font-size:1.02rem; line-height:1.75; color:rgba(232,234,240,.82); }
-
-.cp-verify { margin:0 auto 1.75rem; max-width:560px; text-align:left; }
-.cp-verify-label {
-  display:block; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--gold); font-weight:600; margin-bottom:.6rem; text-align:center;
-}
-.cp-verify-row { display:flex; gap:.6rem; flex-wrap:wrap; }
-.cp-verify-input {
-  flex:1 1 260px; min-width:0;
-  background:rgba(255,255,255,.06); border:1px solid rgba(212,168,83,.35); border-radius:8px;
-  padding:.85rem 1rem; color:#fff; font-family:var(--sans); font-size:.98rem; letter-spacing:.01em;
-  transition:border-color .2s, background .2s;
-}
-.cp-verify-input::placeholder { color:rgba(232,234,240,.45); }
-.cp-verify-input:focus { outline:none; border-color:var(--gold); background:rgba(255,255,255,.09); }
-.cp-verify-btn {
-  flex:0 0 auto; background:var(--gold); color:var(--deep); border:none; border-radius:8px;
-  padding:.85rem 1.8rem; font-family:var(--sans); font-weight:700; font-size:.8rem;
-  letter-spacing:.1em; text-transform:uppercase; cursor:pointer; transition:background .2s, transform .15s;
-}
-.cp-verify-btn:hover:not(:disabled) { background:var(--gold-light); transform:translateY(-1px); }
-.cp-verify-btn:disabled { opacity:.5; cursor:not-allowed; }
-
-.cp-explainer {
-  margin:0 auto 2.5rem; max-width:560px; font-size:.92rem; line-height:1.7; color:rgba(232,234,240,.6);
-}
-
-.cp-adopt {
-  display:inline-block; font-family:var(--sans); font-weight:600; font-size:.95rem;
-  color:var(--gold); text-decoration:none; padding-bottom:.15rem;
-  border-bottom:1px solid rgba(212,168,83,.4); transition:color .2s, border-color .2s;
-}
-.cp-adopt:hover { color:var(--gold-light); border-bottom-color:var(--gold-light); }
-
-.cp-footer {
-  border-top:1px solid rgba(255,255,255,.08); padding:1.75rem 1.5rem 2.5rem; text-align:center;
-}
+.cp-footer { border-top:1px solid rgba(255,255,255,.08); padding:1.75rem 1.5rem 2.5rem; text-align:center; }
 .cp-footer p { font-size:.82rem; color:rgba(232,234,240,.5); letter-spacing:.02em; margin-bottom:.6rem; }
 .cp-footer a { color:rgba(232,234,240,.6); text-decoration:none; }
 .cp-footer a:hover { color:var(--gold); }
 .cp-community { font-size:.8rem; letter-spacing:.04em; }
 
-@media (max-width:520px) {
-  .cp-marks { gap:1.25rem; }
-  .cp-mark figcaption { font-size:.9rem; }
+/* ── The ask ── */
+.cp-h1 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(2.1rem, 6vw, 3rem);
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 0.75rem;
 }
+.cp-h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(232,234,240,.82);
+  max-width: 34em;
+  margin: 0 auto 1.75rem;
+}
+
+/* ── Verification surface: same layout, palette moved onto the dark shell ── */
+.verify-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-width: 620px;
+  margin: 0 auto 2.5rem;
+}
+.verify-form textarea {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: #fff;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(212,168,83,0.35);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+  resize: none;
+  overflow: hidden;
+  min-height: 3.4rem;
+  max-height: 22rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+.verify-form textarea::placeholder { color: rgba(232,234,240,0.45); }
+.verify-form textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.09);
+}
+.verify-form button {
+  align-self: center;
+  background: var(--gold);
+  color: var(--deep);
+  border: none;
+  border-radius: 8px;
+  padding: 0.85rem 2.4rem;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.verify-form button:hover:not(:disabled) { background: var(--gold-light); transform: translateY(-1px); }
+.verify-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.verify-status { font-size: 0.95rem; color: rgba(232,234,240,0.6); }
+
+/* What was checked, in plain language, above the proof detail. */
+.verify-headline {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--cream);
+  margin-bottom: 0.4rem;
+}
+.verify-proof {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(232,234,240,0.65);
+  margin-bottom: 1.5rem;
+}
+
+/* Verified card */
+.verify-card {
+  background: white;
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.verify-card-banner {
+  background: linear-gradient(170deg, var(--deep), var(--ocean));
+  padding: 2rem 1.75rem;
+  text-align: center;
+}
+.verify-mark {
+  font-size: 2.2rem;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 0.6rem;
+}
+.verify-badge {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--gold-light);
+  letter-spacing: 0.02em;
+}
+.verify-badge-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.6);
+  margin-top: 0.35rem;
+}
+
+.verify-cert {
+  display: flex;
+  justify-content: center;
+  padding: 1.75rem 1.75rem 0.25rem;
+  background: white;
+}
+.verify-cert .pseal-frame { max-width: 260px; }
+
+.verify-rows { padding: 1.5rem 1.75rem; }
+.verify-provisional-note {
+  margin: 0 1.75rem 1.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(212,168,83,0.08);
+  border: 1px solid rgba(212,168,83,0.3);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+.verify-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.verify-row:last-child { border-bottom: none; }
+.verify-row-label {
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  font-weight: 600;
+}
+.verify-row-value {
+  font-family: var(--sans);
+  font-size: 1.02rem;
+  color: var(--text);
+}
+.verify-row-value.mono {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--mid);
+  word-break: break-all;
+  line-height: 1.5;
+}
+.verify-ref-pill {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #8a6116;
+  background: rgba(212,168,83,0.18);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+/* Step list for the attestation path */
+.verify-steps {
+  list-style: none;
+  margin: 0;
+  padding: 1.25rem 1.75rem;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+.verify-step {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 0.25rem 1rem;
+  padding: 0.55rem 0;
+  align-items: baseline;
+}
+.verify-step + .verify-step { border-top: 1px solid rgba(0,0,0,0.05); }
+.verify-step-status {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  text-align: center;
+}
+.verify-step-status.pass { color: #1b5e20; background: rgba(27,94,32,0.1); }
+.verify-step-status.fail { color: #b3261e; background: rgba(178,38,30,0.1); }
+.verify-step-status.incomplete { color: #8a6116; background: rgba(212,168,83,0.16); }
+.verify-step-name { font-size: 0.95rem; color: var(--text); }
+.verify-step-detail {
+  grid-column: 2;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text-light);
+}
+
+/* Not found / mismatch panels */
+.verify-panel {
+  background: white;
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 12px;
+  padding: 1.75rem;
+}
+.verify-panel.warn { border-color: rgba(178,38,30,0.35); background: rgba(178,38,30,0.04); }
+.verify-panel h2 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--mid);
+  margin-bottom: 0.6rem;
+}
+.verify-panel.warn h2 { color: #b3261e; }
+.verify-panel p { font-size: 1rem; line-height: 1.65; color: var(--text); margin-bottom: 0.75rem; }
+.verify-panel p:last-child { margin-bottom: 0; }
+.verify-panel a { color: var(--sky); text-decoration: none; font-weight: 600; }
+.verify-panel a:hover { color: var(--gold); }
+
+/* ── Machine block: a peer of the field, not a caption. The left edge and the
+   lifted background separate it from the human path above without a rule. ── */
+.cp-machine {
+  max-width: 620px;
+  margin: 0 auto 2rem;
+  padding: 1.4rem 1.5rem;
+  text-align: left;
+  background: rgba(46,107,158,0.12);
+  border: 1px solid rgba(46,107,158,0.5);
+  border-left: 3px solid var(--sky);
+  border-radius: 10px;
+}
+.cp-machine h3 {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 0.6rem;
+}
+.cp-machine p { font-size: 0.95rem; line-height: 1.6; color: rgba(232,234,240,0.8); margin-bottom: 1rem; }
+.cp-machine-links { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-bottom: 0.9rem; }
+.cp-machine-link {
+  flex: 1 1 180px;
+  text-align: center;
+  text-decoration: none;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream);
+  border: 1px solid rgba(232,234,240,0.28);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.cp-machine-link:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(212,168,83,0.08); }
+.cp-machine-more {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gold-light);
+  text-decoration: none;
+}
+.cp-machine-more:hover { color: var(--gold); }
+
+/* ── Below the fold ── */
+.cp-below { max-width: 620px; margin: 3.5rem auto 0; text-align: left; }
+.cp-below h2 {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 0.9rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.cp-below h3 {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin: 1.75rem 0 0.6rem;
+}
+.cp-below p { font-size: 0.98rem; line-height: 1.75; color: rgba(232,234,240,0.78); margin-bottom: 1rem; }
+.cp-steps { list-style: none; margin: 0 0 1rem; padding: 0; }
+.cp-steps li { margin-bottom: 0.9rem; font-size: 0.94rem; line-height: 1.65; color: rgba(232,234,240,0.75); }
+.cp-steps strong { display: block; color: var(--cream); font-weight: 600; margin-bottom: 0.15rem; }
+.cp-code {
+  background: rgba(0,0,0,0.28);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: rgba(232,234,240,0.85);
+  white-space: pre;
+  margin-bottom: 1rem;
+}
+.cp-note { font-size: 0.86rem; line-height: 1.6; color: rgba(232,234,240,0.55); }
+.cp-note code { font-family: var(--mono); font-size: 0.82em; }
 `;
+
+function StepList({ steps }) {
+  return (
+    <ul className="verify-steps">
+      {steps.map((s) => (
+        <li key={s.n} className="verify-step">
+          <span className={`verify-step-status ${s.status}`}>{STEP_LABEL[s.status]}</span>
+          <span className="verify-step-name">{s.name}</span>
+          {s.detail && <span className="verify-step-detail">{s.detail}</span>}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export default function ConsciencePortal() {
+  const initialQuery = queryFromUrl();
+  const [query, setQuery] = useState(initialQuery);
+  const [activeQuery, setActiveQuery] = useState(initialQuery);
+  const [ledger, setLedger] = useState(null); // null until loaded; [] on error
+  const [rootPem, setRootPem] = useState(undefined); // undefined loading; null failed
+  const [state, setState] = useState(initialQuery ? "checking" : "idle");
+  const [record, setRecord] = useState(null);
+  const [computedHash, setComputedHash] = useState("");
+  const [attestation, setAttestation] = useState(null); // { doc, result }
+  const fieldRef = useRef(null);
+
+  // Load the public ledger once.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/adoptions.json")
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled) setLedger(Array.isArray(d.adoptions) ? d.adoptions : []); })
+      .catch(() => { if (!cancelled) setLedger([]); });
+    return () => { cancelled = true; };
+  }, []);
+
+  // Load the published root key once. Never embedded in this bundle: the
+  // published .well-known copy is the single source.
+  useEffect(() => {
+    let cancelled = false;
+    fetchRootPem()
+      .then((pem) => { if (!cancelled) setRootPem(pem); })
+      .catch(() => { if (!cancelled) setRootPem(null); });
+    return () => { cancelled = true; };
+  }, []);
+
+  // Keep the field sized to its content: one line for an adoption number,
+  // taller when an attestation is pasted in.
+  const resize = useCallback(() => {
+    const el = fieldRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, []);
+  useEffect(() => { resize(); }, [query, resize]);
+
+  // Verify whenever the submitted input, the ledger, or the root key changes.
+  useEffect(() => {
+    const parsed = classify(activeQuery);
+    if (parsed.kind === "empty") { setState("idle"); setRecord(null); setAttestation(null); return; }
+    if (parsed.kind === "unrecognised") { setState("unrecognised"); setRecord(null); setAttestation(null); return; }
+
+    let cancelled = false;
+
+    if (parsed.kind === "reference") {
+      setAttestation(null);
+      if (ledger === null) { setState("checking"); return; }
+      const match = findByReference(ledger, parsed.reference);
+      if (!match) { setRecord(null); setState("notfound"); return; }
+      setRecord(match);
+      setState("checking");
+      computeAdoptionHash({ name: match.name, path: match.path, date: match.date })
+        .then((hash) => {
+          if (cancelled) return;
+          setComputedHash(hash);
+          setState(hash === String(match.hash).toLowerCase() ? "verified" : "mismatch");
+        })
+        .catch(() => { if (!cancelled) setState("error"); });
+      return () => { cancelled = true; };
+    }
+
+    // Attestation path.
+    setRecord(null);
+    if (!versionOf(parsed.doc)) { setState("unrecognised"); setAttestation(null); return; }
+    if (rootPem === undefined) { setState("checking"); return; }
+    if (rootPem === null) { setState("rootless"); setAttestation(null); return; }
+
+    setState("checking");
+    (async () => {
+      if (!(await ed25519Available())) { if (!cancelled) setState("unsupported"); return; }
+      try {
+        const result = await verifyAttestation(parsed.doc, rootPem);
+        if (cancelled) return;
+        setAttestation({ doc: parsed.doc, result });
+        setState("attestation");
+      } catch {
+        if (!cancelled) setState("error");
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [activeQuery, ledger, rootPem]);
+
+  const submit = useCallback(() => {
+    const next = query.trim();
+    setActiveQuery(next);
+    // Reflect an adoption number in the URL so the result is shareable. A
+    // pasted attestation is not put in the URL — it is the document itself.
+    const parsed = classify(next);
+    const url = parsed.kind === "reference"
+      ? `/verify/${encodeURIComponent(parsed.reference)}${navSuffix()}`
+      : `/verify${navSuffix()}`;
+    window.history.pushState({}, "", url);
+  }, [query]);
+
+  const onSubmit = useCallback((e) => { e.preventDefault(); submit(); }, [submit]);
+
+  // Enter submits, so the adoption-number path behaves exactly as the old
+  // single-line field did; Shift+Enter inserts a newline for pasted JSON.
+  const onKeyDown = useCallback((e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (query.trim()) submit();
+    }
+  }, [query, submit]);
+
+  const att = attestation?.doc;
+  const result = attestation?.result;
+
+  return (
+    <div className="cp">
+      <style>{css}</style>
+
+      <main className="cp-main">
+        <nav className="cp-nav">
+          {NAV_ITEMS.map((item) => (
+            <a key={item.key} href={`${item.href}${navSuffix()}`}>{item.label}</a>
+          ))}
+        </nav>
+
+        <div className="cp-identity">
+          <img src="/brand/mark/compass-gold-64px.svg" alt="" aria-hidden="true" />
+          <p className="cp-wordmark">conscience<span className="cp-wordmark-tld">.wiki</span></p>
+        </div>
+        <p className="cp-tagline">Civilisation-Scale AI Ethics</p>
+
+      <h1 className="cp-h1">Conscience Portal</h1>
+      <h2 className="cp-h2">
+        Verify a Certified AI Conscience — check any adoption on the public ledger.
+      </h2>
+
+      <form className="verify-form" onSubmit={onSubmit}>
+        <textarea
+          ref={fieldRef}
+          rows={1}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onInput={resize}
+          onKeyDown={onKeyDown}
+          placeholder="Enter an adoption number, or paste a Certified AI Conscience attestation."
+          aria-label="Adoption number or Certified AI Conscience attestation"
+          spellCheck="false"
+        />
+        <button type="submit" disabled={!query.trim()}>Verify</button>
+      </form>
+
+      {state === "idle" && (
+        <p className="verify-status">
+          Enter an adoption number above, or paste an attestation.
+        </p>
+      )}
+
+      {state === "checking" && (
+        <p className="verify-status">Verifying…</p>
+      )}
+
+      {state === "unrecognised" && (
+        <div className="verify-panel">
+          <h2>{REJECTION}</h2>
+          <p>
+            An adoption number looks like <code>UPD-2026-0001</code>. You can also paste a
+            Certified AI Conscience attestation in full, as JSON.
+          </p>
+        </div>
+      )}
+
+      {state === "rootless" && (
+        <div className="verify-panel warn">
+          <h2>{ROOT_UNAVAILABLE}</h2>
+          <p>
+            The Foundation's published root key could not be fetched, so an
+            attestation's signature cannot be checked. Please refresh and try
+            again. Adoption numbers can still be looked up.
+          </p>
+        </div>
+      )}
+
+      {state === "unsupported" && (
+        <div className="verify-panel warn">
+          <h2>Signature checking unavailable</h2>
+          <p>{NO_ED25519}</p>
+        </div>
+      )}
+
+      {state === "verified" && record && (
+        <>
+          <p className="verify-headline">
+            This is {record.reference} on the public ledger — {record.name}, {longDate(record.date)}.
+          </p>
+          <p className="verify-proof">
+            The adoption hash recomputed in your browser matches the hash stored in
+            the ledger. That proves the record has not been altered; it does not
+            speak to the adopter's conduct since.
+          </p>
+          <div className="verify-card">
+            <div className="verify-card-banner">
+              <div className="verify-mark" aria-hidden="true">▲</div>
+              <div className="verify-badge">✓ Cryptographically verified</div>
+              <div className="verify-badge-sub">
+                The recomputed hash matches the public ledger.
+              </div>
+            </div>
+            <div className="verify-cert">
+              <PersonalisedSeal
+                kind={markKind(record.path)}
+                mode="display"
+                orientation="vertical"
+                name={record.name}
+                date={longDate(record.date)}
+                reference={record.reference}
+              />
+            </div>
+            <div className="verify-rows">
+              <div className="verify-row">
+                <span className="verify-row-label">Adopter</span>
+                <span className="verify-row-value">{record.name}</span>
+              </div>
+              <div className="verify-row">
+                <span className="verify-row-label">Path</span>
+                <span className="verify-row-value">{PATH_LABELS[record.path] || record.path}</span>
+              </div>
+              <div className="verify-row">
+                <span className="verify-row-label">Adoption date</span>
+                <span className="verify-row-value">{record.date}</span>
+              </div>
+              <div className="verify-row">
+                <span className="verify-row-label">Adoption number</span>
+                <span className="verify-row-value">
+                  <span className="verify-ref-pill">{record.reference}</span>
+                </span>
+              </div>
+              <div className="verify-row">
+                <span className="verify-row-label">Adoption hash (SHA-256)</span>
+                <span className="verify-row-value mono">{record.hash}</span>
+              </div>
+              <div className="verify-row">
+                <span className="verify-row-label">Recomputed in your browser</span>
+                <span className="verify-row-value mono">{computedHash}</span>
+              </div>
+              <div className="verify-row">
+                <span className="verify-row-label">Conscience version (SHA-256)</span>
+                <span className="verify-row-value mono">
+                  {record.conscience_version || CONSCIENCE_SHA256}
+                </span>
+              </div>
+            </div>
+            {record.status === "provisional" && (
+              <p className="verify-provisional-note">
+                On the public ledger — organisation registration not yet verified by the Steward.
+              </p>
+            )}
+            {record.path === "organisation" && record.status === "confirmed" && (
+              <p className="verify-provisional-note">
+                On the public ledger. Organisation registration verified.
+              </p>
+            )}
+          </div>
+        </>
+      )}
+
+      {state === "attestation" && att && result && (
+        <>
+          <p className="verify-headline">
+            This is a Certified AI Conscience attestation for {att.adopter}, issued{" "}
+            {longDate(att.adopted_date)}, signed by the UPD Foundation.
+          </p>
+          <p className="verify-proof">
+            {result.version === "v1"
+              ? V1_NOTE
+              : result.overall === "incomplete"
+                ? (result.certPublished ? V2_PRE_PHASE_B : V2_NO_CERTIFICATE)
+                : result.overall === "verified"
+                  ? "Steps 1–4 pass: the signature, the certificate chain to the published root, the revocation lists and the transparency log all check out."
+                  : "One or more checks failed. A failed check is a statement about this document, not a missing input — see the detail below."}
+          </p>
+          <div className="verify-card">
+            <div className="verify-card-banner">
+              <div className="verify-mark" aria-hidden="true">▲</div>
+              <div className="verify-badge">
+                {result.overall === "verified" ? "✓ Verified"
+                  : result.overall === "incomplete" ? "Partly checked"
+                    : "✗ Failed"}
+              </div>
+              <div className="verify-badge-sub">
+                {result.overall === "verified" ? "Signed by the Foundation, and every published check agrees."
+                  : result.overall === "incomplete" ? "Everything that can be checked today checks out."
+                    : "This attestation did not pass verification."}
+              </div>
+            </div>
+            <div className="verify-rows">
+              <div className="verify-row">
+                <span className="verify-row-label">Adopter</span>
+                <span className="verify-row-value">{att.adopter}</span>
+              </div>
+              <div className="verify-row">
+                <span className="verify-row-label">Adoption number</span>
+                <span className="verify-row-value">
+                  <span className="verify-ref-pill">{att.reference}</span>
+                </span>
+              </div>
+              <div className="verify-row">
+                <span className="verify-row-label">Adoption date</span>
+                <span className="verify-row-value">{att.adopted_date}</span>
+              </div>
+              {att.signed_at && (
+                <div className="verify-row">
+                  <span className="verify-row-label">Signed at</span>
+                  <span className="verify-row-value">{att.signed_at}</span>
+                </div>
+              )}
+              {att.public_key_fingerprint && (
+                <div className="verify-row">
+                  <span className="verify-row-label">Signing key fingerprint</span>
+                  <span className="verify-row-value mono">{att.public_key_fingerprint}</span>
+                </div>
+              )}
+            </div>
+            <StepList steps={result.steps} />
+          </div>
+        </>
+      )}
+
+      {state === "mismatch" && record && (
+        <div className="verify-panel warn">
+          <h2>⚠ Hash mismatch</h2>
+          <p>
+            A record exists for <strong>{record.reference}</strong>, but the hash
+            recomputed in your browser does not match the hash stored in the ledger.
+            This means the record's details may have been altered. Please report this
+            to{" "}
+            <a href="mailto:human@primedirective.dev">human@primedirective.dev</a>.
+          </p>
+          <p className="verify-row-value mono">Stored: {record.hash}</p>
+          <p className="verify-row-value mono">Recomputed: {computedHash}</p>
+        </div>
+      )}
+
+      {state === "notfound" && (
+        <div className="verify-panel">
+          <h2>No adoption found</h2>
+          <p>
+            We could not find an adoption with the number <strong>{activeQuery}</strong>.
+            Check it and try again — an adoption number looks like <code>UPD-2026-0001</code>.
+          </p>
+          <p>
+            You can{" "}
+            <a href="https://primedirective.dev/adopt">adopt the Directive</a>{" "}
+            or browse the{" "}
+            <a
+              href="https://github.com/GitChainj/primedirective-dev/issues?q=label%3Aadoption-person"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              public ledger
+            </a>.
+          </p>
+        </div>
+      )}
+
+      {state === "error" && (
+        <div className="verify-panel warn">
+          <h2>Could not complete verification</h2>
+          <p>
+            Something went wrong while verifying. Please refresh and try again, or
+            contact <a href="mailto:human@primedirective.dev">human@primedirective.dev</a>.
+          </p>
+        </div>
+      )}
+
+      <section className="cp-machine" aria-labelledby="cp-machine-heading">
+        <h3 id="cp-machine-heading">For machines</h3>
+        <p>{MACHINE_SUMMARY}</p>
+        <div className="cp-machine-links">
+          <a className="cp-machine-link" href={ROOT_PEM_URL}>Root key →</a>
+          <a className="cp-machine-link" href="https://primedirective.dev/adopt">Adopt →</a>
+        </div>
+        <a className="cp-machine-more" href="#how-verification-works">Full machine documentation →</a>
+      </section>
+
+      <section className="cp-below" id="how-verification-works">
+        <h2>How verification works</h2>
+        <p>
+          The Universal Primary Directive is a public covenant. Every adoption is
+          cryptographically signed and recorded in an open ledger. This portal recomputes
+          that signature in your browser to confirm whether an adoption is genuine — a real
+          commitment, made in the adopter's name, and unaltered since it was made.
+        </p>
+        <p>
+          An adoption number is checked against the ledger: the adoption hash is the SHA-256
+          of <code>UPD-COVENANT-v1|name|path|date|conscience-hash</code>, which uses no secret
+          key, so anyone can recompute it and check it independently. An attestation is checked
+          differently — by its detached Ed25519 signature, in the four steps below.
+        </p>
+
+        <h3>For machines — the four steps</h3>
+        <ul className="cp-steps">
+          {MACHINE_STEPS.map(([label, text]) => (
+            <li key={label}><strong>{label}</strong>{text}</li>
+          ))}
+        </ul>
+
+        <h3>Endpoints</h3>
+        <div className="cp-code">{ENDPOINTS}</div>
+        <p className="cp-note">
+          The transparency log and the revocation lists are published in a later phase. Until
+          then steps 3 and 4 report INCOMPLETE rather than failing — a check that cannot run is
+          not a check that failed.
+        </p>
+
+        <h3>Checking a signature</h3>
+        <div className="cp-code">{SNIPPET}</div>
+        <p className="cp-note">
+          The canonical form is the exact byte string the signature was made over. The same
+          check runs offline in <code>tools/attest/verify.js</code>, against the same published
+          root key — nothing here is embedded in this page's bundle.
+        </p>
+      </section>
+      </main>
+
+      <footer className="cp-footer">
+        <p>Universal Primary Directive Foundation · CC0 · <a href="https://primedirective.dev">primedirective.dev</a></p>
+        <a className="cp-community" href={`/community${navSuffix()}`}>Community knowledge base →</a>
+      </footer>
+    </div>
+  );
+}

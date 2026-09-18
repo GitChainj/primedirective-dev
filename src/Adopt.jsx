@@ -1576,8 +1576,9 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl,
       </p>
 
       <p className="adopt-seal-ledger-note">
-        Your adoption is now part of the public ledger. Verify any Seal at{' '}
-        <a href="/seal/verify" className="adopt-seal-inline-link">primedirective.dev/seal/verify</a>.
+        Your adoption is now part of the public ledger. Anyone can look up an
+        adoption by its adoption number at{' '}
+        <a href="https://conscience.wiki/verify" className="adopt-seal-inline-link">conscience.wiki/verify</a>.
       </p>
 
       {reference && (

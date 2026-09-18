@@ -1190,7 +1190,7 @@ function Nav() {
                 <a href="/deploy" onClick={close}>Deploy and Test the Conscience</a>
                 <a href="/integrate" onClick={close}>Three Steps to Integrate</a>
                 <a href="/conscience" onClick={close}>How AI Conscience Works</a>
-                <a href="/seal/verify" onClick={close}>Verify a Seal</a>
+                <a href="https://conscience.wiki/verify" onClick={close}>Verify an adoption</a>
                 <a href="#downloads" onClick={close}>Download the Directive</a>
               </div>
             )}
@@ -1213,7 +1213,7 @@ function Nav() {
                 <a href="/deploy" onClick={close}>Deploy and Test the Conscience</a>
                 <a href="/integrate" onClick={close}>Three Steps to Integrate</a>
                 <a href="#bells" onClick={close}>Read the Seven Bells</a>
-                <a href="/seal/verify" onClick={close}>Verify a Seal</a>
+                <a href="https://conscience.wiki/verify" onClick={close}>Verify an adoption</a>
                 <a href="#downloads" onClick={close}>Download the Directive</a>
               </div>
             )}
@@ -1319,7 +1319,7 @@ function Nav() {
                 <a href="/deploy" onClick={closeDrawer}>Deploy and Test the Conscience</a>
                 <a href="/integrate" onClick={closeDrawer}>Three Steps to Integrate</a>
                 <a href="/conscience" onClick={closeDrawer}>How AI Conscience Works</a>
-                <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
+                <a href="https://conscience.wiki/verify" onClick={closeDrawer}>Verify an adoption</a>
                 <a href="#downloads" onClick={closeDrawer}>Download the Directive</a>
               </div>
             )}
@@ -1341,7 +1341,7 @@ function Nav() {
                 <a href="/deploy" onClick={closeDrawer}>Deploy and Test the Conscience</a>
                 <a href="/integrate" onClick={closeDrawer}>Three Steps to Integrate</a>
                 <a href="#bells" onClick={closeDrawer}>Read the Seven Bells</a>
-                <a href="/seal/verify" onClick={closeDrawer}>Verify a Seal</a>
+                <a href="https://conscience.wiki/verify" onClick={closeDrawer}>Verify an adoption</a>
                 <a href="#downloads" onClick={closeDrawer}>Download the Directive</a>
               </div>
             )}
@@ -2095,7 +2095,6 @@ function FooterSection() {
 import DonatePage from './DonatePage.jsx';
 import ProposalForm from './ProposalForm.jsx';
 import InteractiveSeal from './InteractiveSeal.jsx';
-import SealVerify from './SealVerify.jsx';
 import RegisterAI from './RegisterAI.jsx';
 import Organizations from './Organizations.jsx';
 import RegisterHuman from './RegisterHuman.jsx';
@@ -2120,7 +2119,6 @@ import WikiPlatformRule from './wiki/WikiPlatformRule.jsx';
 import TermsOfUse from './TermsOfUse.jsx';
 import PrivacyPolicy from './PrivacyPolicy.jsx';
 import CertificationLicence from './CertificationLicence.jsx';
-import WikiVerify from './wiki/WikiVerify.jsx';
 import ConsciencePortal from './wiki/ConsciencePortal.jsx';
 
 // conscience.wiki and primedirective.dev share one codebase. The hostname
@@ -2157,7 +2155,7 @@ export default function App({ ssrPath, ssrIsWiki } = {}) {
     if (path === '/terms')          return <TermsOfUse wiki={true} />;
     if (path === '/privacy')        return <PrivacyPolicy wiki={true} />;
     if (path === '/certification-licence') return <CertificationLicence wiki={true} />;
-    if (path === '/verify' || path.startsWith('/verify/')) return <WikiVerify />;
+    if (path === '/verify' || path.startsWith('/verify/')) return <ConsciencePortal />;
     if (path === '/deploy')         return <DeployPage wiki={true} />;
     if (path === '/shape')          return <ProposalForm />;
   }
@@ -2165,11 +2163,6 @@ export default function App({ ssrPath, ssrIsWiki } = {}) {
   // Route to donate page
   if (path === '/give') {
     return <DonatePage />;
-  }
-
-  // Route to seal verifier
-  if (path === '/seal/verify') {
-    return <SealVerify />;
   }
 
   // Route to AI registration
