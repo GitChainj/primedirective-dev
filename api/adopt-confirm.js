@@ -13,7 +13,7 @@ import {
 } from "./_lib/adoptionCore.js";
 import { verifyToken } from "./_lib/adoptToken.js";
 import { registryLink } from "./_lib/registries.js";
-import { sendStewardEmail } from "./_lib/email.js";
+import { sendStewardEmail, sendConsentRecordEmail } from "./_lib/email.js";
 
 const SUBTYPE_LABELS = {
   founder: "Founder", solopreneur: "Solopreneur", "sole-proprietor": "Sole Proprietor",
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: msg, reason: verified.reason });
   }
 
-  const { path, date, tier, data } = verified.payload;
+  const { path, date, tier, data, consent } = verified.payload;
 
   try {
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
@@ -57,6 +57,18 @@ export default async function handler(req, res) {
         });
       } catch (mailErr) {
         console.error("Steward email failed (adoption still recorded):", mailErr && mailErr.message);
+      }
+    }
+
+    // Private consent record (GDPR Article 7(1) accountability). The consent was
+    // given at step 1 and travelled in the confirmation token, so the timestamp
+    // is the moment the adopter ticked the box — not the moment they confirmed.
+    // Internal only: never written to the public ledger issue. Best-effort.
+    if (consent) {
+      try {
+        await sendConsentRecordEmail({ reference, path, adopterName, consent });
+      } catch (mailErr) {
+        console.error("Consent record email failed (adoption still recorded):", mailErr && mailErr.message);
       }
     }
 

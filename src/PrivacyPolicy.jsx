@@ -8,7 +8,7 @@
 
 import WikiLayout from './wiki/WikiLayout.jsx';
 
-const LAST_UPDATED = "27 June 2026";
+const LAST_UPDATED = "27 September 2026";
 
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
@@ -278,6 +278,12 @@ const MAILTO = (
   <a href="mailto:human@primedirective.dev" className="tou-link">human@primedirective.dev</a>
 );
 
+// Data-subject requests have their own channel so they are never lost in general
+// correspondence, and so the one-month response clock starts at a known mailbox.
+const PRIVACY_MAILTO = (
+  <a href="mailto:privacy@primedirective.dev" className="tou-link">privacy@primedirective.dev</a>
+);
+
 export default function PrivacyPolicy({ wiki = false }) {
   const body = (
     <>
@@ -285,6 +291,28 @@ export default function PrivacyPolicy({ wiki = false }) {
       <div className="tou-subtitle">
         primedirective.dev · conscience.wiki — <em>The Universal Primary Directive</em>
       </div>
+
+      {/* In short — plain-language opener, folded in from the Privacy Notice. Sits
+          above the formal sections so the substance is readable without them. */}
+      <div className="tou-section-human">
+        <h2 className="tou-h2">In short</h2>
+        <p>
+          We publish a public covenant of ethical principles. If you choose to adopt it, we
+          record that adoption on a public ledger so anyone can verify it. That record is
+          permanent and public — that is the whole point of it.
+        </p>
+        <p>
+          We collect very little: the name or pseudonym you give us, the date, and a
+          cryptographic reference. We do not track you, profile you, sell your data, or send
+          you marketing.
+        </p>
+        <p>
+          You can adopt under a pseudonym. You can ask us to revoke your record. The rest of
+          this notice sets out the detail.
+        </p>
+      </div>
+
+      <hr className="tou-divider" />
 
       {/* Our Commitment — callout */}
       <div className="tou-callout">
@@ -302,10 +330,20 @@ export default function PrivacyPolicy({ wiki = false }) {
         <h2 className="tou-h2">1. Who We Are</h2>
         <p>
           The Sites — primedirective.dev and conscience.wiki — are operated by the
-          Universal Primary Directive stewardship, based in Ontario, Canada. For privacy
-          enquiries:
+          Universal Primary Directive stewardship, and the Directive is stewarded by the{" "}
+          <strong>Universal Primary Directive Foundation</strong> (in formation; to be
+          federally incorporated under the Canada Not-for-profit Corporations Act), with its
+          registered office in Ontario, Canada.
         </p>
-        <p><strong>{MAILTO}</strong></p>
+        <p>
+          For data protection purposes we are the <strong>data controller</strong> for the
+          information described in this notice.
+        </p>
+        <p>
+          <strong>Privacy and data-subject requests:</strong> {PRIVACY_MAILTO}
+          <br />
+          <strong>General contact:</strong> {MAILTO}
+        </p>
       </div>
 
       <hr className="tou-divider" />
@@ -401,6 +439,33 @@ export default function PrivacyPolicy({ wiki = false }) {
           infrastructure. These logs are governed by Vercel's privacy policy and are not
           accessed by the stewardship for tracking or identification purposes.
         </p>
+
+        {/* Pseudonymity, folded in from the Privacy Notice. Kept as a subsection of
+            "What We Collect" rather than a new numbered section so the existing
+            section numbers — cited elsewhere on the site — do not shift. */}
+        <h3 className="tou-h3">2.6 Adopting Under a Pseudonym</h3>
+        <p>You choose how you appear on the public record:</p>
+        <ul className="tou-list">
+          <li>
+            <strong>Public name</strong> — your real name appears on the ledger.
+          </li>
+          <li>
+            <strong>Pseudonymous</strong> — a name of your choosing appears on the ledger. If
+            we hold any link between that pseudonym and your real identity, we keep it in
+            private records and never publish it.
+          </li>
+          <li>
+            <strong>Organisational</strong> — the record identifies an organisation rather
+            than an individual.
+          </li>
+        </ul>
+        <p>
+          Please understand that <strong>pseudonymity is not anonymity</strong>. Someone
+          determined to identify you might do so by combining your pseudonym with information
+          available elsewhere. We publish nothing that would assist this — no IP addresses, no
+          timestamps beyond the adoption date, no technical fingerprints — but we cannot
+          prevent it entirely.
+        </p>
       </div>
 
       <hr className="tou-divider" />
@@ -482,6 +547,19 @@ export default function PrivacyPolicy({ wiki = false }) {
             <strong>Email correspondence</strong> (if you contact us) is retained for the
             purpose of responding and for stewardship records.
           </li>
+          <li>
+            <strong>Any pseudonym-to-identity mapping</strong> is retained until you ask us to
+            erase it.
+          </li>
+          <li>
+            <strong>Confirmation email addresses</strong> are discarded once the confirmation
+            completes. They are never published on the ledger.
+          </li>
+          <li>
+            <strong>Consent records</strong> (the timestamp, the version of the disclosure you
+            were shown, and your chosen identity class) are kept privately as our
+            accountability record for the lawful basis of processing. They are not published.
+          </li>
         </ul>
       </div>
 
@@ -490,30 +568,92 @@ export default function PrivacyPolicy({ wiki = false }) {
       {/* 6 */}
       <div className="tou-section">
         <h2 className="tou-h2">6. Your Rights</h2>
-        <p>You have the right to:</p>
+        <p>
+          Under the GDPR and, where applicable, other data protection laws, you have the
+          following rights:
+        </p>
+        <div className="tou-chart">
+        <table>
+          <thead>
+            <tr>
+              <th>Right</th>
+              <th>What it means here</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Access</strong></td>
+              <td>Ask us what information we hold about you, and receive a copy of it.</td>
+            </tr>
+            <tr>
+              <td><strong>Correct</strong></td>
+              <td>Ask us to fix information that is inaccurate.</td>
+            </tr>
+            <tr>
+              <td><strong>Erase</strong></td>
+              <td>Ask us to erase your information — see what erasure means here, below.</td>
+            </tr>
+            <tr>
+              <td><strong>Restrict</strong></td>
+              <td>Ask us to pause our use of your information while a question is resolved.</td>
+            </tr>
+            <tr>
+              <td><strong>Portability</strong></td>
+              <td>Receive a copy in a structured, machine-readable format.</td>
+            </tr>
+            <tr>
+              <td><strong>Object</strong></td>
+              <td>Object to our processing of your information.</td>
+            </tr>
+            <tr>
+              <td><strong>Withdraw consent</strong></td>
+              <td>Withdraw your consent at any time, for anything collected on that basis.</td>
+            </tr>
+            <tr>
+              <td><strong>Complain</strong></td>
+              <td>Complain to a data protection supervisory authority.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <p>
+          <strong>To exercise any of these:</strong> email {PRIVACY_MAILTO}. We will respond
+          within one month. If your request is complex we may extend this by up to two further
+          months, and we will tell you if we do.
+        </p>
+
+        {/* Revocation-as-erasure, folded in from the Privacy Notice. Stated before
+            adoption, not after, so the choice is genuinely informed. */}
+        <h3 className="tou-h3">
+          What erasure means here — please read this before adopting
+        </h3>
+        <p>
+          Adoption records are cryptographically signed. A signature, once published, is
+          mathematically permanent and may have been copied by others.{" "}
+          <strong>We cannot un-sign it, and we cannot recall copies held by third parties.</strong>
+        </p>
+        <p>When you ask us to erase your information, we will:</p>
         <ul className="tou-list">
-          <li><strong>Access</strong> your personal data — ask us what we hold about you</li>
           <li>
-            <strong>Correct</strong> inaccurate data — ask us to update your name or details
+            <strong>Delete any private mapping</strong> between your pseudonym and your real
+            identity. If you adopted pseudonymously, this severs the link between the public
+            record and you as a person.
           </li>
           <li>
-            <strong>Delete</strong> your data — ask us to remove your adoption record or
-            contribution. We will accommodate reasonable requests, but note that the public
-            ledger exists for accountability and some records may need to be retained for the
-            integrity of the verification system.
+            <strong>Revoke your public record</strong>, so your adoption is no longer presented
+            as active anywhere we control.
           </li>
           <li>
-            <strong>Object</strong> to processing — if you believe your data is being used in
-            a way that is inconsistent with this policy
+            <strong>Remove your record</strong> from listings, search surfaces, and directories
+            we operate.
           </li>
           <li>
-            <strong>Withdraw consent</strong> — at any time, for any data collected with your
-            consent
+            <strong>Delete any other information</strong> about you that we hold.
           </li>
         </ul>
         <p>
-          To exercise any of these rights, contact <strong>{MAILTO}</strong>. We will respond
-          within 30 days.
+          What we cannot do is reach into copies of the signed record held by others. We tell
+          you this before you adopt so the choice is genuinely informed.
         </p>
 
         <h3 className="tou-h3">6.1 For European Visitors (GDPR)</h3>
@@ -637,9 +777,17 @@ export default function PrivacyPolicy({ wiki = false }) {
       {/* 12 */}
       <div className="tou-section">
         <h2 className="tou-h2">12. Contact</h2>
-        <p>For any privacy question, concern, or request:</p>
+        <p>
+          For a data-subject request — access, correction, erasure, restriction, portability,
+          objection, or withdrawal of consent:
+        </p>
+        <p><strong>{PRIVACY_MAILTO}</strong></p>
+        <p>For any other privacy question or concern:</p>
         <p><strong>{MAILTO}</strong></p>
-        <p>We will respond within 30 days.</p>
+        <p>
+          We will respond within one month, and will tell you if a complex request needs
+          longer.
+        </p>
       </div>
 
       <div className="tou-closing">

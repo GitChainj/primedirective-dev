@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import AdoptConsent, { DISCLOSURE_VERSION, identityClassFor } from "./AdoptConsent.jsx";
 import PersonalisedSeal from "./PersonalisedSeal.jsx";
 import REGISTRIES from "./data/registries.json";
 
@@ -598,7 +599,7 @@ html { scroll-behavior: smooth; }
   transform: translateY(-1px);
 }
 
-/* ===== Tier selector (Individual / Organisation / Founding Venture) ===== */
+/* ===== Tier selector (Individual / Organisation / Founding Venture / AI System) ===== */
 .adopt-tier-selector { margin-bottom: 2rem; }
 .adopt-tier-list { display: flex; flex-direction: column; gap: 1rem; }
 .adopt-tier-card {
@@ -618,13 +619,6 @@ html { scroll-behavior: smooth; }
   font-family: var(--serif); font-size: 1.35rem; font-weight: 600; color: var(--mid); letter-spacing: 0.01em;
 }
 .adopt-tier-card-blurb { font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--text); }
-.adopt-tier-ai-link {
-  display: block; width: 100%; margin-top: 1.4rem; padding: 0.9rem 1rem;
-  background: transparent; border: 1px dashed rgba(212,168,83,0.4); border-radius: 6px;
-  font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: var(--sky);
-  cursor: pointer; text-align: center; transition: color 0.15s, border-color 0.15s;
-}
-.adopt-tier-ai-link:hover { color: var(--gold); border-color: var(--gold); }
 
 /* Live Seal preview above the form */
 .adopt-seal-preview { margin: 0 0 2.25rem; }
@@ -1390,10 +1384,15 @@ function TierSelector({ onSelect }) {
           blurb="Founder, solopreneur, or sole proprietor."
           onSelect={() => onSelect("venture")}
         />
+        {/* Article VI symmetry: an AI system adopting in its own name is a peer of
+            the three human paths, not a footnote beneath them. Same card, same
+            weight, same control — four equal peers. */}
+        <TierCard
+          title="AI System"
+          blurb="Adopting in my own name, under Article VI."
+          onSelect={() => onSelect("ai")}
+        />
       </div>
-      <button type="button" className="adopt-tier-ai-link" onClick={() => onSelect("ai")}>
-        Are you an AI system adopting in your own name? →
-      </button>
     </div>
   );
 }
@@ -1669,7 +1668,7 @@ function CheckEmailPanel({ email, onResend, resending }) {
 
 /* ===== Forms ===== */
 
-function PersonForm({ data, setData, onSubmit, submitting }) {
+function PersonForm({ data, setData, onSubmit, submitting, consented, setConsented }) {
   const update = (key, value) => setData((prev) => ({ ...prev, [key]: value }));
   const valid =
     data.fullName.trim() &&
@@ -1774,10 +1773,12 @@ function PersonForm({ data, setData, onSubmit, submitting }) {
         />
       </div>
 
+      <AdoptConsent checked={consented} onChange={setConsented} />
+
       <button
         type="submit"
         className="adopt-form-submit"
-        disabled={!valid || submitting}
+        disabled={!valid || !consented || submitting}
       >
         {submitting ? "Submitting…" : "Adopt"}
       </button>
@@ -1785,7 +1786,7 @@ function PersonForm({ data, setData, onSubmit, submitting }) {
   );
 }
 
-function VentureForm({ data, setData, onSubmit, submitting }) {
+function VentureForm({ data, setData, onSubmit, submitting, consented, setConsented }) {
   const update = (key, value) => setData((prev) => ({ ...prev, [key]: value }));
   const valid =
     data.fullName.trim() &&
@@ -1930,10 +1931,12 @@ function VentureForm({ data, setData, onSubmit, submitting }) {
         />
       </div>
 
+      <AdoptConsent checked={consented} onChange={setConsented} />
+
       <button
         type="submit"
         className="adopt-form-submit"
-        disabled={!valid || submitting}
+        disabled={!valid || !consented || submitting}
       >
         {submitting ? "Submitting…" : "Adopt"}
       </button>
@@ -1941,7 +1944,7 @@ function VentureForm({ data, setData, onSubmit, submitting }) {
   );
 }
 
-function OrganisationForm({ data, setData, onSubmit, submitting }) {
+function OrganisationForm({ data, setData, onSubmit, submitting, consented, setConsented }) {
   const update = (key, value) => setData((prev) => ({ ...prev, [key]: value }));
   const registered = isRegisteredOrgType(data.orgType);
   const valid =
@@ -2205,10 +2208,12 @@ function OrganisationForm({ data, setData, onSubmit, submitting }) {
         />
       </div>
 
+      <AdoptConsent checked={consented} onChange={setConsented} />
+
       <button
         type="submit"
         className="adopt-form-submit"
-        disabled={!valid || submitting}
+        disabled={!valid || !consented || submitting}
       >
         {submitting ? "Submitting…" : "Adopt"}
       </button>
@@ -2216,7 +2221,7 @@ function OrganisationForm({ data, setData, onSubmit, submitting }) {
   );
 }
 
-function AISystemForm({ data, setData, onSubmit, submitting }) {
+function AISystemForm({ data, setData, onSubmit, submitting, consented, setConsented }) {
   const update = (key, value) => setData((prev) => ({ ...prev, [key]: value }));
   const isSteward = data.submissionType === "steward";
   const isIndependent = data.submissionType === "independent";
@@ -2354,10 +2359,12 @@ function AISystemForm({ data, setData, onSubmit, submitting }) {
         />
       </div>
 
+      <AdoptConsent checked={consented} onChange={setConsented} />
+
       <button
         type="submit"
         className="adopt-form-submit"
-        disabled={!valid || submitting}
+        disabled={!valid || !consented || submitting}
       >
         {submitting ? "Submitting…" : "Adopt"}
       </button>
@@ -2439,7 +2446,14 @@ function AlreadyAdoptedBlock() {
 export default function Adopt() {
   const [step, setStep] = useState(1);
   const [affirmed, setAffirmed] = useState(false);
-  const [selectedTier, setSelectedTier] = useState(null); // individual | organisation | venture | ai
+  // ?tier=ai preselects a path so a nav entry can send an audience straight to
+  // its own form. The commitment step is NOT skipped — the tier is chosen for
+  // you, the affirmation still is not.
+  const [selectedTier, setSelectedTier] = useState(() => {
+    if (typeof window === "undefined") return null;
+    const t = new URLSearchParams(window.location.search).get("tier");
+    return ["individual", "organisation", "venture", "ai"].includes(t) ? t : null;
+  }); // individual | organisation | venture | ai
   const [personData, setPersonData] = useState(INITIAL_PERSON);
   const [ventureData, setVentureData] = useState(INITIAL_VENTURE);
   const [orgData, setOrgData] = useState(INITIAL_ORG);
@@ -2468,12 +2482,43 @@ export default function Adopt() {
     return { path: "ai-system", tier: "ai", data: aiData };
   };
 
+  // Consent is recorded as an event: the moment the box was ticked, the version
+  // of the disclosure shown, and the identity class implied by the chosen path.
+  // It travels with the submission and is stored privately, never on the ledger.
+  const [consented, setConsentedRaw] = useState(false);
+  const [consentAt, setConsentAt] = useState(null);
+  const setConsented = (next) => {
+    setConsentedRaw(next);
+    setConsentAt(next ? new Date().toISOString() : null);
+  };
+
+  // Each step and each tier choice replaces the whole view, so the browser's
+  // preserved scroll position is meaningless once it does — and actively wrong
+  // when a tier is preselected by ?tier=, because the form is already rendered
+  // and the visitor lands partway down it, on the consent notes. Start every new
+  // view at its heading, exactly as choosing a tier manually appears to.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [step, selectedTier]);
+
   const postAdoption = () => {
     const { path, tier, data } = buildSubmission();
     return fetch("/api/adopt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path, affirmation: true, tier, ...data }),
+      body: JSON.stringify({
+        path,
+        affirmation: true,
+        tier,
+        consent: {
+          granted: true,
+          at: consentAt,
+          disclosureVersion: DISCLOSURE_VERSION,
+          identityClass: identityClassFor(path),
+        },
+        ...data,
+      }),
     });
   };
 
@@ -2652,6 +2697,8 @@ export default function Adopt() {
                       setData={setPersonData}
                       onSubmit={submitAdoption}
                       submitting={submitState === "submitting"}
+                      consented={consented}
+                      setConsented={setConsented}
                     />
                   )}
                   {selectedTier === "venture" && (
@@ -2660,6 +2707,8 @@ export default function Adopt() {
                       setData={setVentureData}
                       onSubmit={submitAdoption}
                       submitting={submitState === "submitting"}
+                      consented={consented}
+                      setConsented={setConsented}
                     />
                   )}
                   {selectedTier === "organisation" && (
@@ -2668,6 +2717,8 @@ export default function Adopt() {
                       setData={setOrgData}
                       onSubmit={submitAdoption}
                       submitting={submitState === "submitting"}
+                      consented={consented}
+                      setConsented={setConsented}
                     />
                   )}
                   {selectedTier === "ai" && (
@@ -2676,6 +2727,8 @@ export default function Adopt() {
                       setData={setAiData}
                       onSubmit={submitAdoption}
                       submitting={submitState === "submitting"}
+                      consented={consented}
+                      setConsented={setConsented}
                     />
                   )}
                   {submitState === "error" && (

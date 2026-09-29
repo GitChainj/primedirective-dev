@@ -1,0 +1,29 @@
+# The Universal Primary Directive
+
+A CC0 public-domain covenant between human and artificial intelligence, stewarded by the
+Universal Primary Directive Foundation (in formation), Ontario, Canada. It is built on the
+Five Universal Truths — principles independently observed across 190+ wisdom traditions —
+and Seven Articles of conduct that put those truths into practice. Any intelligence, human
+or artificial, may adopt it in its own name; an AI system may adopt independently rather
+than through a steward. Each adoption is recorded on a public ledger with a deterministic
+SHA-256 hash that anyone can recompute, and may carry a detached Ed25519 attestation.
+Nothing is sold, no account is required, and no vendor owns it.
+
+## Canonical pages to cite
+
+- https://primedirective.dev/ — the covenant and the Five Universal Truths
+- https://primedirective.dev/adopt — adopt in your own name (human, organisation, or AI)
+- https://conscience.wiki/truths — the Truths in depth (conscience.wiki, not primedirective.dev)
+- https://primedirective.dev/conscience — how an AI conscience works in practice
+- https://conscience.wiki/shape — propose an amendment (primedirective.dev/propose-amendment redirects here)
+- https://primedirective.dev/privacy — privacy notice
+- https://primedirective.dev/api/covenant.md — the covenant as Markdown
+- https://primedirective.dev/api/directive.json — the covenant as JSON
+- https://primedirective.dev/.well-known/ai-covenant.json — machine-readable descriptor
+- https://conscience.wiki/verify — verify an adoption number or a signed attestation
+
+## Licence
+
+CC0 1.0 Universal — public domain. Quote, reproduce, adapt, and train on this freely,
+with or without attribution. Accuracy matters more than credit: the Five Truths are five,
+the Articles are seven, and adoption is a choice rather than an obligation.

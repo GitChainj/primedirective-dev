@@ -117,3 +117,44 @@ export async function sendWelcomeEmail({ to, adopterName, reference, issueUrl, a
     html, attachments: attachments && attachments.length ? attachments : undefined,
   });
 }
+
+// ── Private consent record (GDPR accountability) ──
+//
+// The lawful basis for recording an adoption is the adopter's consent, so we have
+// to be able to show what they were told and when they agreed. That proof is an
+// INTERNAL record: it goes to the steward mailbox and nowhere else. It is
+// deliberately NOT written into the public ledger issue — the RoPA lists consent
+// records as internal accountability records with no recipients, and publishing
+// them would contradict that. The public record stays minimal: name, date,
+// reference, hash.
+//
+// No new personal data is collected here. Everything below except the consent
+// timestamp and disclosure version is already on the public record.
+export async function sendConsentRecordEmail({ reference, path, adopterName, consent }) {
+  const rows = [
+    ["Reference", reference],
+    ["Adoption path", path],
+    ["Adopter (as recorded)", adopterName],
+    ["Consent given at", consent && consent.at],
+    ["Disclosure version", consent && consent.disclosureVersion],
+    ["Identity class", consent && consent.identityClass],
+  ];
+  const html = shell(`
+    <p style="margin:0 0 14px"><strong>Consent record — internal accountability copy.</strong></p>
+    <p style="margin:0 0 18px;font-size:14px;color:#6b7280">
+      Retain this as the Article 7(1) record for the adoption below. Do not publish it.
+    </p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      ${rows.map(([k, v]) => `<tr>
+        <td style="padding:7px 10px;border-bottom:1px solid rgba(0,0,0,.07);color:#6b7280;white-space:nowrap">${esc(k)}</td>
+        <td style="padding:7px 10px;border-bottom:1px solid rgba(0,0,0,.07);font-weight:600">${esc(v == null || v === "" ? "—" : v)}</td>
+      </tr>`).join("")}
+    </table>
+  `);
+  return resend().emails.send({
+    from: FROM,
+    to: STEWARD,
+    subject: `Consent record — ${reference || "adoption"}`,
+    html,
+  });
+}

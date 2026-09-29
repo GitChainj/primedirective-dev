@@ -4,6 +4,15 @@
 // mark, a slim wiki nav bar, and a community-oriented footer. Body text is
 // sans-serif throughout.
 
+import {
+  FOUNDATION_NAME,
+  FOUNDATION_STATUS,
+  FOUNDATION_JURISDICTION,
+  GENERAL_EMAIL,
+  PRIVACY_EMAIL,
+  SOCIAL_LINKS,
+} from "../FoundationFooter.jsx";
+
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
@@ -223,6 +232,22 @@ export default function WikiLayout({ title, tagline, activeNav, children }) {
         </div>
         <div className="wiki-footer-row">
           <a href="https://primedirective.dev/adopt">Adopt the Directive →</a>
+        </div>
+        <div className="wiki-footer-row">
+          {FOUNDATION_NAME} ({FOUNDATION_STATUS}) · {FOUNDATION_JURISDICTION} ·{" "}
+          <a href={`mailto:${GENERAL_EMAIL}`}>{GENERAL_EMAIL}</a>
+        </div>
+        <div className="wiki-footer-row">
+          Privacy and data-subject requests:{" "}
+          <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>
+        </div>
+        <div className="wiki-footer-row">
+          {SOCIAL_LINKS.map(([label, href], i) => (
+            <span key={label}>
+              {i > 0 && " · "}
+              <a href={href} target="_blank" rel="noopener noreferrer">{label}</a>
+            </span>
+          ))}
         </div>
       </footer>
     </div>

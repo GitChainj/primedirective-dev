@@ -23,16 +23,42 @@
     <meta name="twitter:image" content="https://www.primedirective.dev/og-image.png" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Structured data (SEO Phase 1) — site-wide Organization + WebSite -->
+    <!-- Structured data (SEO Phase 1) — site-wide Organization + Person + WebSite.
+         The corporate name is "Universal Primary Directive Foundation" (English-only,
+         CNCA). "(in formation)" appears in the footer contact line, not here: search
+         engines treat schema.org name as the entity name, not its filing status. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "The Universal Primary Directive",
+      "@id": "https://www.primedirective.dev/#organization",
+      "name": "Universal Primary Directive Foundation",
       "url": "https://www.primedirective.dev",
-      "logo": "https://www.primedirective.dev/brand/mark/compass-gold-512px.png",
+      "logo": "https://www.primedirective.dev/downloads/UPD_Seal_Official.png",
       "foundingDate": "2026",
-      "description": "A shared covenant between human and artificial intelligence, grounded in Five Universal Truths independently observed across 190+ traditions."
+      "description": "A CC0 public-domain covenant between human and artificial intelligence, grounded in Five Universal Truths independently observed across 190+ traditions and Seven Articles of conduct.",
+      "founder": { "@id": "https://www.primedirective.dev/#founder" },
+      "sameAs": [
+        "https://github.com/GitChainj",
+        "https://www.youtube.com/@UniversalPrimeDirective",
+        "https://www.tiktok.com/@ai.conscience",
+        "https://x.com/primedirective_",
+        "https://www.linkedin.com/in/primedirective"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": "https://www.primedirective.dev/#founder",
+      "name": "John Strand",
+      "jobTitle": "Founding Steward",
+      "affiliation": { "@id": "https://www.primedirective.dev/#organization" },
+      "sameAs": [
+        "https://github.com/GitChainj",
+        "https://www.linkedin.com/in/primedirective"
+      ]
     }
     </script>
     <script type="application/ld+json">
@@ -43,8 +69,35 @@
       "url": "https://www.primedirective.dev"
     }
     </script>
+    <!-- Skip link: off-screen until focused, so keyboard users reach the content
+         without walking the nav. Lives here rather than in a component so it is
+         the first focusable thing on every route, prerendered or client-rendered. -->
+    <style>
+      .skip-to-content {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        z-index: 1000;
+        padding: 0.75rem 1.25rem;
+        background: #d4a853;
+        color: #0a1628;
+        font-family: 'DM Sans', system-ui, sans-serif;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        text-decoration: none;
+        border-bottom-right-radius: 8px;
+      }
+      .skip-to-content:focus {
+        left: 0;
+        outline: 2px solid #0a1628;
+        outline-offset: 2px;
+      }
+    </style>
   </head>
   <body>
+    <a class="skip-to-content" href="#root">Skip to content</a>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

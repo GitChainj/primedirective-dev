@@ -14,7 +14,7 @@ import {
   VALID_PATHS, CONSCIENCE_SHA256, validate, createAdoptionIssue,
 } from "./_lib/adoptionCore.js";
 import { signToken } from "./_lib/adoptToken.js";
-import { sendConfirmationEmail, SITE_URL } from "./_lib/email.js";
+import { sendConfirmationEmail, sendConsentRecordEmail, SITE_URL } from "./_lib/email.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -22,13 +22,17 @@ export default async function handler(req, res) {
   }
 
   const body = req.body || {};
-  const { path, affirmation, tier, ...data } = body;
+  const { path, affirmation, tier, consent, ...data } = body;
 
   if (!VALID_PATHS.has(path)) {
     return res.status(400).json({ error: "Invalid adoption path" });
   }
   if (affirmation !== true) {
     return res.status(400).json({ error: "Affirmation is required to enter the Covenant" });
+  }
+  // Consent to the public, permanent record is the lawful basis for creating it.
+  if (!consent || consent.granted !== true || !consent.at || !consent.disclosureVersion) {
+    return res.status(400).json({ error: "Consent to the public record is required to adopt" });
   }
   const validationError = validate(path, data);
   if (validationError) {
@@ -46,6 +50,12 @@ export default async function handler(req, res) {
       const { issue, reference, hash, date } = await createAdoptionIssue(octokit, {
         path, data, adoptionDate,
       });
+      // Private accountability copy; a mail failure must never undo an adoption.
+      try {
+        await sendConsentRecordEmail({ reference, path, adopterName: data.name || data.fullName || data.systemName || null, consent });
+      } catch (mailErr) {
+        console.error("Consent record email failed:", mailErr);
+      }
       return res.status(200).json({
         success: true,
         issueUrl: issue.html_url,
@@ -66,7 +76,7 @@ export default async function handler(req, res) {
 
   // ── Human paths: mint token + send confirmation email ──
   try {
-    const token = signToken({ path, date: adoptionDate, tier: tier || null, data });
+    const token = signToken({ path, date: adoptionDate, tier: tier || null, data, consent });
     const confirmUrl = `${SITE_URL}/adopt/confirm?token=${encodeURIComponent(token)}`;
     await sendConfirmationEmail({
       to: data.email,

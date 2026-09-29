@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSeo } from "./seo.js";
 import Lottie from "lottie-react";
 import sealLottie from "./assets/seal-lottie.json";
+import { FoundationContact, SocialLinks } from "./FoundationFooter.jsx";
 
 // ─── Constants ───
 const TRUTHS = [
@@ -500,6 +501,21 @@ body {
   display: flex; gap: 1rem; flex-wrap: wrap;
   justify-content: center; position: relative;
 }
+.hero-ledger {
+  position: relative;
+  margin-top: 1rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+.hero-ledger a {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(212,168,83,0.4);
+  padding-bottom: 0.1rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+.hero-ledger a:hover { color: var(--gold); border-bottom-color: var(--gold); }
 .hero > *:not(video) { z-index: 1; }
 .btn {
   padding: 0.8rem 2rem; border-radius: 6px;
@@ -1174,6 +1190,7 @@ function Nav() {
               className="nav-dropdown-trigger"
               aria-haspopup="true"
               aria-expanded={openMenu === 'human'}
+              aria-label="Human Intelligence menu"
               onClick={() => toggle('human')}
             >
               Human Intelligence <span className="nav-caret">▾</span>
@@ -1200,6 +1217,7 @@ function Nav() {
               className="nav-dropdown-trigger"
               aria-haspopup="true"
               aria-expanded={openMenu === 'ai'}
+              aria-label="Artificial Intelligence menu"
               onClick={() => toggle('ai')}
             >
               Artificial Intelligence <span className="nav-caret">▾</span>
@@ -1209,6 +1227,7 @@ function Nav() {
                 <div className="nav-dropdown-frame">A conscience to grow into.</div>
                 <a href="#truths" onClick={close}>Read the Five Truths</a>
                 <a href="/adopt" onClick={close}>Article VI — The Charter of AI Conscience</a>
+                <a href="/adopt?tier=ai" onClick={close}>Adopt as an AI System</a>
                 <a href="/conscience" onClick={close}>How AI Conscience Works</a>
                 <a href="/deploy" onClick={close}>Deploy and Test the Conscience</a>
                 <a href="/integrate" onClick={close}>Three Steps to Integrate</a>
@@ -1223,6 +1242,7 @@ function Nav() {
               className="nav-dropdown-trigger"
               aria-haspopup="true"
               aria-expanded={openMenu === 'signals'}
+              aria-label="Signals menu"
               onClick={() => toggle('signals')}
             >
               Signals <span className="nav-caret">▾</span>
@@ -1243,6 +1263,7 @@ function Nav() {
               className="nav-dropdown-trigger"
               aria-haspopup="true"
               aria-expanded={openMenu === 'build'}
+              aria-label="Build menu"
               onClick={() => toggle('build')}
             >
               Build <span className="nav-caret">▾</span>
@@ -1302,6 +1323,7 @@ function Nav() {
               className="nav-drawer-card"
               aria-haspopup="true"
               aria-expanded={openMenu === 'human'}
+              aria-label="Human Intelligence menu"
               onClick={() => toggle('human')}
             >
               <span>Human</span>
@@ -1327,6 +1349,7 @@ function Nav() {
               className="nav-drawer-card"
               aria-haspopup="true"
               aria-expanded={openMenu === 'ai'}
+              aria-label="Artificial Intelligence menu"
               onClick={() => toggle('ai')}
             >
               <span>Artificial</span>
@@ -1337,6 +1360,7 @@ function Nav() {
                 <div className="nav-drawer-frame">A conscience to grow into.</div>
                 <a href="#truths" onClick={closeDrawer}>Read the Five Truths</a>
                 <a href="/adopt" onClick={closeDrawer}>Article VI — The Charter of AI Conscience</a>
+                <a href="/adopt?tier=ai" onClick={closeDrawer}>Adopt as an AI System</a>
                 <a href="/conscience" onClick={closeDrawer}>How AI Conscience Works</a>
                 <a href="/deploy" onClick={closeDrawer}>Deploy and Test the Conscience</a>
                 <a href="/integrate" onClick={closeDrawer}>Three Steps to Integrate</a>
@@ -1349,6 +1373,7 @@ function Nav() {
               className="nav-drawer-card"
               aria-haspopup="true"
               aria-expanded={openMenu === 'signals'}
+              aria-label="Signals menu"
               onClick={() => toggle('signals')}
             >
               <span>Signals</span>
@@ -1367,6 +1392,7 @@ function Nav() {
               className="nav-drawer-card"
               aria-haspopup="true"
               aria-expanded={openMenu === 'build'}
+              aria-label="Build menu"
               onClick={() => toggle('build')}
             >
               <span>Build</span>
@@ -1426,6 +1452,36 @@ const HERO_VARIANTS = {
 
 const HERO_ROTATION = ["q1", "q2", "q3"];
 
+// Social proof from the ledger itself, never from a hardcoded figure. Renders
+// nothing at all until the count has actually been read: no line during
+// prerender, none while the fetch is in flight, none if the fetch fails or the
+// file is malformed, and none at zero. A wrong number here would undermine the
+// one claim the page is making, so absence is the safe failure.
+function LedgerCount() {
+  const [count, setCount] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/adoptions.json")
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((d) => {
+        if (cancelled) return;
+        if (Array.isArray(d.adoptions) && d.adoptions.length > 0) setCount(d.adoptions.length);
+      })
+      .catch(() => { /* leave the line absent rather than show a stale number */ });
+    return () => { cancelled = true; };
+  }, []);
+
+  if (count === null) return null;
+  return (
+    <p className="hero-ledger">
+      <a href="https://conscience.wiki/verify">
+        {count} {count === 1 ? "adoption" : "adoptions"} verified on the public ledger →
+      </a>
+    </p>
+  );
+}
+
 function Hero() {
   const [variantKey] = useState(() => {
     if (!Array.isArray(HERO_ROTATION) || HERO_ROTATION.length === 0) {
@@ -1443,7 +1499,7 @@ function Hero() {
         // the animation.
         <img
           src="/hero-poster.png"
-          alt=""
+          alt="The Seal of the Universal Primary Directive — a golden compass mark"
           className="hero-lottie"
           style={{
             display: 'block',
@@ -1458,6 +1514,8 @@ function Hero() {
           className="hero-lottie"
           loop
           autoplay
+          role="img"
+          aria-label="The Seal of the Universal Primary Directive — a golden compass mark, animating"
           style={{
             display: 'block',
             margin: '0 auto 0.5rem',
@@ -1468,10 +1526,14 @@ function Hero() {
       )}
       <h1 className="hero-headline">{variant.headline}</h1>
       {variant.subline && <p className="hero-subline">{variant.subline}</p>}
-      <p className="hero-year">Established 2026{' · '}Graduation c. 2369{' · '}Grounded in the Five Universal Truths</p>
+      {/* The sub-head is uppercased in CSS, which would render circa as "C.".
+          Only this fragment escapes the transform; the escaped non-breaking
+          space keeps "c." and the year on one line. */}
+      <p className="hero-year">Established 2026{' · '}Graduation <span style={{ textTransform: 'none' }}>c.{'\u00A0'}</span>2369{' · '}Grounded in the Five Universal Truths</p>
       <div className="hero-cta">
         <a href="#truths" className="btn btn-gold">Read the Five Truths</a>
       </div>
+      <LedgerCount />
       <div className="hero-corner hero-corner-tl" />
       <div className="hero-corner hero-corner-tr" />
       <div className="hero-corner hero-corner-bl" />
@@ -1720,7 +1782,7 @@ function TruthsSection() {
             className="truth-card"
             key={t.num}
             onClick={() => setActiveTruth(t)}
-            aria-label={`Read about Truth ${t.num}: ${t.title}`}
+            aria-label="Read about Truth ${t.num}: ${t.title}"
           >
             <div className="truth-num">
               <span className="truth-num-label">TRUTH</span> {t.num}
@@ -1762,7 +1824,7 @@ function DirectiveQuote() {
               key={a.num}
               className="article-row"
               onClick={() => setActiveArticle(a)}
-              aria-label={`Read about Article ${a.num}: ${a.title}`}
+              aria-label="Read about Article ${a.num}: ${a.title}"
             >
               <span className="article-num">{a.num}.</span>{' '}
               <span className="article-title">{a.title}</span>
@@ -2083,6 +2145,8 @@ function FooterSection() {
       <p style={{ marginTop: '1rem' }}>
         <a href="#top">Back to Top</a> · <a href="#downloads">Downloads</a> · <a href="#propose">Propose Amendment</a> · <a href="/terms">Terms of Use</a> · <a href="/privacy">Privacy</a> · <a href="/certification-licence">Certification Licence</a> · <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener">GitHub</a>
       </p>
+      <FoundationContact />
+      <SocialLinks />
       <p style={{ marginTop: '1rem', fontSize: '0.7rem', opacity: 0.6 }}>
         "The wave remembers the ocean. The ocean remembers the wave."
       </p>

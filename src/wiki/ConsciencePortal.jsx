@@ -21,6 +21,14 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { NAV_ITEMS } from "./WikiLayout.jsx";
+import {
+  FOUNDATION_NAME,
+  FOUNDATION_STATUS,
+  FOUNDATION_JURISDICTION,
+  GENERAL_EMAIL,
+  PRIVACY_EMAIL,
+  SOCIAL_LINKS,
+} from "../FoundationFooter.jsx";
 import PersonalisedSeal from "../PersonalisedSeal.jsx";
 import { computeAdoptionHash, CONSCIENCE_SHA256 } from "../lib/adoptionHash.js";
 import {
@@ -99,7 +107,10 @@ const ok = await crypto.subtle.verify({ name: "Ed25519" }, key,
   new TextEncoder().encode(canonical));`;
 
 // Read the query from /verify/<reference> (path) or /verify?ref=<reference>.
+// Guarded for server rendering: conscience.wiki is runtime-only today, but an
+// unguarded window reference would break the moment a wiki route is prerendered.
 function queryFromUrl() {
+  if (typeof window === "undefined") return "";
   const parts = window.location.pathname.split("/").filter(Boolean);
   if (parts.length >= 2 && parts[0] === "verify") {
     return decodeURIComponent(parts[1]).trim();
@@ -131,6 +142,7 @@ function findByReference(ledger, reference) {
 // Preserve ?portal=1 on internal navigation so the portal preview survives on
 // hosts other than conscience.wiki (e.g. localhost).
 function navSuffix() {
+  if (typeof window === "undefined") return "";
   return window.location.hostname.includes("conscience.wiki") ? "" : "?portal=1";
 }
 
@@ -955,7 +967,22 @@ export default function ConsciencePortal() {
       </main>
 
       <footer className="cp-footer">
-        <p>Universal Primary Directive Foundation · CC0 · <a href="https://primedirective.dev">primedirective.dev</a></p>
+        <p>
+          {FOUNDATION_NAME} ({FOUNDATION_STATUS}) · {FOUNDATION_JURISDICTION} ·{" "}
+          <a href={`mailto:${GENERAL_EMAIL}`}>{GENERAL_EMAIL}</a>
+        </p>
+        <p>
+          CC0 · <a href="/privacy">Privacy</a> · data-subject requests:{" "}
+          <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>
+        </p>
+        <p>
+          {SOCIAL_LINKS.map(([label, href], i) => (
+            <span key={label}>
+              {i > 0 && " · "}
+              <a href={href} target="_blank" rel="noopener noreferrer">{label}</a>
+            </span>
+          ))}
+        </p>
         <a className="cp-community" href={`/community${navSuffix()}`}>Community knowledge base →</a>
       </footer>
     </div>
