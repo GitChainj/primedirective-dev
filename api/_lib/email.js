@@ -158,3 +158,46 @@ export async function sendConsentRecordEmail({ reference, path, adopterName, con
     html,
   });
 }
+
+// ── Private attestation record (Piece 3 Phase B) ──
+//
+// A successful attestation is recorded to the steward mailbox and NOWHERE else.
+// It is deliberately not published: the attestation names intermediate-cert,
+// revocation-list and transparency-log URLs that do not exist until B3, and a
+// signed document pointing at 404s would be worse than no document. Publication
+// becomes possible once those endpoints are live.
+//
+// The attestation contains only facts already on the public ledger plus the
+// signature, the signing timestamp and the key fingerprint.
+export async function sendAttestationRecordEmail({ reference, attestation }) {
+  const rows = [
+    ["Reference", attestation && attestation.reference],
+    ["Adopter", attestation && attestation.adopter],
+    ["Adoption date", attestation && attestation.adopted_date],
+    ["Signed at", attestation && attestation.signed_at],
+    ["Signing key", attestation && attestation.public_key_fingerprint],
+    ["Truths version", attestation && `${attestation.truths_version} (${attestation.truths_version_hash})`],
+    ["Articles version", attestation && `${attestation.articles_version} (${attestation.articles_version_hash})`],
+  ];
+  const html = shell(`
+    <p style="margin:0 0 14px"><strong>Signed attestation — internal record.</strong></p>
+    <p style="margin:0 0 18px;font-size:14px;color:#6b7280">
+      Phase B: issued and held privately. Not published — the certificate,
+      revocation and log URLs it names go live with B3. Do not distribute.
+    </p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      ${rows.map(([k, v]) => `<tr>
+        <td style="padding:7px 10px;border-bottom:1px solid rgba(0,0,0,.07);color:#6b7280;white-space:nowrap">${esc(k)}</td>
+        <td style="padding:7px 10px;border-bottom:1px solid rgba(0,0,0,.07);font-weight:600">${esc(v == null || v === "" ? "—" : v)}</td>
+      </tr>`).join("")}
+    </table>
+    <p style="margin:18px 0 6px;font-size:13px;color:#6b7280">The attestation as issued:</p>
+    <pre style="margin:0;padding:12px;background:rgba(0,0,0,.04);border-radius:8px;font-size:11px;line-height:1.5;white-space:pre-wrap;word-break:break-all">${esc(JSON.stringify(attestation, null, 2))}</pre>
+  `);
+  return resend().emails.send({
+    from: FROM,
+    to: STEWARD,
+    subject: `Attestation issued — ${reference || "adoption"}`,
+    html,
+  });
+}

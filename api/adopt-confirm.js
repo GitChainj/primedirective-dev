@@ -13,7 +13,8 @@ import {
 } from "./_lib/adoptionCore.js";
 import { verifyToken } from "./_lib/adoptToken.js";
 import { registryLink } from "./_lib/registries.js";
-import { sendStewardEmail, sendConsentRecordEmail } from "./_lib/email.js";
+import { sendStewardEmail, sendConsentRecordEmail, sendAttestationRecordEmail } from "./_lib/email.js";
+import { attestationEnabled, issueAttestation, identityClassForPath } from "./_lib/attestation.js";
 
 const SUBTYPE_LABELS = {
   founder: "Founder", solopreneur: "Solopreneur", "sole-proprietor": "Sole Proprietor",
@@ -57,6 +58,34 @@ export default async function handler(req, res) {
         });
       } catch (mailErr) {
         console.error("Steward email failed (adoption still recorded):", mailErr && mailErr.message);
+      }
+    }
+
+    // Signed attestation (Piece 3 Phase B) — INERT unless all three of
+    // UPD_ATTESTATION_ENABLED / UPD_SIGNING_SERVICE_URL / UPD_SIGNING_SERVICE_TOKEN
+    // are set, which they are not in production. The adoption and its ledger
+    // record are already final above; this is strictly additional and may never
+    // undo them, so every failure is swallowed into a log line. Held privately
+    // until B3 publishes the URLs the attestation names.
+    if (attestationEnabled()) {
+      try {
+        const result = await issueAttestation({
+          reference,
+          adopterName,
+          adoptionDate,
+          adoptionPath: path,
+          // The class the adopter was actually shown and consented to, as
+          // carried in the confirmation token; the path derivation is only a
+          // fallback for a token minted before consent capture existed.
+          identityClass: (consent && consent.identityClass) || identityClassForPath(path),
+        });
+        if (result.ok) {
+          await sendAttestationRecordEmail({ reference, attestation: result.attestation });
+        } else {
+          console.error("Attestation not issued:", result.reason, result.detail || "");
+        }
+      } catch (attErr) {
+        console.error("Attestation step failed (adoption still recorded):", attErr && attErr.message);
       }
     }
 

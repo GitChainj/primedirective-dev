@@ -50,6 +50,17 @@ export default async function handler(req, res) {
       const { issue, reference, hash, date } = await createAdoptionIssue(octokit, {
         path, data, adoptionDate,
       });
+      // EXTENSION POINT — attestation issuance for the ai-system path.
+      //
+      // Deliberately absent. v2.json requires adopter_public_key_fingerprint for
+      // adoption_path "ai-system", and the site collects no key for an adopting
+      // AI, so api/_lib/attestation.js refuses the path (AI_PATH_NOT_SUPPORTED)
+      // rather than guessing. Binding an AI adoption to the AI's own key is the
+      // keystone of the AI-to-AI trust network and gets its own design pass.
+      //
+      // When that lands, the hook is the same six lines used in
+      // api/adopt-confirm.js, placed right here, after the issue exists.
+
       // Private accountability copy; a mail failure must never undo an adoption.
       try {
         await sendConsentRecordEmail({ reference, path, adopterName: data.name || data.fullName || data.systemName || null, consent });

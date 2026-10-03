@@ -7,7 +7,8 @@ data.
 
 ## Files
 - `../../public/schemas/ai-conscience/v2.json` — the v2 attestation JSON Schema
-  (32 discrete fields: the Piece 3 set plus `adoption_path` and
+  (34 discrete fields: the Piece 3 set plus `adoption_path`, the optional
+  `truths_version_hash` / `articles_version_hash` anchors, and
   `signature_algorithm`; `adopter_public_key_fingerprint` is required when
   `adoption_path` is `ai-system`).
 - `../../public/schemas/ai-conscience/intermediate-cert/v1.json` — the formal
