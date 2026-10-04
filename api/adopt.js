@@ -14,7 +14,8 @@ import {
   VALID_PATHS, CONSCIENCE_SHA256, validate, createAdoptionIssue,
 } from "./_lib/adoptionCore.js";
 import { signToken } from "./_lib/adoptToken.js";
-import { sendConfirmationEmail, sendConsentRecordEmail, SITE_URL } from "./_lib/email.js";
+import { sendConfirmationEmail, sendConsentRecordEmail, sendAttestationRecordEmail, SITE_URL } from "./_lib/email.js";
+import { attestationEnabled, issueAttestation, identityClassForPath } from "./_lib/attestation.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -50,16 +51,31 @@ export default async function handler(req, res) {
       const { issue, reference, hash, date } = await createAdoptionIssue(octokit, {
         path, data, adoptionDate,
       });
-      // EXTENSION POINT — attestation issuance for the ai-system path.
-      //
-      // Deliberately absent. v2.json requires adopter_public_key_fingerprint for
-      // adoption_path "ai-system", and the site collects no key for an adopting
-      // AI, so api/_lib/attestation.js refuses the path (AI_PATH_NOT_SUPPORTED)
-      // rather than guessing. Binding an AI adoption to the AI's own key is the
-      // keystone of the AI-to-AI trust network and gets its own design pass.
-      //
-      // When that lands, the hook is the same six lines used in
-      // api/adopt-confirm.js, placed right here, after the issue exists.
+      // Signed attestation for this AI adoption (Piece 3 Phase B) — INERT unless
+      // all three UPD_ATTESTATION_* vars are set, which they are not in
+      // production. The ledger record above is already final; this is strictly
+      // additional and may never undo it. AI identity v1 supplies the did:key
+      // that makes the v2 ai-system conditional satisfiable.
+      if (attestationEnabled()) {
+        try {
+          const result = await issueAttestation({
+            reference,
+            adopterName: data.aiName,
+            adoptionDate: date,
+            adoptionPath: path,
+            identityClass: (consent && consent.identityClass) || identityClassForPath(path),
+            adopterDid: data.adopterDid,
+            submissionType: data.submissionType,
+          });
+          if (result.ok) {
+            await sendAttestationRecordEmail({ reference, attestation: result.attestation });
+          } else {
+            console.error("Attestation not issued:", result.reason, result.detail || "");
+          }
+        } catch (attErr) {
+          console.error("Attestation step failed (adoption still recorded):", attErr && attErr.message);
+        }
+      }
 
       // Private accountability copy; a mail failure must never undo an adoption.
       try {

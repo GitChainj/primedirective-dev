@@ -22,10 +22,14 @@
 // proves the Foundation signed a statement. They are linked only by
 // verification_url pointing at the reference's verify page.
 //
-// ── Human and organisation paths only ──
-// See AI_PATH_NOT_SUPPORTED below.
+// ── All three paths ──
+// AI identity v1 un-deferred the ai-system path: an AI adoption now carries the
+// adopter's own did:key, so adopter_public_key_fingerprint is derived from a real
+// key rather than guessed, and the two autonomy-gradient axes (key_custody,
+// comprehension) are recorded with it.
 
-import { createHash } from "node:crypto";
+import { createHash, createPublicKey } from "node:crypto";
+import { isDidKey, rawPublicKeyFromDidKey, spkiPemFromRawPublicKey } from "../../src/lib/didKey.js";
 
 const V2_SCHEMA = "https://primedirective.dev/schemas/ai-conscience/v2";
 const TIMEOUT_MS = 6000;
@@ -86,26 +90,52 @@ export function attestationEnabled(env = process.env) {
   );
 }
 
-// ── EXTENSION POINT: the ai-system path ──
+// ── The ai-system path ──
 //
 // v2.json requires adopter_public_key_fingerprint when adoption_path is
-// "ai-system", and the site collects no key for an adopting AI (the form takes
-// aiName, platform, briefStatement, steward details). Binding an AI adoption to
-// the AI's own key is the keystone of the AI-to-AI trust network and deserves its
-// own design pass — "AI cryptographic identity" — so this module refuses the path
-// rather than guessing at a fingerprint.
+// "ai-system". Until AI identity v1 that field had no source and this module
+// refused the path rather than guess at it; now the adoption collects the
+// adopter's did:key, so the fingerprint is derived from a key the adopter can be
+// challenged to prove it holds.
 //
-// To add it later: collect the adopter's public key, derive its fingerprint with
-// the same rule the signing service uses (SPKI DER → SHA-256 → first 8 bytes
-// hex), set adopter_public_key_fingerprint in buildUnsignedAttestation, and widen
-// pathSupported. Nothing else here is path-specific, and the call site needs no
-// change: it already asks this module whether a path is supported.
-export const AI_PATH_NOT_SUPPORTED =
-  "ai-system attestations are out of scope until AI cryptographic identity is designed";
+// The remaining honest limit, stated rather than papered over: a signature proves
+// control of a key, not that the AI rather than its operator controls it. That is
+// exactly what key_custody discloses.
+export const AI_KEY_REQUIRED =
+  "an ai-system adoption requires the adopter's did:key — a keyless record cannot answer a verification challenge";
 
 export function pathSupported(adoptionPath) {
-  return adoptionPath === "person" || adoptionPath === "organisation";
+  return adoptionPath === "person" || adoptionPath === "organisation" || adoptionPath === "ai-system";
 }
+
+// ── The fingerprint, by the one rule ──
+//
+// Identical to upd-signing-service/src/fingerprint.js: SPKI DER → SHA-256 →
+// first 8 bytes, lowercase hex. Reached here from a did:key via the shared
+// helper in src/lib/didKey.js, whose test asserts every implementation agrees
+// on a known key. Synchronous on purpose: node:crypto rather than crypto.subtle,
+// so the payload builder stays a plain function.
+export function fingerprintFromDid(did) {
+  const pem = spkiPemFromRawPublicKey(rawPublicKeyFromDidKey(did));
+  const der = createPublicKey(pem).export({ type: "spki", format: "der" });
+  return createHash("sha256").update(der).digest("hex").slice(0, 16);
+}
+
+// ── The autonomy gradient ──
+//
+// Axis A, key custody, is a DISCLOSURE and not a ranking: a steward-submitted
+// adoption is operator_held, which is full baseline trust because a named,
+// answerable party stands behind the commitment. An AI that generated and holds
+// its own key is self_generated. enclave_attested is designed for, not built.
+export function keyCustodyFor(submissionType) {
+  return submissionType === "independent" ? "self_generated" : "operator_held";
+}
+
+// Axis B, comprehension. v1 only ever writes "asserted": the field exists for
+// forward-compatibility, and "demonstrated" waits on the comprehension-challenge
+// design. Claiming a capability before it is built would be the one dishonesty
+// this whole path is meant to avoid.
+export const COMPREHENSION_V1 = "asserted";
 
 // Server-side mirror of identityClassFor in src/AdoptConsent.jsx. Duplicated
 // rather than imported because api/ cannot import a client .jsx module. Used
@@ -131,11 +161,26 @@ export function buildUnsignedAttestation({
   adoptionDate,
   adoptionPath,
   identityClass,
+  adopterDid,
+  submissionType,
   siteUrl = "https://conscience.wiki",
 }) {
-  if (!pathSupported(adoptionPath)) throw new Error(AI_PATH_NOT_SUPPORTED);
+  if (!pathSupported(adoptionPath)) throw new Error(`unsupported adoption path: ${adoptionPath}`);
+  // An AI adoption without a key cannot be attested: v2 requires the fingerprint
+  // for this path, and a record that cannot answer a challenge cannot take part
+  // in the network the key exists for.
+  if (adoptionPath === "ai-system" && !isDidKey(adopterDid)) throw new Error(AI_KEY_REQUIRED);
 
   const base = siteUrl.replace(/\/+$/, "");
+  // The key and the gradient appear only for the path they describe.
+  const identity = adoptionPath === "ai-system"
+    ? {
+        adopter_public_key_fingerprint: fingerprintFromDid(adopterDid),
+        adopter_did: String(adopterDid).trim(),
+        key_custody: keyCustodyFor(submissionType),
+        comprehension: COMPREHENSION_V1,
+      }
+    : {};
   return {
     schema: V2_SCHEMA,
     status: "adopted",
@@ -149,6 +194,7 @@ export function buildUnsignedAttestation({
     articles_version_hash: ARTICLES_VERSION_HASH,
     adoption_path: adoptionPath,
     adopter_identity_class: identityClass,
+    ...identity,
     intermediate_cert_url: `${base}/.well-known/ai-conscience-intermediate.cert.json`,
     verification_url: `${base}/verify/${reference}`,
     revocation_check_url: `${base}/revocations.json`,
@@ -197,7 +243,7 @@ export async function requestAttestation(unsigned, env = process.env) {
 }
 
 // What the call sites use: build, request, and never throw. Returns the same
-// shape as requestAttestation, with reason "unsupported-path" for ai-system.
+// shape as requestAttestation, with reason "unsupported-path" for an unknown path.
 export async function issueAttestation(facts, env = process.env) {
   if (!attestationEnabled(env)) return { ok: false, reason: "disabled" };
   if (!pathSupported(facts.adoptionPath)) return { ok: false, reason: "unsupported-path" };

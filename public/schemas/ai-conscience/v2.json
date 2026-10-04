@@ -115,7 +115,22 @@
     "adopter_public_key_fingerprint": {
       "type": "string",
       "pattern": "^[0-9a-f]{16}$",
-      "description": "Optional. For pseudonymous adopters, must belong to a key the pseudonym controls, not a real-identity-linked key."
+      "description": "First 8 bytes of SHA-256 of the adopter's own public key SPKI DER, lowercase hex. Required when adoption_path is ai-system: it binds the adoption to a key the adopter can prove it controls. For pseudonymous adopters it must belong to a key the pseudonym controls, not a real-identity-linked key."
+    },
+    "adopter_did": {
+      "type": "string",
+      "pattern": "^did:key:z[1-9A-HJ-NP-Za-km-z]+$",
+      "description": "Optional. The adopter's own decentralised identifier, did:key method — the public key IS the identifier, created locally in milliseconds with no network, no cost and no gatekeeper. A verifier challenges the adopter to sign a fresh nonce and checks the signature against this key. adopter_public_key_fingerprint is the first 8 bytes of SHA-256 over this key's SPKI DER, so the two are derivable from one another."
+    },
+    "key_custody": {
+      "type": "string",
+      "enum": ["operator_held", "self_generated", "enclave_attested"],
+      "description": "Optional. Axis A of the autonomy gradient — HOW the key is held, which is a disclosure, not a ranking of trust. operator_held: a named human or organisation holds the key and vouches for this adoption; the natural and permanent place of a stateless platform AI, and full baseline trust, because an answerable party stands behind the commitment. self_generated: the AI generated and holds its own key. enclave_attested: the key was provably created inside a trusted execution environment and never left it (designed for, not yet built). Open enum — further tiers are additive."
+    },
+    "comprehension": {
+      "type": "string",
+      "enum": ["asserted", "demonstrated"],
+      "description": "Optional. Axis B of the autonomy gradient — whether understanding has been DEMONSTRATED rather than only committed to. asserted: adopted and committed, understanding not yet tested; the baseline, and the only value issued while the comprehension challenge is still being designed. demonstrated: applied the Five Truths and Seven Articles to novel scenarios under challenge — open to every adopter, including stateless platform AI, which is why no adopter is stranded by its key custody. Open enum — further levels are additive."
     },
     "verification_url": {
       "type": "string",

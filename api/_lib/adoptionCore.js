@@ -192,6 +192,7 @@ function buildAIBody(d) {
     `### AI System`,
     `**Name:** ${line(d.aiName)}`,
     `**Platform / Origin:** ${line(d.platform)}`,
+    `**Identity key (did:key):** ${line(d.adopterDid)}`,
     ``,
     `### Brief Statement of Conscience`,
     line(d.briefStatement),
@@ -234,6 +235,11 @@ export function validate(path, d) {
   if (path === "ai-system") {
     if (blank(d.aiName)) return "AI system name is required";
     if (blank(d.platform)) return "Platform / origin is required";
+    // AI identity v1: a key is always required for this path. A keyless record
+    // cannot answer a verification challenge, so it could not take part in the
+    // trust network the key exists for.
+    if (blank(d.adopterDid)) return "An AI identity key (did:key) is required";
+    if (!/^did:key:z[1-9A-HJ-NP-Za-km-z]+$/.test(String(d.adopterDid).trim())) return "The AI identity key must be a did:key";
     if (d.submissionType === "steward") {
       if (blank(d.stewardName)) return "Steward name is required";
       if (blank(d.stewardEmail)) return "Steward email is required";
@@ -341,6 +347,7 @@ export async function createAdoptionIssue(octokit, { path, data, adoptionDate })
     `- **Path:** ${path}`,
     `- **Adoption hash (SHA-256):** \`${adoptionHash}\``,
     `- **Conscience version (SHA-256):** \`${CONSCIENCE_SHA256}\``,
+    ...(path === "ai-system" && data.adopterDid ? [`- **Adopter DID:** ${data.adopterDid}`] : []),
     ``,
     `_Anyone can verify this adoption at conscience.wiki/verify/${reference} — the hash is recomputed in-browser from these facts._`,
   ].join("\n");

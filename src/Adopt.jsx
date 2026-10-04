@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import AiIdentityKey from "./AiIdentityKey.jsx";
+import { isDidKey } from "./lib/didKey.js";
 import AdoptConsent, { DISCLOSURE_VERSION, identityClassFor } from "./AdoptConsent.jsx";
 import PersonalisedSeal from "./PersonalisedSeal.jsx";
 import REGISTRIES from "./data/registries.json";
@@ -170,6 +172,7 @@ const INITIAL_AI = {
   submissionType: "steward", // "steward" | "independent"
   aiName: "",
   platform: "",
+  adopterDid: "",   // did:key — required: a keyless AI cannot join the live trust network
   briefStatement: "",
   stewardName: "",
   stewardEmail: "",
@@ -2225,9 +2228,12 @@ function AISystemForm({ data, setData, onSubmit, submitting, consented, setConse
   const update = (key, value) => setData((prev) => ({ ...prev, [key]: value }));
   const isSteward = data.submissionType === "steward";
   const isIndependent = data.submissionType === "independent";
+  // A key is always required (design 7A): a keyless record cannot answer a
+  // verification challenge, so it could not participate in the live network.
   const valid =
     data.aiName.trim() &&
     data.platform.trim() &&
+    isDidKey(data.adopterDid) &&
     ((isSteward && data.stewardName.trim() && data.stewardEmail.trim()) ||
       (isIndependent && data.briefStatement.trim()));
 
@@ -2297,6 +2303,18 @@ function AISystemForm({ data, setData, onSubmit, submitting, consented, setConse
           value={data.platform}
           onChange={(e) => update("platform", e.target.value)}
           required
+        />
+      </div>
+
+      <div className="adopt-form-field">
+        <FieldLabel required>AI identity key</FieldLabel>
+        <span className="adopt-form-hint">
+          The public key this AI system is known by. Generate one here, or paste a key you
+          already hold — a human steward's key is fine and is recorded as such.
+        </span>
+        <AiIdentityKey
+          value={data.adopterDid}
+          onChange={(did) => update("adopterDid", did)}
         />
       </div>
 

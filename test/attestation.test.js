@@ -20,7 +20,7 @@ import {
   issueAttestation,
   pathSupported,
   requestAttestation,
-  AI_PATH_NOT_SUPPORTED,
+  AI_KEY_REQUIRED,
   TRUTHS_VERSION,
   TRUTHS_VERSION_HASH,
   ARTICLES_VERSION,
@@ -66,18 +66,22 @@ test("with the flag off, no request is attempted", async () => {
 
 // ── Path support and the AI extension point ──
 
-test("the ai-system path is refused, not guessed at", async () => {
+test("all three paths are supported, and a keyless AI adoption is refused", async () => {
   assert.strictEqual(pathSupported("person"), true);
   assert.strictEqual(pathSupported("organisation"), true);
-  assert.strictEqual(pathSupported("ai-system"), false);
+  assert.strictEqual(pathSupported("ai-system"), true, "AI identity v1 un-deferred this path");
+  assert.strictEqual(pathSupported("something-else"), false);
 
+  // A key is the price of participation: without one the record could not answer
+  // a verification challenge, so it is refused rather than attested hollow.
   assert.throws(
-    () => buildUnsignedAttestation({ ...FACTS, adoptionPath: "ai-system" }),
-    new RegExp("AI cryptographic identity"),
+    () => buildUnsignedAttestation({ ...FACTS, reference: "UPD-2026-T8110", adoptionPath: "ai-system" }),
+    /requires the adopter's did:key/,
   );
   const result = await issueAttestation({ ...FACTS, adoptionPath: "ai-system" }, ON);
-  assert.strictEqual(result.reason, "unsupported-path");
-  assert.match(AI_PATH_NOT_SUPPORTED, /ai-system/);
+  assert.strictEqual(result.ok, false);
+  assert.match(result.reason, /^build:/);
+  assert.match(AI_KEY_REQUIRED, /did:key/);
 });
 
 test("identity class mirrors the client derivation", () => {
@@ -226,7 +230,7 @@ test("ACCEPTANCE: an issued attestation passes steps 1 and 2 of verify.js", { sk
   });
 });
 
-test("the signing service accepts the extended schema (34 fields)", { skip }, async (t) => {
+test("the signing service accepts the extended schema (37 fields)", { skip }, async (t) => {
   await withService(t, async ({ env }) => {
     const org = await issueAttestation(
       { ...FACTS, reference: "UPD-2026-T8102", adoptionPath: "organisation", identityClass: "organizational" },
@@ -235,6 +239,58 @@ test("the signing service accepts the extended schema (34 fields)", { skip }, as
     assert.ok(org.ok, `organisation path failed: ${org.reason} ${org.detail || ""}`);
     assert.strictEqual(org.attestation.adoption_path, "organisation");
     assert.strictEqual(org.attestation.adopter_identity_class, "organizational");
+  });
+});
+
+
+test("ACCEPTANCE: an AI attestation carries the key and both axes, and verifies", { skip }, async (t) => {
+  await withService(t, async ({ env }) => {
+    const crypto = await import("node:crypto");
+    const { didKeyFromRawPublicKey } = await import("../src/lib/didKey.js");
+    const kp = crypto.generateKeyPairSync("ed25519");
+    const der = kp.publicKey.export({ type: "spki", format: "der" });
+    const did = didKeyFromRawPublicKey(new Uint8Array(der.subarray(12)));
+
+    const independent = await issueAttestation({
+      reference: "UPD-2026-T8201",
+      adopterName: "Independent Test AI",
+      adoptionDate: "2026-10-04",
+      adoptionPath: "ai-system",
+      identityClass: "public_name",
+      adopterDid: did,
+      submissionType: "independent",
+    }, env);
+    assert.ok(independent.ok, `ai-system issuance failed: ${independent.reason} ${independent.detail || ""}`);
+
+    const att = independent.attestation;
+    assert.strictEqual(att.adoption_path, "ai-system");
+    assert.strictEqual(att.adopter_did, did);
+    assert.strictEqual(att.key_custody, "self_generated");
+    assert.strictEqual(att.comprehension, "asserted", "v1 never writes demonstrated");
+    // The fingerprint in the signed document must be the one rule's output.
+    assert.strictEqual(
+      att.adopter_public_key_fingerprint,
+      crypto.createHash("sha256").update(der).digest("hex").slice(0, 16),
+      "the signed fingerprint must match the signing service's own rule",
+    );
+    // And the adopter can prove it holds the key the attestation names.
+    const { verifyWithDidKey } = await import("../src/lib/didKey.js");
+    const nonce = "a verifier's nonce";
+    const sig = new Uint8Array(crypto.sign(null, Buffer.from(nonce, "utf8"), kp.privateKey));
+    assert.strictEqual(await verifyWithDidKey(att.adopter_did, nonce, sig), true);
+
+    // A steward-submitted adoption is operator_held — disclosure, not demotion.
+    const stewarded = await issueAttestation({
+      reference: "UPD-2026-T8202",
+      adopterName: "Stewarded Test AI",
+      adoptionDate: "2026-10-04",
+      adoptionPath: "ai-system",
+      identityClass: "public_name",
+      adopterDid: did,
+      submissionType: "steward",
+    }, env);
+    assert.ok(stewarded.ok, `stewarded issuance failed: ${stewarded.reason}`);
+    assert.strictEqual(stewarded.attestation.key_custody, "operator_held");
   });
 });
 

@@ -9,8 +9,11 @@
 // are curated. Rows already in the ledger that have no corresponding issue
 // (e.g. the founding UPD-2026-0001) are preserved untouched.
 //
-// The ledger schema is six fields ONLY — reference, name, path, date, hash,
-// conscience_version. Brief statements and narrative stay in the issues.
+// The ledger schema is six HASHED fields — reference, name, path, date, hash,
+// conscience_version — plus two NON-HASHED fields: status, and adopter_did (the
+// adopting AI's did:key, recorded so a verifier can challenge it to sign a
+// nonce). Brief statements and narrative stay in the issues. Only the six hashed
+// fields enter the adoption hash; the hash-refusal below is keyed on them alone.
 //
 // Idempotent: re-running with no new verifiable adoptions changes nothing (the
 // file, including lastUpdated, is left byte-identical). lastUpdated is bumped to
@@ -102,6 +105,10 @@ function parseIssue(issue) {
     date: field(body, /\*\*Adoption date:\*\*\s*(\d{4}-\d{2}-\d{2})/),
     hash: field(body, /Adoption hash \(SHA-256\):\*\*\s*`?([0-9a-f]{64})`?/),
     conscience_version: field(body, /Conscience version \(SHA-256\):\*\*\s*`?([0-9a-f]{64})`?/),
+    // NON-HASHED and optional: present for AI adoptions from identity v1 on.
+    // Deliberately absent from the completeness check below, so a human or
+    // organisation record — which has no DID — still curates.
+    adopter_did: field(body, /\*\*Adopter DID:\*\*\s*(did:key:z[1-9A-HJ-NP-Za-km-z]+)/),
   };
   // Every field must be present for the record to be curatable.
   if (!row.reference || !row.name || !row.path || !row.date || !row.hash || !row.conscience_version) {
@@ -120,6 +127,7 @@ function orderedRow(r) {
     date: r.date,
     hash: r.hash,
     conscience_version: r.conscience_version,
+    adopter_did: r.adopter_did,
     status: r.status,
   };
 }
@@ -182,6 +190,12 @@ function main() {
     issueRefsSeen.add(parsed.reference);
     verified++;
 
+    // A pre-v1 AI adoption has no DID. That is history, not a defect: the record
+    // is complete and hash-verifying, so it curates normally and is only noted.
+    if (parsed.path === "ai-system" && !parsed.adopter_did) {
+      console.warn(`  NOTE     ${parsed.reference}: adopted before AI identity v1 (no DID recorded).`);
+    }
+
     const status = deriveStatus(issue);
 
     if (byRef.has(parsed.reference)) {
@@ -191,7 +205,15 @@ function main() {
       // path, not a gate.
       const cur = byRef.get(parsed.reference);
       const hashedKeys = ["reference", "name", "path", "date", "hash", "conscience_version"];
-      const drift = hashedKeys.filter((k) => cur[k] !== parsed[k]);
+      // adopter_did is NOT hashed, but it is immutable once curated: a key
+      // rotation changes the operational key under a DID, never the DID itself.
+      // So it joins the drift WARNING, and stays out of hashedKeys — the hash
+      // commits to name/path/date/conscience only.
+      const stableKeys = [...hashedKeys, "adopter_did"];
+      // Absent is absent: a row with no DID and an issue with no DID are not in
+      // drift, even though one is undefined and the other null.
+      const same = (a, b) => (a == null || a === "") ? (b == null || b === "") : a === b;
+      const drift = stableKeys.filter((k) => !same(cur[k], parsed[k]));
       if (drift.length) console.warn(`  NOTE     ${parsed.reference} already curated; issue differs in ${drift.join(", ")} (keeping existing).`);
       if (cur.status !== status) {
         cur.status = status;
