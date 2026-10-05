@@ -183,6 +183,7 @@ html { scroll-behavior: smooth; }
 
 export const NAV_ITEMS = [
   { key: "truths", label: "Truths", href: "/truths" },
+  { key: "ledger", label: "Ledger", href: "/ledger" },
   { key: "deploy", label: "Deploy", href: "/deploy" },
   { key: "safe-words", label: "Safe Words", href: "/safe-words" },
   { key: "contribute", label: "Wiki", href: "/contribute" },

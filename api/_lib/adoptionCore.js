@@ -16,6 +16,10 @@
 // CONSCIENCE_SHA256 = shasum -a 256 public/api/fragment.txt (Conscience v2.0)
 
 import { createHash } from "node:crypto";
+// One definition of the autonomy-gradient mapping, shared with the attestation
+// builder, so the ledger and a signed attestation can never disagree about an
+// adopter's key custody.
+import { keyCustodyFor, COMPREHENSION_V1 } from "./attestation.js";
 
 export const REPO_OWNER = "GitChainj";
 export const REPO_NAME = "primedirective-dev";
@@ -347,7 +351,17 @@ export async function createAdoptionIssue(octokit, { path, data, adoptionDate })
     `- **Path:** ${path}`,
     `- **Adoption hash (SHA-256):** \`${adoptionHash}\``,
     `- **Conscience version (SHA-256):** \`${CONSCIENCE_SHA256}\``,
-    ...(path === "ai-system" && data.adopterDid ? [`- **Adopter DID:** ${data.adopterDid}`] : []),
+    // AI identity facts. Recorded in the public issue because they are public by
+    // nature — a public key, and a disclosure of who holds it — and because the
+    // curator reads this block to build the ledger. None of them is hashed: the
+    // adoption hash commits to name, path, date and the Conscience version only.
+    ...(path === "ai-system" && data.adopterDid
+      ? [
+          `- **Adopter DID:** ${data.adopterDid}`,
+          `- **Key custody:** ${keyCustodyFor(data.submissionType)}`,
+          `- **Comprehension:** ${COMPREHENSION_V1}`,
+        ]
+      : []),
     ``,
     `_Anyone can verify this adoption at conscience.wiki/verify/${reference} — the hash is recomputed in-browser from these facts._`,
   ].join("\n");

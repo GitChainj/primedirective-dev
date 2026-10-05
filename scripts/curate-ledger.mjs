@@ -15,6 +15,12 @@
 // nonce). Brief statements and narrative stay in the issues. Only the six hashed
 // fields enter the adoption hash; the hash-refusal below is keyed on them alone.
 //
+// Two further NON-HASHED fields accompany an AI record: key_custody (who holds
+// the key) and comprehension (whether understanding has been demonstrated).
+// Like adopter_did they are optional, excluded from the completeness check, and
+// excluded from the hash — they disclose facts about an adopter, they do not
+// define the record.
+//
 // Idempotent: re-running with no new verifiable adoptions changes nothing (the
 // file, including lastUpdated, is left byte-identical). lastUpdated is bumped to
 // today's UTC date only when the adoptions array actually changes.
@@ -109,6 +115,8 @@ function parseIssue(issue) {
     // Deliberately absent from the completeness check below, so a human or
     // organisation record — which has no DID — still curates.
     adopter_did: field(body, /\*\*Adopter DID:\*\*\s*(did:key:z[1-9A-HJ-NP-Za-km-z]+)/),
+    key_custody: field(body, /\*\*Key custody:\*\*\s*(operator_held|self_generated|enclave_attested)/),
+    comprehension: field(body, /\*\*Comprehension:\*\*\s*(asserted|demonstrated)/),
   };
   // Every field must be present for the record to be curatable.
   if (!row.reference || !row.name || !row.path || !row.date || !row.hash || !row.conscience_version) {
@@ -128,6 +136,8 @@ function orderedRow(r) {
     hash: r.hash,
     conscience_version: r.conscience_version,
     adopter_did: r.adopter_did,
+    key_custody: r.key_custody,
+    comprehension: r.comprehension,
     status: r.status,
   };
 }
@@ -209,7 +219,7 @@ function main() {
       // rotation changes the operational key under a DID, never the DID itself.
       // So it joins the drift WARNING, and stays out of hashedKeys — the hash
       // commits to name/path/date/conscience only.
-      const stableKeys = [...hashedKeys, "adopter_did"];
+      const stableKeys = [...hashedKeys, "adopter_did", "key_custody", "comprehension"];
       // Absent is absent: a row with no DID and an issue with no DID are not in
       // drift, even though one is undefined and the other null.
       const same = (a, b) => (a == null || a === "") ? (b == null || b === "") : a === b;

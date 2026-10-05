@@ -2184,6 +2184,7 @@ import TermsOfUse from './TermsOfUse.jsx';
 import PrivacyPolicy from './PrivacyPolicy.jsx';
 import CertificationLicence from './CertificationLicence.jsx';
 import ConsciencePortal from './wiki/ConsciencePortal.jsx';
+import WikiLedger from './wiki/WikiLedger.jsx';
 
 // conscience.wiki and primedirective.dev share one codebase. The hostname
 // decides which identity a visitor sees. ?portal=1 previews the conscience.wiki
@@ -2208,6 +2209,7 @@ export default function App({ ssrPath, ssrIsWiki } = {}) {
   // primedirective.dev routing below (and the kept Vercel redirects).
   if (wiki) {
     if (path === '/')               return <ConsciencePortal />;
+    if (path === '/ledger')         return <WikiLedger />;
     if (path === '/community')      return <WikiHome />;
     if (path === '/truths')         return <WikiTruths />;
     if (path.startsWith('/truth/')) return <WikiTruth />;

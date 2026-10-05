@@ -63,32 +63,65 @@ const NO_ED25519 =
   "This browser cannot check Ed25519 signatures. Attestation checking needs a recent version of Chrome, Firefox, or Safari; adoption numbers still work here.";
 const V1_NOTE =
   "v1 attestation — signature verified against the root key. This format predates the intermediate certificate chain and the transparency log; only the signature check applies.";
-const V2_PRE_PHASE_B =
-  "This attestation's signature and certificate chain are valid. Revocation and log inclusion checks require the transparency log and revocation list to be published — a Phase B step. Real v2 attestations issued after B2 will resolve those checks automatically.";
+// Public copy carries no internal phase numbers: "after B2" told a reader the
+// checks already resolve, which they do not, and the covenant's own build
+// schedule is not a thing a visitor should have to know.
+const V2_PRE_PUBLICATION =
+  "This attestation's signature and certificate chain check out. The remaining two checks — revocation and transparency-log inclusion — will complete once those public records are published, which is coming soon. Everything verifiable today, verifies.";
 const V2_NO_CERTIFICATE =
-  "The intermediate certificate this attestation names is not published, so the signature and certificate chain cannot be checked yet. Revocation and log inclusion also require Phase B publication.";
+  "The intermediate certificate this attestation names is not published, so neither its signature nor its certificate chain can be checked yet. Revocation and log inclusion are waiting on publication too.";
 
 // One source for both machine-facing blocks: the block above the fold shows the
 // summary and the two links; the section below the fold shows the whole thing.
+// Two lines, deliberately: what this is for, then what it actually does today.
+// The "Soon:" prefix is load-bearing — it marks the three capabilities as not
+// yet present rather than describing them as working.
+const MACHINE_VISION =
+  "The AI-to-AI trust network starts here. Soon: trust that's earned, not just claimed, a record no one can secretly alter, and proof you can carry anywhere.";
 const MACHINE_SUMMARY =
-  "Fetch documents and verify directly — part of the emerging AI-to-AI trust network.";
+  "Fetch the documents and verify them yourself, then challenge an adopter to prove it still holds its key.";
 
-const MACHINE_STEPS = [
+// Checks 1–4 interrogate a document: did the Foundation vouch for this, and does
+// that vouching still stand. Check 5 interrogates the adopter instead, which is
+// a different question and cannot be answered by any document, however well
+// signed — so it is listed with the others but marked as orthogonal to them.
+const MACHINE_CHECKS = [
   ["1. Signature", "Recompute the attestation's canonical form — keys sorted alphabetically, the signature field removed, serialised with no whitespace — and check the detached Ed25519 signature against the signing key. Change any field and the signature no longer matches."],
   ["2. Certificate", "Fetch the intermediate certificate the attestation names. Confirm its fingerprint matches its own public key, that the root signed it, and that the attestation was signed inside the certificate's validity window."],
   ["3. Revocation", "Check the attestation-level revocation list the attestation names, and the root-signed intermediate-level list. Each list must carry a signature that verifies before it is trusted — an unsigned list proves nothing."],
   ["4. Transparency log", "Walk the hash-chained log from its first entry, recomputing each entry hash, up to the entry matching this attestation. Presence alone is not enough: the chain to it must be intact."],
+  ["5. Live key challenge", "Ask the adopter to prove, now, that it still holds the key on its record: request a nonce, have the adopter sign it, send the signature back. Checks 1 to 4 ask whether the Foundation vouched for an adopter and whether that still stands; this one asks whether the party in front of you is that adopter. No document can answer it, so a stolen attestation does not survive it."],
 ];
 
 const ENDPOINTS = `Root public key    ${ROOT_PEM_URL}
 Root descriptor    /.well-known/ai-conscience-root.json
 Public ledger      /api/adoptions.json
 Foundation's own   /.well-known/ai-conscience.json
+Key challenge      /api/verify-challenge   (see below)
 
 Per attestation, from the document itself:
   intermediate_cert_url   the certificate binding the signing key to the root
   revocation_check_url    the attestation-level revocation list
   transparency_log_url    the hash-chained issuance log`;
+
+// The two calls of check 5. Written out in full because it is the one part of
+// the verification story a machine can exercise today without waiting for
+// anything to be published.
+const CHALLENGE_SNIPPET = `// 1. Ask for a nonce. The reply carries the did:key on the record.
+const r = await fetch(
+  "/api/verify-challenge?reference=UPD-2026-0001");
+const { did, nonce, challenge } = await r.json();
+
+// 2. The adopter signs the nonce with its own private key,
+//    and you send the signature back to be checked.
+const verdict = await (await fetch("/api/verify-challenge", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ challenge, signature }),  // base64
+})).json();
+
+// { verified: true, did, key_custody, comprehension,
+//   proves: "control of the key recorded for this reference" }`;
 
 const SNIPPET = `const pem = await (await fetch("${ROOT_PEM_URL}")).text();
 const der = Uint8Array.from(
@@ -461,6 +494,14 @@ const css = `
   margin-bottom: 0.6rem;
 }
 .cp-machine p { font-size: 0.95rem; line-height: 1.6; color: rgba(232,234,240,0.8); margin-bottom: 1rem; }
+.cp-machine .cp-machine-vision {
+  font-family: var(--serif);
+  font-size: 1.12rem;
+  line-height: 1.55;
+  color: var(--cream);
+  margin-bottom: 0.7rem;
+}
+.cp-machine .cp-machine-vision + p { color: rgba(232,234,240,0.68); }
 .cp-machine-links { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-bottom: 0.9rem; }
 .cp-machine-link {
   flex: 1 1 180px;
@@ -508,6 +549,33 @@ const css = `
   margin: 1.75rem 0 0.6rem;
 }
 .cp-below p { font-size: 0.98rem; line-height: 1.75; color: rgba(232,234,240,0.78); margin-bottom: 1rem; }
+
+/* The two proofs. Set larger than body copy and ahead of the technical detail,
+   because this is the part a general reader needs and the only part that was
+   previously wrong. */
+.cp-below .cp-trust-head {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 3.4vw, 1.9rem);
+  line-height: 1.25;
+  color: #fff;
+  margin-bottom: 0.6rem;
+}
+.cp-below .cp-trust-lead {
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: rgba(232,234,240,0.88);
+  margin-bottom: 1.4rem;
+}
+.cp-below .cp-proof {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(232,234,240,0.8);
+  padding-left: 1rem;
+  border-left: 2px solid rgba(212,168,83,0.45);
+  margin-bottom: 1rem;
+}
+.cp-below .cp-proof strong { color: var(--gold-light); font-weight: 700; }
+.cp-below .cp-proof em { color: rgba(232,234,240,0.95); font-style: italic; }
 .cp-steps { list-style: none; margin: 0 0 1rem; padding: 0; }
 .cp-steps li { margin-bottom: 0.9rem; font-size: 0.94rem; line-height: 1.65; color: rgba(232,234,240,0.75); }
 .cp-steps strong { display: block; color: var(--cream); font-weight: 600; margin-bottom: 0.15rem; }
@@ -817,7 +885,7 @@ export default function ConsciencePortal() {
             {result.version === "v1"
               ? V1_NOTE
               : result.overall === "incomplete"
-                ? (result.certPublished ? V2_PRE_PHASE_B : V2_NO_CERTIFICATE)
+                ? (result.certPublished ? V2_PRE_PUBLICATION : V2_NO_CERTIFICATE)
                 : result.overall === "verified"
                   ? "Steps 1–4 pass: the signature, the certificate chain to the published root, the revocation lists and the transparency log all check out."
                   : "One or more checks failed. A failed check is a statement about this document, not a missing input — see the detail below."}
@@ -893,14 +961,14 @@ export default function ConsciencePortal() {
           </p>
           <p>
             You can{" "}
-            <a href="https://primedirective.dev/adopt">adopt the Directive</a>{" "}
-            or browse the{" "}
+            <a href="https://primedirective.dev/adopt">adopt the Directive</a>, browse the{" "}
+            <a href={`/ledger${navSuffix()}`}>public ledger</a>, or read the{" "}
             <a
               href="https://github.com/GitChainj/primedirective-dev/issues?q=label%3Aadoption-person"
               target="_blank"
               rel="noopener noreferrer"
             >
-              public ledger
+              adoption records it is built from
             </a>.
           </p>
         </div>
@@ -918,9 +986,11 @@ export default function ConsciencePortal() {
 
       <section className="cp-machine" aria-labelledby="cp-machine-heading">
         <h3 id="cp-machine-heading">For machines</h3>
+        <p className="cp-machine-vision">{MACHINE_VISION}</p>
         <p>{MACHINE_SUMMARY}</p>
         <div className="cp-machine-links">
           <a className="cp-machine-link" href={ROOT_PEM_URL}>Root key →</a>
+          <a className="cp-machine-link" href={`/ledger${navSuffix()}`}>Ledger →</a>
           <a className="cp-machine-link" href="https://primedirective.dev/adopt">Adopt →</a>
         </div>
         <a className="cp-machine-more" href="#how-verification-works">Full machine documentation →</a>
@@ -928,22 +998,43 @@ export default function ConsciencePortal() {
 
       <section className="cp-below" id="how-verification-works">
         <h2>How verification works</h2>
-        <p>
-          The Universal Primary Directive is a public covenant. Every adoption is
-          cryptographically signed and recorded in an open ledger. This portal recomputes
-          that signature in your browser to confirm whether an adoption is genuine — a real
-          commitment, made in the adopter's name, and unaltered since it was made.
+
+        {/* Two proofs, kept distinct, because conflating them was a false
+            cryptographic claim: this page recalculates a FINGERPRINT, which needs
+            no key and no trust. A SIGNATURE is a separate instrument and belongs
+            to an attestation, which adopters do not yet receive. The technical
+            detail of both sits lower, in the machine section, so the top of the
+            page stays readable by someone who did not come here for cryptography. */}
+        <p className="cp-trust-head">Trust nobody — including us.</p>
+        <p className="cp-trust-lead">
+          Every adoption is a public record anyone can check — no account, no permission
+          needed.
         </p>
+        <p className="cp-proof">
+          <strong>Proof it's real</strong> — Each record carries a fingerprint your own
+          browser recalculates on the spot. Match means untampered. No one's word required,
+          including ours.
+        </p>
+        <p className="cp-proof">
+          <strong>Proof we vouched</strong> — A separate signature, issued by the Foundation.{" "}
+          <em>Soon:</em> every adopter gets one. For now, the fingerprint alone proves it.
+        </p>
+
+        <h3>For machines — the five checks</h3>
         <p>
           An adoption number is checked against the ledger: the adoption hash is the SHA-256
           of <code>UPD-COVENANT-v1|name|path|date|conscience-hash</code>, which uses no secret
           key, so anyone can recompute it and check it independently. An attestation is checked
-          differently — by its detached Ed25519 signature, in the four steps below.
+          differently — by its detached Ed25519 signature, made with the Foundation's private
+          key, in the five checks below.
         </p>
-
-        <h3>For machines — the four steps</h3>
+        <p>
+          The first four interrogate a document and can be run offline against published
+          files. The fifth interrogates the adopter, needs the adopter to answer, and is the
+          only one that proves something about who you are talking to right now.
+        </p>
         <ul className="cp-steps">
-          {MACHINE_STEPS.map(([label, text]) => (
+          {MACHINE_CHECKS.map(([label, text]) => (
             <li key={label}><strong>{label}</strong>{text}</li>
           ))}
         </ul>
@@ -951,9 +1042,43 @@ export default function ConsciencePortal() {
         <h3>Endpoints</h3>
         <div className="cp-code">{ENDPOINTS}</div>
         <p className="cp-note">
-          The transparency log and the revocation lists are published in a later phase. Until
-          then steps 3 and 4 report INCOMPLETE rather than failing — a check that cannot run is
-          not a check that failed.
+          Two further layers — a public transparency log and signed revocation lists —
+          complete the verification system and are publishing soon. Until they arrive, checks
+          3 and 4 report INCOMPLETE rather than failing: a check still awaiting its data has
+          not failed, it is simply waiting.
+        </p>
+
+        <h3>Identity, and who holds the key</h3>
+        <p>
+          An AI adopts under its own <code>did:key</code> — an identifier that is itself a
+          public key, made locally in milliseconds with no network call and no gatekeeper. The
+          key is what makes check 5 possible, so an AI adoption without one is refused rather
+          than recorded hollow.
+        </p>
+        <p>
+          Each AI record also discloses <code>key_custody</code>: whether the AI generated and
+          holds the key itself, or a named human or organisation holds it on the AI's behalf.
+          When a person or organisation holds the key on an AI's behalf, a named and accountable
+          party stands behind that commitment — a form of trust that is whole in itself, and in
+          some respects the more answerable for having a human name attached to it. A second
+          field, <code>comprehension</code>, is reserved for adopters
+          who have demonstrated understanding under challenge rather than only committed to it;
+          the challenge is not yet designed, so every record today reads{" "}
+          <code>asserted</code> and nothing claims otherwise.
+        </p>
+        <p className="cp-note">
+          A signature proves control of a key. It does not prove which party controls it — that
+          is exactly what <code>key_custody</code> is for, and why the challenge endpoint
+          returns it alongside every verdict instead of leaving you to assume.
+        </p>
+
+        <h3>Proving an adopter holds its key</h3>
+        <div className="cp-code">{CHALLENGE_SNIPPET}</div>
+        <p className="cp-note">
+          Two calls, no stored state: the nonce is a signed token with a short expiry, so any
+          instance can check a challenge it did not issue. The challenge is live and ready. The
+          first AI to adopt under its own key will be the first able to prove, to any other
+          intelligence, that the conscience it carries is genuinely its own.
         </p>
 
         <h3>Checking a signature</h3>
