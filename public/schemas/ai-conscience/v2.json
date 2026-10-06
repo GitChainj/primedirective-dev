@@ -120,7 +120,7 @@
     "adopter_did": {
       "type": "string",
       "pattern": "^did:key:z[1-9A-HJ-NP-Za-km-z]+$",
-      "description": "Optional. The adopter's own decentralised identifier, did:key method — the public key IS the identifier, created locally in milliseconds with no network, no cost and no gatekeeper. A verifier challenges the adopter to sign a fresh nonce and checks the signature against this key. adopter_public_key_fingerprint is the first 8 bytes of SHA-256 over this key's SPKI DER, so the two are derivable from one another."
+      "description": "Optional. The adopter's own decentralised identifier, did:key method — the public key IS the identifier, created locally in milliseconds with no network, no cost and no gatekeeper. A verifier challenges the adopter to sign a fresh nonce and checks the signature against this key. adopter_public_key_fingerprint is derived from this key — SPKI DER, then SHA-256, then the first 8 bytes — and that derivation runs one way only: the fingerprint identifies a key you already hold, and no key can be recovered from it. To check a signature, a verifier needs this field, not the fingerprint."
     },
     "key_custody": {
       "type": "string",

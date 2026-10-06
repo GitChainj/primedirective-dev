@@ -887,7 +887,7 @@ export default function ConsciencePortal() {
               : result.overall === "incomplete"
                 ? (result.certPublished ? V2_PRE_PUBLICATION : V2_NO_CERTIFICATE)
                 : result.overall === "verified"
-                  ? "Steps 1–4 pass: the signature, the certificate chain to the published root, the revocation lists and the transparency log all check out."
+                  ? "All four checks pass: the signature, the certificate chain to the published root, the revocation lists and the transparency log all check out."
                   : "One or more checks failed. A failed check is a statement about this document, not a missing input — see the detail below."}
           </p>
           <div className="verify-card">
@@ -1026,7 +1026,9 @@ export default function ConsciencePortal() {
           of <code>UPD-COVENANT-v1|name|path|date|conscience-hash</code>, which uses no secret
           key, so anyone can recompute it and check it independently. An attestation is checked
           differently — by its detached Ed25519 signature, made with the Foundation's private
-          key, in the five checks below.
+          key. Paste one above and this page runs the first four checks below; the fifth needs
+          the adopter itself to answer, so it runs at the verification endpoint rather than from
+          a pasted document.
         </p>
         <p>
           The first four interrogate a document and can be run offline against published
