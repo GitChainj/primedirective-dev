@@ -120,7 +120,7 @@ export default function WikiGuidelines() {
           <li>The steward reviews each submission within 48 hours.</li>
           <li>Accepted contributions are published with the contributor's chosen name.</li>
           <li>Declined contributions receive a brief explanation.</li>
-          <li>All contributions are CC0 public domain.</li>
+          <li>Contributions are dedicated to the public domain (CC0) so the covenant can publish them under its CC BY 4.0 terms.</li>
         </ul>
       </div>
 

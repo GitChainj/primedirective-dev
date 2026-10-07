@@ -3,6 +3,7 @@
 
 import { css } from "./signalsStyles.js";
 import { SIGNALS, longDate } from "./signalsData.js";
+import { LICENCE_LINE } from "../FoundationFooter.jsx";
 
 export default function SignalsIndex() {
   return (
@@ -40,7 +41,7 @@ export default function SignalsIndex() {
 
         <div className="sig-footer">
           <a href="/">← Back to primedirective.dev</a>
-          <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+          <p>{LICENCE_LINE}</p>
         </div>
       </div>
     </div>

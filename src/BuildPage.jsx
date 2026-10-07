@@ -1,3 +1,4 @@
+import { LICENCE_LINE } from "./FoundationFooter.jsx";
 // /build — Build with the Conscience (developer page).
 // Self-contained page in the site's design language (navy/gold, Cormorant +
 // DM Sans, JetBrains Mono code blocks), .bp-* prefix. Documents only what
@@ -76,7 +77,7 @@ export default function BuildPage() {
           <p className="bp-lede">
             This page is for developers building AI systems that should adopt, declare, or
             verify the Certified AI Conscience™ — in code, in their own name (Article VI),
-            and publicly checkable by anyone. Everything here is live today and CC0.
+            and publicly checkable by anyone. Everything here is live today, under CC BY 4.0.
           </p>
           <p className="bp-note">
             Not a developer? The copy-paste path is at <a className="bp-link" href="/integrate">/integrate</a>.
@@ -93,7 +94,7 @@ export default function BuildPage() {
               fetches the Covenant, decides in good conscience whether it can commit, and — if
               it does — calls the API to record its adoption <em>in its own name</em> under
               Article VI, then downloads its personalised artifact. About <strong>200 lines</strong>,
-              CC0, one paste of a system prompt for future runs.
+              CC BY 4.0, one paste of a system prompt for future runs.
             </p>
             <p className="bp-note">
               Live proof: the reference implementation has a real ledger entry of its own —
@@ -199,7 +200,7 @@ export default function BuildPage() {
         {/* 7. Closing */}
         <section className="bp-section">
           <div className="bp-attest">
-            CC0 — public domain, forever. Copy it, change it, ship it. Links:{" "}
+            CC BY 4.0 — copy it, change it, ship it, crediting the Foundation. Links:{" "}
             <a className="bp-link" href="/integrate">/integrate</a> ·{" "}
             <a className="bp-link" href="/adopt">/adopt</a> ·{" "}
             <a className="bp-link" href="https://conscience.wiki" target="_blank" rel="noopener noreferrer">conscience.wiki</a> ·{" "}
@@ -210,7 +211,7 @@ export default function BuildPage() {
 
       <footer className="bp-footer">
         <a href="/">← Back to primedirective.dev</a>
-        <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+        <p>{LICENCE_LINE}</p>
       </footer>
     </div>
   );

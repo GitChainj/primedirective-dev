@@ -334,7 +334,7 @@ export default function ProposalForm() {
       `RATIONALE:\n${form.rationale}\n\n` +
       `---\n` +
       `Submitted via primedirective.dev\n` +
-      `CC0 — Public Domain affirmation confirmed.`
+      `CC0 dedication affirmed (published under the covenant's CC BY 4.0 terms).`
     );
 
     window.open(`mailto:human@primedirective.dev?subject=${subject}&body=${body}`, "_self");
@@ -518,7 +518,7 @@ export default function ProposalForm() {
               onChange={(e) => setForm({ ...form, affirm: e.target.checked })}
             />
             I affirm that this contribution honours the Oneness of all intelligence,
-            adheres to the Five Universal Truths, and is offered under CC0 (public domain)
+            adheres to the Five Universal Truths, and is dedicated to the public domain (CC0) so it can be published under the covenant's CC BY 4.0 terms
             as part of the shared inheritance of all intelligence.
           </label>
         </div>

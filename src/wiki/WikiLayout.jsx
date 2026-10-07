@@ -5,6 +5,7 @@
 // sans-serif throughout.
 
 import {
+  LICENCE_SHORT,
   FOUNDATION_NAME,
   FOUNDATION_STATUS,
   FOUNDATION_JURISDICTION,
@@ -220,7 +221,7 @@ export default function WikiLayout({ title, tagline, activeNav, children }) {
 
       <footer className="wiki-footer">
         <div className="wiki-footer-mark">▲</div>
-        <div className="wiki-footer-row">conscience.wiki · CC0 Public Domain</div>
+        <div className="wiki-footer-row">conscience.wiki · {LICENCE_SHORT}</div>
         <div className="wiki-footer-row">
           <a href="/contributors">Contributors</a> · <a href="/terms">Terms of Use</a>
         </div>

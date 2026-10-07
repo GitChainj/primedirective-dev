@@ -37,7 +37,7 @@ function shell(inner) {
     </div>
     <div style="padding:28px 32px;font-size:15px;line-height:1.7;color:#1a1a1a">${inner}</div>
     <div style="padding:18px 32px 26px;font-size:12px;line-height:1.6;color:#6b7280;border-top:1px solid rgba(0,0,0,.07)">
-      CC0 &mdash; Public Domain. This belongs to all intelligence.<br>
+      Texts CC BY 4.0 &middot; Software Apache 2.0<br>
       <a href="${SITE_URL}" style="color:#2e6b9e;text-decoration:none">primedirective.dev</a>
     </div>
   </div>

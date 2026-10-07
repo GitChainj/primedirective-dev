@@ -260,7 +260,7 @@ export default function WikiForm({ type, defaultTruth }) {
       </button>
 
       <p className="wiki-form-note">
-        All contributions are CC0 public domain. Submissions are reviewed by the
+        Contributions are dedicated to the public domain (CC0) so the covenant can publish them under its CC BY 4.0 terms. Submissions are reviewed by the
         steward before they appear on the wiki.
       </p>
 

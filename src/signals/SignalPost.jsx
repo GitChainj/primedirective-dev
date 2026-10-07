@@ -5,6 +5,7 @@
 
 import { css } from "./signalsStyles.js";
 import { getSignal, longDate } from "./signalsData.js";
+import { LICENCE_LINE } from "../FoundationFooter.jsx";
 
 const SITE = "https://www.primedirective.dev";
 
@@ -65,7 +66,7 @@ export default function SignalPost({ slug }) {
 
         <div className="sig-footer">
           <a href="/signals">← All Signals</a>
-          <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+          <p>{LICENCE_LINE}</p>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { TRUTHS } from './truthsData.jsx';
+import { LICENCE_LINE } from "./FoundationFooter.jsx";
 
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
@@ -299,7 +300,7 @@ export default function TruthsExplained() {
 
         <div className="register-footer">
           <a href="/">← Back to primedirective.dev</a>
-          <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+          <p>{LICENCE_LINE}</p>
         </div>
       </div>
     </div>

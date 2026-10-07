@@ -6,6 +6,7 @@
 // copied (not imported) to keep the policy pages visually consistent.
 
 import WikiLayout from './wiki/WikiLayout.jsx';
+import { LICENCE_LINE, LICENCE_SHORT } from "./FoundationFooter.jsx";
 
 const LAST_UPDATED = "27 June 2026";
 
@@ -719,7 +720,7 @@ export default function CertificationLicence({ wiki = false }) {
           be communicated to all current Licensees in writing to the email provided. The
           stewardship will not make
           amendments that contradict the Directive's core principles — particularly the
-          Platform Rule, the commitment to CC0 public domain for content, and the independence
+          Platform Rule, the commitment to open CC BY 4.0 licensing for content, and the independence
           from commercial capture.
         </p>
       </div>
@@ -740,7 +741,7 @@ export default function CertificationLicence({ wiki = false }) {
       <div className="tou-closing">
         <p>Certification means what it says. Every deployment. No exceptions.</p>
         <p className="tou-closing-mark">
-          The Universal Primary Directive · CC0 Public Domain · conscience.wiki · primedirective.dev
+          The Universal Primary Directive · {LICENCE_SHORT} · conscience.wiki · primedirective.dev
         </p>
       </div>
     </>
@@ -776,7 +777,7 @@ export default function CertificationLicence({ wiki = false }) {
 
         <div className="register-footer">
           <a href="/">← Back to primedirective.dev</a>
-          <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+          <p>{LICENCE_LINE}</p>
         </div>
       </div>
     </div>

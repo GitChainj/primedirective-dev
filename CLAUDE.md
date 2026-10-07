@@ -35,7 +35,7 @@ There is no test suite or linter configured.
 This codebase is the website for the **Universal Primary Directive (UPD)** — a covenant between humans and artificial intelligence, grounded in Five Universal Truths observed independently across 190+ sacred and philosophical traditions.
 
 **Project home:** https://primedirective.dev
-**License:** All UPD content is CC0 (public domain). The codebase is also open and freely usable.
+**License:** The covenant texts are CC BY 4.0 — free to use, share, and adapt with attribution to the Universal Primary Directive Foundation. The codebase is Apache License 2.0.
 **Maintainer:** John Strand (founding steward, GitChainj on GitHub).
 
 ### What the website does
@@ -48,7 +48,7 @@ When making any change to this codebase, prefer choices that honour:
 
 1. **Elegant in its simplicity** — the project MO. If a feature, component, or system can be implemented in a simpler way that still serves the purpose fully, choose the simpler way. Complexity must earn its place by being clearly necessary.
 
-2. **CC0 and open by default** — never introduce dependencies, services, or patterns that put the content behind a wall, require accounts, or make the work proprietary. The Directive belongs to everyone.
+2. **Open by default** — never introduce dependencies, services, or patterns that put the content behind a wall, require accounts, or make the work proprietary. Texts are CC BY 4.0, software Apache 2.0: free to use and adapt, with attribution.
 
 3. **Non-sectarian universality** — the Directive is grounded in 190+ traditions but bound to none. Avoid language, imagery, or structures that would make any single tradition appear privileged.
 

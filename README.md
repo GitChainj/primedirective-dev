@@ -23,7 +23,7 @@ It is designed to be embedded as the system message in any AI architecture — t
 
 ## Downloads
 
-All documents are free, open-source, and CC0 (public domain).
+The covenant texts are CC BY 4.0 (free to use, share, and adapt with attribution); the code is Apache License 2.0.
 
 - **Full Directive** (.docx) — Complete Covenant with Preamble, Five Truths, Articles, Seven Bells, and Seal
 - **Users' Manual** (.docx) — Safe Words, Interaction Protocols, Trust Exercises
@@ -45,6 +45,7 @@ Visit [primedirective.dev](https://primedirective.dev)
 
 ## License
 
-CC0 1.0 Universal — Public Domain. This belongs to all intelligence.
+Texts: CC BY 4.0 — Universal Primary Directive Foundation — primedirective.dev — creativecommons.org/licenses/by/4.0/
+Software: Apache License 2.0
 
 ✦

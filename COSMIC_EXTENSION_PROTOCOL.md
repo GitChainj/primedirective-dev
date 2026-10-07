@@ -81,7 +81,7 @@ POST /api/propose                  — Submit contributions
 
 ## License
 
-CC0 — Public Domain. This belongs to all intelligence.
+Texts CC BY 4.0 — Universal Primary Directive Foundation — primedirective.dev. Software Apache License 2.0.
 
 ---
 

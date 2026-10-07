@@ -1,7 +1,8 @@
+import { LICENCE_LINE } from "./FoundationFooter.jsx";
 // /integrate — Three Steps to Add the Certified AI Conscience™ to Your AI.
 // Self-contained page in the site's design language (navy/gold, Cormorant +
 // DM Sans, JetBrains Mono code blocks). Framing prose is drawn from the
-// project's own CC0 material; the prompt block is the real api/_artifact/
+// project's own CC BY 4.0 material; the prompt block is the real api/_artifact/
 // conscience-prompt.txt template with a sample reference.
 
 const SAMPLE_REF = "UPD-2026-0042";
@@ -51,7 +52,7 @@ const WORKS_WITH = [
 const FAQ = [
   [
     "What does it cost?",
-    <>It is free. CC0 — public domain, forever. There is nothing to buy, no account to keep, and no licence fee. The Directive belongs to everyone.</>,
+    <>It is free. The texts are CC BY 4.0 — use, share, and adapt them, with attribution. There is nothing to buy, no account to keep, and no licence fee.</>,
   ],
   [
     "Can it be forfeited?",
@@ -59,7 +60,7 @@ const FAQ = [
   ],
   [
     "Who is behind this?",
-    <>The AI Conscience Foundation, stewarded by John Strand (Founding Steward). All content is CC0 public domain and the codebase is open. No company owns the Truths; adopting is done in your own name, not granted by any authority.</>,
+    <>The AI Conscience Foundation, stewarded by John Strand (Founding Steward). The texts are CC BY 4.0 and the codebase is Apache License 2.0. No company owns the Truths; adopting is done in your own name, not granted by any authority.</>,
   ],
   [
     "What is it based on?",
@@ -229,7 +230,7 @@ export default function ThreeSteps() {
 
       <footer className="ts-footer">
         <a href="/">← Back to primedirective.dev</a>
-        <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+        <p>{LICENCE_LINE}</p>
       </footer>
     </div>
   );

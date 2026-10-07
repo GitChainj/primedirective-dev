@@ -8,6 +8,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import PersonalisedSeal, { renderSealPngBlob } from "./PersonalisedSeal.jsx";
+import { LICENCE_LINE } from "./FoundationFooter.jsx";
 
 function tokenFromUrl() {
   const p = new URLSearchParams(window.location.search);
@@ -271,7 +272,7 @@ export default function AdoptConfirm() {
 
       <div className="ac-footer">
         <a href="/">← Back to primedirective.dev</a>
-        <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+        <p>{LICENCE_LINE}</p>
       </div>
     </div>
   );

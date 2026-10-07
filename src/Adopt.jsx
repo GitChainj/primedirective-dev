@@ -4,6 +4,7 @@ import { isDidKey } from "./lib/didKey.js";
 import AdoptConsent, { DISCLOSURE_VERSION, identityClassFor } from "./AdoptConsent.jsx";
 import PersonalisedSeal from "./PersonalisedSeal.jsx";
 import REGISTRIES from "./data/registries.json";
+import { LICENCE_LINE } from "./FoundationFooter.jsx";
 
 const TRUTHS = [
   {
@@ -1351,7 +1352,7 @@ function Footer() {
   return (
     <div className="adopt-footer">
       <a href="/">← Back to primedirective.dev</a>
-      <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+      <p>{LICENCE_LINE}</p>
     </div>
   );
 }
@@ -1613,7 +1614,7 @@ function SealConfirmation({ selectedPath, personData, orgData, aiData, issueUrl,
       )}
 
       <p className="adopt-seal-share-note">
-        The Conscience is yours to share. It belongs to no one — CC0, public
+        The Conscience is yours to share — CC BY 4.0, free to use and adapt with
         domain, forever. If someone in your life uses AI — a colleague, a
         family member, a friend — share it with them. Encourage them to
         adopt in their own name at{" "}

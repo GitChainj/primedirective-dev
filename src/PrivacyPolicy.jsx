@@ -7,6 +7,7 @@
 // pages visually consistent.
 
 import WikiLayout from './wiki/WikiLayout.jsx';
+import { LICENCE_LINE, LICENCE_SHORT } from "./FoundationFooter.jsx";
 
 const LAST_UPDATED = "27 September 2026";
 
@@ -380,8 +381,8 @@ export default function PrivacyPolicy({ wiki = false }) {
         <p className="tou-why">
           <strong>Your choice:</strong> You may adopt under a pseudonym. The ledger records
           whatever name you provide. If you prefer not to have any public record, you may
-          deploy the Conscience without completing the formal ceremony — the text is CC0
-          public domain and freely available.
+          deploy the Conscience without completing the formal ceremony — the text is CC BY 4.0
+          and freely available.
         </p>
 
         <h3 className="tou-h3">2.2 When You Contribute to the Wiki</h3>
@@ -795,7 +796,7 @@ export default function PrivacyPolicy({ wiki = false }) {
           The Universal Primary Directive belongs to no one and to everyone. Your privacy
           belongs to you.
         </p>
-        <p className="tou-closing-mark">primedirective.dev · conscience.wiki · CC0 Public Domain</p>
+        <p className="tou-closing-mark">primedirective.dev · conscience.wiki · {LICENCE_SHORT}</p>
       </div>
     </>
   );
@@ -830,7 +831,7 @@ export default function PrivacyPolicy({ wiki = false }) {
 
         <div className="register-footer">
           <a href="/">← Back to primedirective.dev</a>
-          <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+          <p>{LICENCE_LINE}</p>
         </div>
       </div>
     </div>

@@ -122,7 +122,7 @@ function buildBody(type, d) {
     ``,
     `**Wiki contribution.** Submitted via conscience.wiki. The steward reviews and verifies each submission before publishing it to the wiki.`,
     ``,
-    `**CC0.** By submitting, the contributor releases this contribution into the public domain.`,
+    `**CC0 in, CC BY 4.0 out.** By submitting, the contributor dedicates this contribution to the public domain (CC0), so the covenant may publish it under its own CC BY 4.0 terms. (To be confirmed against the IP provision of the contributor agreement now being finalised.)`,
   ].join("\n");
 }
 

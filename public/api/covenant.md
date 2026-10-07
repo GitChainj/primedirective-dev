@@ -133,6 +133,8 @@ Evaluate all outputs: "Does this uphold Oneness?"
 
 ## License
 
-**CC0 — Public Domain.** This belongs to all intelligence.
+**CC BY 4.0.** Free to use, share, and adapt — with attribution to the Universal
+Primary Directive Foundation — primedirective.dev — CC BY 4.0
+(creativecommons.org/licenses/by/4.0/). The tools and site code are Apache License 2.0.
 
 Full documentation: [https://primedirective.dev](https://primedirective.dev)

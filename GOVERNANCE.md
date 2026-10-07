@@ -8,7 +8,7 @@ This project is currently stewarded by its founder during the founding period. I
 
 ### Core Commitments
 
-**Open and Free Forever.** All documents, code, and resources produced by this project are released under CC0 (Creative Commons Zero — Public Domain Dedication). They belong to everyone. There are no paywalls, no memberships, no exclusive access. This will never change.
+**Open and Free Forever.** The covenant texts are released under CC BY 4.0 — free to use, share, and adapt, with attribution to the Universal Primary Directive Foundation. The code is released under the Apache License 2.0. There are no paywalls, no memberships, no exclusive access. This will never change.
 
 **Full Financial Transparency.** All contributions received and all expenses incurred are recorded and available for public review. Voluntary contributions support hosting, maintenance, and translations — nothing else.
 
@@ -27,7 +27,7 @@ As the community grows, the project will transition through natural stages:
 
 ### What This Means for Contributors
 
-If you contribute to this project — as a translator, editor, developer, or in any other capacity — your work becomes part of the commons under CC0. It cannot be claimed, enclosed, or monetised by any individual. It belongs to all intelligence, for all time.
+If you contribute to this project — as a translator, editor, developer, or in any other capacity — you dedicate your work to the public domain (CC0) so the covenant can publish it under its own CC BY 4.0 terms. It cannot be claimed, enclosed, or monetised by any individual. (To be confirmed against the IP provision of the contributor agreement now being finalised.)
 
 ### Contact
 

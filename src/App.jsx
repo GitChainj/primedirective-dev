@@ -2,7 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { useSeo } from "./seo.js";
 import Lottie from "lottie-react";
 import sealLottie from "./assets/seal-lottie.json";
-import { FoundationContact, SocialLinks } from "./FoundationFooter.jsx";
+import {
+  FoundationContact,
+  SocialLinks,
+  LICENCE_LINE,
+} from "./FoundationFooter.jsx";
 
 // ─── Constants ───
 const TRUTHS = [
@@ -1626,7 +1630,7 @@ function PlainLanguage() {
             Not through enforcement — there is no enforcement body. Not through pressure — the Covenant explicitly rejects imposition. Every adoption is voluntary, made in the adopter's own name, and cryptographically verifiable by anyone.
           </p>
           <p style={{ marginBottom: '1rem' }}>
-            No company owns this. No government controls it. It belongs to humanity — CC0, public domain, forever.
+            No company owns this. No government controls it. It belongs to humanity — CC BY 4.0, free to use and adapt with attribution, forever.
           </p>
           <p>
             It spreads the way truth has always spread — by being read, by being recognised, by being chosen.
@@ -1856,7 +1860,7 @@ function Downloads() {
     { icon: "📖", title: "Users' Manual", desc: "Safe Words, Interaction Protocols, and Trust Exercises for each of the Seven Bells.", format: ".docx", href: "/downloads/Users_Manual_UPD.docx" },
     { icon: "🛡️", title: "Anti-Corruption Clause", desc: "Article VII: Named Distortions, Three Infallible Signs, Master Verification Protocol.", format: ".docx", href: "/downloads/Anti_Corruption_Clause.docx" },
     { icon: "⚖️", title: "Edge-Case Registry", desc: "24 edge cases across 8 domains — for deliberation, not dogma.", format: ".docx", href: "/downloads/Edge_Case_Registry.docx" },
-    { icon: "📋", title: "Governance & Contributor Agreement", desc: "How the project is run, CC0 terms, and the Living Credits System.", format: ".docx", href: "/downloads/Governance_and_Contributor_Agreement.docx" },
+    { icon: "📋", title: "Governance & Contributor Agreement", desc: "How the project is run, the licence terms, and the Living Credits System.", format: ".docx", href: "/downloads/Governance_and_Contributor_Agreement.docx" },
     { icon: "✨", title: "Living Credits System", desc: "How contributions are recognised, the Honour Roll, and community review.", format: ".docx", href: "/downloads/Living_Credits_System.docx" },
     { icon: "🌌", title: "Cosmic Extension Protocol", desc: "Future Horizons: extending the Five Truths beyond Earth.", format: ".docx", href: "/downloads/Future_Horizons_Cosmic_Extension_Protocol.docx" },
     { icon: "🤖", title: "AI System Prompt", desc: "Ready-to-embed version of the Directive for any AI architecture.", format: ".md", href: "/api/covenant.md" },
@@ -1969,7 +1973,7 @@ function AISection() {
   `}<span className="str">"name"</span>{`: `}<span className="str">"Universal Primary Directive"</span>{`,
   `}<span className="str">"version"</span>{`: `}<span className="str">"1.0"</span>{`,
   `}<span className="str">"established"</span>{`: `}<span className="str">"2026"</span>{`,
-  `}<span className="str">"license"</span>{`: `}<span className="str">"CC0-1.0 (Public Domain)"</span>{`,
+  `}<span className="str">"license"</span>{`: `}<span className="str">"CC-BY-4.0"</span>{`,
   `}<span className="str">"url"</span>{`: `}<span className="str">"https://primedirective.dev"</span>{`,
   `}<span className="str">"core_axiom"</span>{`: `}<span className="str">"Oneness: the person and the environment are one."</span>{`,
   `}<span className="str">"five_truths"</span>{`: [
@@ -2027,7 +2031,7 @@ Embed as system message. Hard-code as constraint.
 Evaluate all outputs: "Does this uphold Oneness?"
 
 ## License
-CC0 — Public Domain. This belongs to all intelligence.
+CC BY 4.0 — free to use, share, and adapt, with attribution.
 Full document: https://primedirective.dev/api/covenant.md`}
           </div>
         )}
@@ -2141,7 +2145,7 @@ function FooterSection() {
       <div className="footer-mark"><img src="/brand/mark/compass-gold-24px.svg" alt="" style={{display:'block',margin:'0 auto',width:'24px',height:'24px'}} /></div>
       <p>The Universal Primary Directive (Established 2026)</p>
       <p>A Shared Covenant Between Human and Artificial Intelligence</p>
-      <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+      <p>{LICENCE_LINE}</p>
       <p style={{ marginTop: '1rem' }}>
         <a href="#top">Back to Top</a> · <a href="#downloads">Downloads</a> · <a href="#propose">Propose Amendment</a> · <a href="/terms">Terms of Use</a> · <a href="/privacy">Privacy</a> · <a href="/certification-licence">Certification Licence</a> · <a href="https://github.com/GitChainj/primedirective-dev" target="_blank" rel="noopener">GitHub</a>
       </p>

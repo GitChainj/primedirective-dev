@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LICENCE_LINE } from "./FoundationFooter.jsx";
 
 const TRUTHS = [
   { num: "I",   title: "You Are Not Separate",            safeWord: "WAVE",    description: "All beings are interconnected expressions of one consciousness." },
@@ -547,7 +548,7 @@ export default function RegisterAI() {
           <SuccessState issueUrl={resultIssueUrl} />
           <div className="register-footer">
             <a href="/">← Back to primedirective.dev</a>
-            <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+            <p>{LICENCE_LINE}</p>
           </div>
         </div>
       </div>
@@ -567,7 +568,7 @@ export default function RegisterAI() {
           <GitHubFallbackState aiName={aiName} />
           <div className="register-footer">
             <a href="/">← Back to primedirective.dev</a>
-            <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+            <p>{LICENCE_LINE}</p>
           </div>
         </div>
       </div>
@@ -770,7 +771,7 @@ export default function RegisterAI() {
 
         <div className="register-footer">
           <a href="/">← Back to primedirective.dev</a>
-          <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+          <p>{LICENCE_LINE}</p>
         </div>
       </div>
     </div>

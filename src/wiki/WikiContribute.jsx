@@ -165,7 +165,8 @@ export default function WikiContribute() {
       {active && <WikiForm type={active} />}
 
       <div className="wiki-cc0-note">
-        All contributions are released as <strong>CC0 public domain</strong>. By
+        Contributions are dedicated to the public domain (<strong>CC0</strong>) so the
+        covenant can publish them under its own <strong>CC BY 4.0</strong> terms. By
         submitting, you place your contribution in the public domain so it can
         belong to everyone — the same terms as the Directive itself. Prefer email?
         Write to{" "}

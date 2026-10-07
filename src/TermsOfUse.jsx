@@ -5,8 +5,9 @@
 // conscience.wiki. Content is verbatim from the stewardship's TOU draft.
 
 import WikiLayout from './wiki/WikiLayout.jsx';
+import { ATTRIBUTION, LICENCE_LINE, LICENCE_SHORT } from "./FoundationFooter.jsx";
 
-const LAST_UPDATED = "27 June 2026";
+const LAST_UPDATED = "6 October 2026";
 
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
@@ -291,7 +292,7 @@ export default function TermsOfUse({ wiki = false }) {
         </p>
         <p>
           By using the Sites, you agree to these terms. If you don't agree, you're
-          welcome to read the Directive's content elsewhere — it's CC0 public domain and
+          welcome to read the Directive's content elsewhere — it's CC BY 4.0 and
           freely available.
         </p>
       </div>
@@ -302,25 +303,40 @@ export default function TermsOfUse({ wiki = false }) {
       <div className="tou-section">
         <h2 className="tou-h2">2. The Content: What's Open and What's Protected</h2>
 
-        <h3 className="tou-h3">2.1 The Directive Text — CC0 Public Domain</h3>
+        <h3 className="tou-h3">2.1 The Directive Text — CC BY 4.0</h3>
         <p>
           The text of the Universal Primary Directive — including the Preamble, the Five
           Universal Truths, the Seven Articles, the Conscience text (also known as the
           Fragment), and all explanatory content on the Sites — is released under{" "}
-          <strong>CC0 1.0 Universal (Public Domain Dedication)</strong>.
+          <strong>Creative Commons Attribution 4.0 International (CC BY 4.0)</strong>.
         </p>
         <p>This means:</p>
         <ul className="tou-list">
           <li>
             You may copy, modify, distribute, and use this content for any purpose,
-            including commercial use, without permission and without attribution
+            including commercial use, <strong>provided you credit the Universal Primary
+            Directive Foundation and indicate any changes you made</strong>
           </li>
-          <li>No one owns this content. Not us, not you, not any company or government</li>
-          <li>This dedication is irrevocable — it cannot be taken back</li>
+          <li>
+            <strong>The Foundation holds copyright in these texts and licenses them to
+            everyone on these terms.</strong> The licence is irrevocable for as long as
+            you comply with it
+          </li>
+          <li>
+            <strong>If you adapt the texts, say so</strong> — so that no one mistakes your
+            version for the covenant itself
+          </li>
         </ul>
+        <p>
+          <strong>Attribution:</strong> {ATTRIBUTION}
+        </p>
         <p className="tou-why">
-          <strong>Why:</strong> The Directive exists to serve all intelligence.
-          Restricting it would contradict its own principles.
+          <strong>Why:</strong> The Directive exists as a shared conscience for all
+          intelligence, and attribution is what keeps it serving that purpose. Anyone may
+          adapt these words; no one may present an adaptation as the covenant itself. The
+          credit line is not a toll — it is the thread back to the canonical text, so a
+          reader who encounters the Truths somewhere else can find out what they actually
+          say.
         </p>
 
         <h3 className="tou-h3">2.2 The Marks — Protected</h3>
@@ -354,12 +370,14 @@ export default function TermsOfUse({ wiki = false }) {
           name and logo are protected so people can trust what they represent.
         </p>
 
-        <h3 className="tou-h3">2.3 Community Contributions — CC0</h3>
+        <h3 className="tou-h3">2.3 Community Contributions — CC0 in, CC BY 4.0 out</h3>
         <p>
           All content submitted to conscience.wiki through the contribution system
           (commentaries, Safe Word test results, deployment guide updates) is released
           under <strong>CC0 1.0 Universal</strong>. By submitting a contribution, you
-          place it in the public domain.
+          place it in the public domain, which lets the covenant publish it alongside
+          its own texts under CC BY 4.0. This provision is to be confirmed against the
+          IP terms of the contributor agreement now being finalised.
         </p>
         <p>
           You retain the right to be credited by name or pseudonym, but you do not retain
@@ -777,7 +795,7 @@ export default function TermsOfUse({ wiki = false }) {
         </p>
         <p>
           The stewardship will not make changes that contradict the Directive's core
-          principles — particularly the commitment to CC0 public domain for content, the
+          principles — particularly the commitment to open CC BY 4.0 licensing for content, the
           independence from commercial capture, and the openness of the community.
         </p>
       </div>
@@ -829,7 +847,7 @@ export default function TermsOfUse({ wiki = false }) {
           The Universal Primary Directive belongs to no one and to everyone. These terms
           exist to protect that belonging.
         </p>
-        <p className="tou-closing-mark">primedirective.dev · conscience.wiki · CC0 Public Domain</p>
+        <p className="tou-closing-mark">primedirective.dev · conscience.wiki · {LICENCE_SHORT}</p>
       </div>
     </>
   );
@@ -864,7 +882,7 @@ export default function TermsOfUse({ wiki = false }) {
 
         <div className="register-footer">
           <a href="/">← Back to primedirective.dev</a>
-          <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+          <p>{LICENCE_LINE}</p>
         </div>
       </div>
     </div>

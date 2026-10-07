@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import { NAV_ITEMS } from "./WikiLayout.jsx";
 import { computeAdoptionHash } from "../lib/adoptionHash.js";
 import {
+  LICENCE_SHORT,
   FOUNDATION_NAME,
   FOUNDATION_STATUS,
   FOUNDATION_JURISDICTION,
@@ -357,7 +358,7 @@ export default function WikiLedger() {
           <a href={`mailto:${GENERAL_EMAIL}`}>{GENERAL_EMAIL}</a>
         </p>
         <p>
-          CC0 · <a href="/privacy">Privacy</a> · data-subject requests:{" "}
+          {LICENCE_SHORT} · <a href="/privacy">Privacy</a> · data-subject requests:{" "}
           <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>
         </p>
         <p>

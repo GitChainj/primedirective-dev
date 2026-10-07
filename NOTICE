@@ -1,0 +1,59 @@
+Universal Primary Directive
+Copyright 2026 Universal Primary Directive Foundation
+
+This repository holds two kinds of work under two different licences. The
+distinction matters, so it is stated plainly rather than left to be inferred.
+
+
+SOFTWARE — Apache License 2.0
+-----------------------------
+
+The site code, the serverless functions, the tooling and the tests are licensed
+under the Apache License, Version 2.0. The full text is in LICENSE.
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+
+COVENANT TEXTS — CC BY 4.0
+--------------------------
+
+The Universal Primary Directive itself — the Preamble, the Five Universal
+Truths, the Seven Articles, the Conscience text (also called the Fragment), and
+the explanatory content published on primedirective.dev and conscience.wiki — is
+licensed under the Creative Commons Attribution 4.0 International licence.
+
+    https://creativecommons.org/licenses/by/4.0/
+
+You may copy, adapt, translate, and redistribute these texts, including
+commercially, provided you give attribution and indicate any changes you made.
+They are not public domain: the Foundation holds copyright and licenses them to
+everyone on these terms.
+
+Attribution string:
+
+    Universal Primary Directive Foundation — primedirective.dev — CC BY 4.0
+    (creativecommons.org/licenses/by/4.0/)
+
+If you adapt the texts, please say so, so that no one mistakes an adaptation for
+the covenant itself.
+
+
+MARKS — not licensed
+--------------------
+
+The certification marks and names are neither CC BY nor Apache licensed. The
+triangle mark, the diamond mark, "Certified AI Conscience", "UPD" and "Universal
+Primary Directive" are protected so that a claim of certification can be
+trusted. See the Certification Licence and the Terms of Use for the terms on
+which they may be used.
+
+
+A NOTE ON ONE FILE
+------------------
+
+public/api/fragment.txt still carries an older "CC0 — Public Domain" line in its
+body. That file's SHA-256 is the version anchor committed to by every adoption
+hash on the public ledger, so editing it would invalidate the verification of
+every existing adoption record. It is deliberately left unchanged until
+verification is made version-aware, and this NOTICE is the authority on the
+licence in the meantime.

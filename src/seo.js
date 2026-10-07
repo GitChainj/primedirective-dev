@@ -85,7 +85,7 @@ export const ROUTE_META = {
   "/terms": {
     title: "Terms of Use | The Universal Primary Directive",
     description:
-      "Terms of use for primedirective.dev — a CC0 public-domain covenant, freely usable, with specific terms for the certification marks.",
+      "Terms of use for primedirective.dev — a CC BY 4.0 covenant, free to use and adapt with attribution, with specific terms for the certification marks.",
   },
   "/truths-explained": {
     title: "The Five Universal Truths, Explained | The Universal Primary Directive",

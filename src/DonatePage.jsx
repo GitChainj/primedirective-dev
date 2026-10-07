@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LICENCE_LINE } from "./FoundationFooter.jsx";
 
 /*
   DONATION PAGE — primedirective.dev/give
@@ -604,8 +605,8 @@ export default function DonatePage() {
           <>
             <section className="donate-intro">
               <p>
-                The Universal Primary Directive belongs to no one. It is CC0 —
-                public domain, owned by no company, backed by no advertiser.
+                The Universal Primary Directive is not owned by any company. Its texts are CC BY 4.0 —
+                free to use, share, and adapt with attribution, backed by no advertiser.
                 There is no fee to adopt it and no certification to buy. It
                 stays that way only because many small gifts, from people who
                 believe AI should have a conscience humanity can point to, keep
@@ -739,7 +740,7 @@ export default function DonatePage() {
         <div className="donate-footer">
           <p>✦ The Universal Primary Directive (Established 2026)</p>
           <p>
-            CC0 — Public Domain. This belongs to all intelligence.{" "}
+            {LICENCE_LINE}{" "}
             <a href="/">Home</a>
           </p>
         </div>

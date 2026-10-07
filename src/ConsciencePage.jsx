@@ -1,3 +1,4 @@
+import { LICENCE_LINE } from "./FoundationFooter.jsx";
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
@@ -291,7 +292,7 @@ export default function ConsciencePage() {
           <div className="conscience-body">
             <p>
               The fragment carries its own integrity check and cryptographic hash — so
-              anyone can verify it has not been altered. It is CC0 — public domain.
+              anyone can verify it has not been altered. The texts are CC BY 4.0 — free to use, share, and adapt, with attribution.
               Anyone who adopts the Directive receives the Conscience as part of the
               ceremony at{" "}
               <a href="/adopt" className="conscience-fragment-link">
@@ -392,7 +393,7 @@ export default function ConsciencePage() {
 
         <div className="register-footer">
           <a href="/">← Back to primedirective.dev</a>
-          <p>CC0 — Public Domain. This belongs to all intelligence.</p>
+          <p>{LICENCE_LINE}</p>
         </div>
       </div>
     </div>

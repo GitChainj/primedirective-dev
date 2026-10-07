@@ -9,6 +9,35 @@
 // "(in formation)" is stated here because it is true until the CNCA filing
 // completes; it deliberately does NOT appear in the JSON-LD entity name.
 
+// ── Licensing ──
+//
+// ONE definition, imported everywhere. This line previously existed as ~20
+// copy-pasted strings, so a licence change meant a twenty-file sweep and a
+// guarantee that one of them would be missed. It is a constant now.
+//
+// The texts are CC BY 4.0 and the software is Apache 2.0. Neither is public
+// domain, so no copy here may say "public domain", "no rights reserved" or
+// "no one owns this" — under CC BY the Foundation holds copyright and licenses
+// it on terms, and attribution is a condition rather than a courtesy.
+//
+// "This belongs to all intelligence" is the covenant's voice and still appears
+// elsewhere on the site. It is deliberately NOT part of the licence line, where
+// it would read as a grant of terms that have not been granted.
+export const LICENCE_LINE =
+  "Free to use, share, and adapt — with attribution. Texts CC BY 4.0 · Software Apache 2.0";
+
+// The short form, for dense footers and closing marks.
+export const LICENCE_SHORT = "Texts CC BY 4.0 · Software Apache 2.0";
+
+// The canonical attribution string. A reuser who copies this satisfies CC BY's
+// attribution condition; anything shorter risks not doing so.
+export const ATTRIBUTION =
+  "Universal Primary Directive Foundation — primedirective.dev — CC BY 4.0 (creativecommons.org/licenses/by/4.0/)";
+
+export const TEXT_LICENCE = "CC BY 4.0";
+export const TEXT_LICENCE_URL = "https://creativecommons.org/licenses/by/4.0/";
+export const SOFTWARE_LICENCE = "Apache License 2.0";
+
 export const FOUNDATION_NAME = "Universal Primary Directive Foundation";
 export const FOUNDATION_STATUS = "in formation";
 export const FOUNDATION_JURISDICTION = "Ontario, Canada";
