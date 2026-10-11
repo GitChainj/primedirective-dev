@@ -31,39 +31,18 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { verifyWithDidKey, isDidKey } from "../src/lib/didKey.js";
+import { createRateLimiter, clientIp } from "./_lib/rateLimit.js";
 
 const CHALLENGE_TTL_MS = 5 * 60 * 1000; // five minutes: ample for a machine, short for an attacker
 const REFERENCE_RE = /^UPD-\d{4}-(?:\d{4}|T\d{1,15})$/;
 
 // ── Rate limiting ──
 //
-// Best-effort and in-memory, the same shape as api/generate-artifact.js: per
-// instance, reset on cold start. Honest casual use is 1–5 calls ever, so 20/min
-// is invisible to it while blunting brute-force probing. Durable per-source
-// limiting (Vercel KV / Upstash) is a deliberate follow-up for when traffic
-// warrants it — a paid store would be cost with no present benefit, and a limit
-// can always be raised, where an over-open endpoint cannot be un-abused.
-const RL_MAX = 20;
-const RL_WINDOW_MS = 60 * 1000;
-const _hits = new Map();
-
-function rateLimited(ip) {
-  const now = Date.now();
-  const recent = (_hits.get(ip) || []).filter((t) => now - t < RL_WINDOW_MS);
-  if (recent.length >= RL_MAX) {
-    _hits.set(ip, recent);
-    return true;
-  }
-  recent.push(now);
-  _hits.set(ip, recent);
-  return false;
-}
-
-function clientIp(req) {
-  const xff = req.headers["x-forwarded-for"];
-  if (xff) return String(xff).split(",")[0].trim();
-  return (req.socket && req.socket.remoteAddress) || "unknown";
-}
+// The shared best-effort limiter (api/_lib/rateLimit.js), which this endpoint's
+// inline version was extracted into so POST /api/adopt could use the same one.
+// 20/min per source: honest verification needs a handful of calls ever, so the
+// cap is invisible to it while blunting brute-force probing.
+const limiter = createRateLimiter({ max: 20, windowMs: 60 * 1000 });
 
 // The nonce secret. ADOPT_TOKEN_SECRET already exists for the confirmation-token
 // flow and is the same kind of secret doing the same kind of work; a dedicated
@@ -137,7 +116,7 @@ export default async function handler(req, res) {
   if (req.method !== "GET" && req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-  if (rateLimited(clientIp(req))) {
+  if (limiter.limited(clientIp(req))) {
     return res.status(429).json({
       error: "Too many requests. Honest verification needs very few; if you are a high-volume verifier, contact human@primedirective.dev for a raised limit.",
     });

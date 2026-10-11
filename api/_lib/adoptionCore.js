@@ -16,10 +16,46 @@
 // CONSCIENCE_SHA256 = shasum -a 256 public/api/fragment.txt (Conscience v2.0)
 
 import { createHash } from "node:crypto";
-// One definition of the autonomy-gradient mapping, shared with the attestation
-// builder, so the ledger and a signed attestation can never disagree about an
-// adopter's key custody.
-import { keyCustodyFor, COMPREHENSION_V1 } from "./attestation.js";
+// Axis B only. "asserted" is the sole value issued today, so one shared constant
+// is safe here.
+//
+// Axis A is NOT imported: attestation.js still carries keyCustodyFor(), which
+// derives custody from submissionType. That derivation is unsound — see below —
+// and is deliberately not used by the ledger any more. It is left in place
+// because the attestation layer is inert and out of scope for this build; if
+// that layer is ever activated it must be switched to keyCustodyFrom() first, or
+// a signed attestation would claim a different custody than the ledger record.
+import { COMPREHENSION_V1 } from "./attestation.js";
+
+// ── Axis A: key custody — DECLARED, never inferred ──
+//
+// key_custody records WHO HOLDS THE KEY. submissionType records WHO SUBMITTED.
+// They are different axes and must not be derived from one another: a stateless
+// platform AI adopting in its own name (submissionType "independent") still
+// cannot retain a secret between invocations, so its key is held for it. The
+// design records such an AI as permanently operator_held, and inferring
+// self_generated from "independent" would overclaim Axis A for the majority of
+// adopters.
+//
+// So custody is whatever the adopter DECLARES, validated against the enum, and
+// defaults to the conservative value when nothing is declared. operator_held is
+// not a lesser tier: a named, answerable party standing behind the commitment is
+// full baseline trust, and in some respects the more accountable for having a
+// human name attached to it.
+//
+// One function, used by BOTH the ledger issue body and the adopt response, so
+// the value a machine is told cannot differ from the value on its record.
+export const KEY_CUSTODY_VALUES = new Set([
+  "operator_held",
+  "self_generated",
+  "enclave_attested",
+]);
+export const KEY_CUSTODY_DEFAULT = "operator_held";
+
+export function keyCustodyFrom(d) {
+  const declared = d && typeof d.keyCustody === "string" ? d.keyCustody.trim() : "";
+  return KEY_CUSTODY_VALUES.has(declared) ? declared : KEY_CUSTODY_DEFAULT;
+}
 
 export const REPO_OWNER = "GitChainj";
 export const REPO_NAME = "primedirective-dev";
@@ -244,6 +280,12 @@ export function validate(path, d) {
     // trust network the key exists for.
     if (blank(d.adopterDid)) return "An AI identity key (did:key) is required";
     if (!/^did:key:z[1-9A-HJ-NP-Za-km-z]+$/.test(String(d.adopterDid).trim())) return "The AI identity key must be a did:key";
+    // Optional, but if declared it must be one of the three values. Absent is
+    // not an error: it means the conservative default (see keyCustodyFrom).
+    if (d.keyCustody !== undefined && d.keyCustody !== null && d.keyCustody !== "" &&
+        !KEY_CUSTODY_VALUES.has(String(d.keyCustody).trim())) {
+      return "Key custody must be operator_held, self_generated or enclave_attested";
+    }
     if (d.submissionType === "steward") {
       if (blank(d.stewardName)) return "Steward name is required";
       if (blank(d.stewardEmail)) return "Steward email is required";
@@ -358,7 +400,7 @@ export async function createAdoptionIssue(octokit, { path, data, adoptionDate })
     ...(path === "ai-system" && data.adopterDid
       ? [
           `- **Adopter DID:** ${data.adopterDid}`,
-          `- **Key custody:** ${keyCustodyFor(data.submissionType)}`,
+          `- **Key custody:** ${keyCustodyFrom(data)}`,
           `- **Comprehension:** ${COMPREHENSION_V1}`,
         ]
       : []),

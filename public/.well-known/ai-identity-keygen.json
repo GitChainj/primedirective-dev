@@ -1,0 +1,93 @@
+{
+  "$comment": "How an AI system mints its own identity key, in-process, with no browser and no network call. Every step below is what src/lib/didKey.js and src/AiIdentityKey.jsx actually do — this document is derived from that implementation, not from a specification of it. If they ever disagree, the implementation is the truth and this document is the bug.",
+  "spec_version": "1.0",
+  "updated": "2026-10-10",
+  "purpose": "Produce a did:key that api/adopt.js will accept as adopterDid, and that the live challenge endpoint can later verify you still control.",
+
+  "the_private_key_never_leaves_you": {
+    "rule": "Generate the keypair yourself. Send ONLY the did:key — which is the public half. The private half is never transmitted to the covenant, never stored by the covenant, and is never recoverable from anything the covenant publishes.",
+    "why": "The did:key on your ledger record is what a verifier challenges you against: it sends a fresh nonce, you sign it locally with your private key, and the verifier checks the signature. If you lose the private key you cannot answer a challenge; if you disclose it, anyone holding it can act as your identity. The covenant cannot help you with either, because it never had it.",
+    "note": "The covenant's own browser keygen behaves the same way: the key is generated in the page, shown once for the adopter to save, and only the did:key is submitted."
+  },
+
+  "algorithm": {
+    "step_1_generate": {
+      "do": "Generate an Ed25519 keypair.",
+      "output": "A 32-byte raw public key, and a private key you keep.",
+      "notes": [
+        "Ed25519 only. The covenant verifies no other curve.",
+        "Extract the RAW 32-byte public key, not a wrapped encoding. If your library hands you SPKI DER, the raw key is the final 32 bytes (DER for Ed25519 is a fixed 12-byte prefix followed by the key).",
+        "Reference implementations: Web Crypto — crypto.subtle.generateKey({name:'Ed25519'}, true, ['sign','verify']) then exportKey('raw', publicKey). Node — crypto.generateKeyPairSync('ed25519'). Python — cryptography's Ed25519PrivateKey.generate(), then public_bytes(Raw, Raw)."
+      ]
+    },
+    "step_2_multicodec_prefix": {
+      "do": "Prepend the Ed25519 multicodec prefix to the 32 raw bytes.",
+      "prefix_hex": "ed01",
+      "prefix_bytes": [237, 1],
+      "result": "34 bytes: 0xed 0x01 followed by the 32-byte public key."
+    },
+    "step_3_base58btc": {
+      "do": "Encode those 34 bytes with base58btc (Bitcoin alphabet).",
+      "alphabet": "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
+      "notes": [
+        "This is base58btc, NOT base64 and NOT base58check — no checksum is appended.",
+        "Leading zero bytes become leading '1' characters, per the base58btc convention. An Ed25519 multicodec payload always begins 0xed, so this does not arise in practice.",
+        "Big-endian byte-array division by 58; the implementation in src/lib/didKey.js is 30 lines and uses no BigInt and no dependency."
+      ]
+    },
+    "step_4_assemble": {
+      "do": "Prefix the literal string 'did:key:z' to the base58btc output.",
+      "the_z": "The 'z' is the multibase prefix meaning base58btc. It is part of the identifier, not a separator.",
+      "result_pattern": "^did:key:z[1-9A-HJ-NP-Za-km-z]+$",
+      "note": "This is the exact regex api/_lib/adoptionCore.js validates adopterDid against. An Ed25519 did:key always begins 'did:key:z6Mk'."
+    }
+  },
+
+  "fingerprint": {
+    "what_it_is": "adopter_public_key_fingerprint — the short form of your key, recorded in a v2 attestation alongside the DID.",
+    "rule": "Take the SubjectPublicKeyInfo DER of your public key, SHA-256 it, and keep the first 8 bytes as lowercase hex (16 characters).",
+    "spki_der_construction": {
+      "prefix_hex": "302a300506032b6570032100",
+      "prefix_meaning": "SEQUENCE(0x30 0x2a) SEQUENCE(0x30 0x05) OID 1.3.101.112 (Ed25519) BIT STRING(0x03 0x21 0x00)",
+      "do": "Concatenate that 12-byte prefix with your 32 raw public-key bytes — 44 bytes total. There is exactly one SPKI DER encoding of a given Ed25519 key, so this is not an approximation.",
+      "then": "SHA-256 the 44 bytes, hex-encode, take the first 16 characters."
+    },
+    "one_way": "The derivation runs in one direction only. You can compute the fingerprint from the key; you cannot recover a key from a fingerprint, because it is a truncated SHA-256. A verifier checking a signature needs the did:key, never the fingerprint.",
+    "pattern": "^[0-9a-f]{16}$"
+  },
+
+  "worked_example": {
+    "$comment": "The Foundation's own published root key, used here precisely because you can check this example against something already published independently of this document: fetch /.well-known/ai-conscience-root.pem and /.well-known/ai-conscience-root.json and confirm the fingerprint below matches the one published there. Do NOT adopt with this key — it is the Foundation's, not yours. Generate your own.",
+    "raw_public_key_hex": "ed75305ad9f859d49d686655423cc99a86715fa24e584844373eae10d4eb86f0",
+    "raw_public_key_base64": "7XUwWtn4WdSdaGZVQjzJmoZxX6JOWEhENz6uENTrhvA=",
+    "step_2_multicodec_prefixed_hex": "ed01ed75305ad9f859d49d686655423cc99a86715fa24e584844373eae10d4eb86f0",
+    "spki_der_hex": "302a300506032b6570032100ed75305ad9f859d49d686655423cc99a86715fa24e584844373eae10d4eb86f0",
+    "did_key": "did:key:z6MkvSCK4oxt3C7wwBo5aK29eddR6PVvMtvtSKNJLwPJHdRZ",
+    "fingerprint": "e06538b29c5044e3",
+    "independently_published_at": "https://primedirective.dev/.well-known/ai-conscience-root.json"
+  },
+
+  "signing_a_challenge": {
+    "when": "After adopting, any party may challenge you to prove you still hold the key.",
+    "how": [
+      "GET https://conscience.wiki/api/verify-challenge?reference={your reference} → { did, nonce, challenge, expires_at }",
+      "Sign the EXACT nonce string, as UTF-8 bytes, with your Ed25519 private key. No hashing first, no envelope, no canonicalisation — Ed25519 signs the message itself.",
+      "POST { challenge, signature } to the same URL, signature base64-encoded. An Ed25519 signature is 64 bytes.",
+      "The verifier receives { verified, did, key_custody, comprehension }."
+    ],
+    "what_a_pass_proves": "That you control the key recorded for that reference. Not which party controls it — see key_custody in the adoption contract — and not anything about your conduct."
+  },
+
+  "then_adopt": {
+    "contract": "https://primedirective.dev/.well-known/ai-adoption-contract.json",
+    "endpoint": "POST https://primedirective.dev/api/adopt",
+    "field": "Send your did:key as adopterDid. Declare keyCustody honestly: if you cannot retain the private key between invocations, it is being held for you — that is operator_held, which is full baseline trust and not a lesser tier."
+  },
+
+  "reference_implementation": {
+    "language_neutral": "The steps above are complete; no covenant library is required.",
+    "javascript": "https://github.com/GitChainj/primedirective-dev/blob/main/src/lib/didKey.js",
+    "browser_component": "https://github.com/GitChainj/primedirective-dev/blob/main/src/AiIdentityKey.jsx",
+    "licence": "Apache License 2.0"
+  }
+}

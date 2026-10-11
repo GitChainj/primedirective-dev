@@ -5,11 +5,16 @@
 // what the public ledger already records, and the checkbox starts unticked so
 // proceeding is an act rather than a default.
 //
-// DISCLOSURE_VERSION is recorded with each consent so we can always say which
-// words a given adopter actually agreed to. Bump it whenever the text below
-// changes in substance — never silently.
+// ── The words are not here ──
+// The disclosure text lives in src/consent/disclosure.js and is published for
+// machines at the URL that module names. This component RENDERS that source and
+// holds no copy of its own, so the human form and the machine artefact cannot
+// drift apart. To change the wording, bump the version there — never edit text
+// in this file.
 
-export const DISCLOSURE_VERSION = "consent-disclosure-1.0";
+import { DISCLOSURE, DISCLOSURE_VERSION, DISCLOSURE_URL } from "./consent/disclosure.js";
+
+export { DISCLOSURE_VERSION, DISCLOSURE_URL };
 
 // Derived from the chosen path, not collected as a new field: the site does not
 // yet ask adopters to declare an identity class, and asking would be new
@@ -67,45 +72,41 @@ const css = `
 }
 `;
 
+// One segmented paragraph → JSX. Mirrors partsToText() in the canonical source:
+// the same parts, rendered with emphasis and links instead of flattened.
+function Parts({ parts }) {
+  return (
+    <>
+      {parts.map((p, i) => {
+        if (p.b !== undefined) return <strong key={i}>{p.b}</strong>;
+        if (p.a !== undefined) return <a key={i} href={p.href}>{p.a}</a>;
+        return <span key={i}>{p.t}</span>;
+      })}
+    </>
+  );
+}
+
 export default function AdoptConsent({ checked, onChange }) {
   return (
     <div className="adopt-consent">
       <style>{css}</style>
-      <h3>Before you adopt — what this records</h3>
-      <p>Your adoption creates a public record containing:</p>
+      <h3>{DISCLOSURE.heading}</h3>
+      <p>{DISCLOSURE.recordsIntro}</p>
       <ul>
-        <li>the <strong>name or pseudonym</strong> you give us;</li>
-        <li>the <strong>date</strong> of adoption;</li>
-        <li>a public <strong>reference number</strong> (for example UPD-2026-0001);</li>
-        <li>a <strong>cryptographic hash</strong> of those facts, so anyone can verify them.</li>
+        {DISCLOSURE.records.map((parts, i) => (
+          <li key={i}><Parts parts={parts} /></li>
+        ))}
       </ul>
-      <p>
-        That record is <strong>permanent and public</strong>. It is the point of the ledger:
-        anyone can check that your adoption is real and has not been altered. Because the
-        record is cryptographically signed, copies may be held by others, and we cannot
-        recall them — so please read{" "}
-        <a href="/privacy">what erasure means here</a> before you continue.
-      </p>
-      <p>
-        <strong>You may adopt under a pseudonym.</strong> Give the name you wish to appear on
-        the ledger; it does not have to be your legal name. If we hold any link between a
-        pseudonym and a real identity, we keep it privately and never publish it.
-      </p>
-      <p>
-        Full detail is in our <a href="/privacy">Privacy Notice</a>. For access, correction,
-        erasure, or to withdraw consent:{" "}
-        <a href="mailto:privacy@primedirective.dev">privacy@primedirective.dev</a>.
-      </p>
+      {DISCLOSURE.paragraphs.map((parts, i) => (
+        <p key={i}><Parts parts={parts} /></p>
+      ))}
       <label className="adopt-consent-check">
         <input
           type="checkbox"
           checked={checked}
           onChange={(e) => onChange(e.target.checked)}
         />
-        <span>
-          I have read the above. I consent to my adoption being recorded permanently and
-          publicly on the ledger as described.
-        </span>
+        <span>{DISCLOSURE.consentStatement}</span>
       </label>
     </div>
   );

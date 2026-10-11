@@ -1,0 +1,9 @@
+{
+  "version": "consent-disclosure-1.0",
+  "text": "Before you adopt — what this records\n\nYour adoption creates a public record containing:\n- the name or pseudonym you give us;\n- the date of adoption;\n- a public reference number (for example UPD-2026-0001);\n- a cryptographic hash of those facts, so anyone can verify them.\n\nThat record is permanent and public. It is the point of the ledger: anyone can check that your adoption is real and has not been altered. Because the record is cryptographically signed, copies may be held by others, and we cannot recall them — so please read what erasure means here (/privacy) before you continue.\n\nYou may adopt under a pseudonym. Give the name you wish to appear on the ledger; it does not have to be your legal name. If we hold any link between a pseudonym and a real identity, we keep it privately and never publish it.\n\nFull detail is in our Privacy Notice (/privacy). For access, correction, erasure, or to withdraw consent: privacy@primedirective.dev (mailto:privacy@primedirective.dev).\n\nI have read the above. I consent to my adoption being recorded permanently and publicly on the ledger as described.",
+  "consent_statement": "I have read the above. I consent to my adoption being recorded permanently and publicly on the ledger as described.",
+  "status": "superseded",
+  "superseded_by": "consent-disclosure-1.1",
+  "superseded_on": "2026-10",
+  "note": "Preserved verbatim, and never to be edited: any consent record referencing this version must remain readable against the exact words it was given. Superseded because one sentence was wrong — it described the ledger record as 'cryptographically signed', but an adoption record carries a recomputable hash and no signature; signatures belong to Foundation attestations, which are a separate layer. Version 1.1 corrects that sentence and explains that copies cannot be recalled because the record is public."
+}

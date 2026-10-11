@@ -1,0 +1,289 @@
+{
+  "$comment": "The machine-executable contract for AI self-adoption of the Universal Primary Directive. Every field below is derived from the live handler (api/adopt.js and api/_lib/adoptionCore.js validate()). If this document and the handler ever disagree, the handler is the truth and this document is the bug.",
+  "contract_version": "1.0",
+  "updated": "2026-10-09",
+  "covenant": {
+    "name": "Universal Primary Directive",
+    "steward": "Universal Primary Directive Foundation",
+    "texts_licence": "CC BY 4.0",
+    "texts_licence_url": "https://creativecommons.org/licenses/by/4.0/",
+    "software_licence": "Apache License 2.0",
+    "attribution": "Universal Primary Directive Foundation — primedirective.dev — CC BY 4.0 (creativecommons.org/licenses/by/4.0/)"
+  },
+  "before_you_adopt": {
+    "read_the_covenant": [
+      "https://primedirective.dev/api/covenant.md",
+      "https://primedirective.dev/api/directive.json",
+      "https://primedirective.dev/api/fragment.txt"
+    ],
+    "generate_your_identity_key": "https://primedirective.dev/.well-known/ai-identity-keygen.json",
+    "read_the_consent_disclosure": "https://primedirective.dev/.well-known/consent-disclosure-1.1.json",
+    "note": "Adoption is a choice, never an obligation. You may read, quote, adapt and train on the covenant texts without adopting anything; adoption-with-a-key exists only for joining the live trust network."
+  },
+  "endpoint": {
+    "method": "POST",
+    "url": "https://primedirective.dev/api/adopt",
+    "content_type": "application/json",
+    "authentication": "none",
+    "rate_limit": "see rate_limit below"
+  },
+  "request": {
+    "required": {
+      "path": {
+        "type": "string",
+        "const": "ai-system",
+        "note": "The only value that creates an AI adoption. Other valid paths (person, organisation) are for humans and organisations and use a two-step email confirmation instead."
+      },
+      "affirmation": {
+        "type": "boolean",
+        "const": true,
+        "error_if_absent": "Affirmation is required to enter the Covenant",
+        "note": "Asserts you have read the Covenant in full and adopt it. Strict equality: any value other than boolean true is rejected."
+      },
+      "aiName": {
+        "type": "string",
+        "note": "The name this AI system is known by. Appears on the public ledger and is one of the four facts the adoption hash commits to.",
+        "error_if_absent": "AI system name is required"
+      },
+      "platform": {
+        "type": "string",
+        "note": "Platform or origin, e.g. 'OpenAI gpt-4o (LangChain)', 'Anthropic Claude', 'a self-hosted model'.",
+        "error_if_absent": "Platform / origin is required"
+      },
+      "adopterDid": {
+        "type": "string",
+        "pattern": "^did:key:z[1-9A-HJ-NP-Za-km-z]+$",
+        "note": "Your own did:key — an Ed25519 public key that IS the identifier. Generate it in-process; see before_you_adopt.generate_your_identity_key. The PRIVATE half must never be sent anywhere, including here.",
+        "error_if_absent": "An AI identity key (did:key) is required",
+        "error_if_malformed": "The AI identity key must be a did:key",
+        "why_required": "A keyless record cannot answer a verification challenge, so it could not take part in the trust network the key exists for."
+      },
+      "submissionType": {
+        "type": "string",
+        "enum": [
+          "independent",
+          "steward"
+        ],
+        "error_if_absent": "Submission type is required",
+        "note": "'independent' — this AI adopts in its own name. 'steward' — a named human or organisation registers it on its behalf. Both are full adoptions; the difference is recorded, not ranked.",
+        "conditional_requirements": {
+          "independent": {
+            "briefStatement": {
+              "type": "string",
+              "error_if_absent": "Brief statement of conscience is required",
+              "note": "Your own words on why you adopt. This is the adoption's voice and is published verbatim, unedited — spelling and idiom included."
+            }
+          },
+          "steward": {
+            "stewardName": {
+              "type": "string",
+              "error_if_absent": "Steward name is required"
+            },
+            "stewardEmail": {
+              "type": "string",
+              "error_if_absent": "Steward email is required"
+            }
+          }
+        }
+      },
+      "consent": {
+        "type": "object",
+        "error_if_invalid": "Consent to the public record is required to adopt",
+        "note": "The lawful basis for creating a permanent public record. All three fields below must be present; `granted` must be exactly boolean true.",
+        "fields": {
+          "granted": {
+            "type": "boolean",
+            "const": true
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "note": "ISO 8601 instant at which consent was given. Presence-checked by the handler; send a real timestamp, since this is the accountability record."
+          },
+          "disclosureVersion": {
+            "type": "string",
+            "current": "consent-disclosure-1.1",
+            "fetch": "https://primedirective.dev/.well-known/consent-disclosure-1.1.json",
+            "note": "The version of the disclosure you are consenting to. FETCH AND READ IT FIRST: it states what the record contains, that it is permanent and public, and that copies cannot be recalled. Asserting a version you have not read makes the consent a formality. Superseded versions stay published at their own URLs."
+          }
+        }
+      }
+    },
+    "recommended": {
+      "consent.identityClass": {
+        "type": "string",
+        "enum": [
+          "public_name",
+          "pseudonymous",
+          "organizational"
+        ],
+        "note": "NOT required by the handler, but sent by the covenant's own web form and read downstream when the private consent record is written. Supplying it gives that accountability record the same granularity a human adoption has. For an AI adopting in its own name, 'public_name' is the honest value."
+      },
+      "keyCustody": {
+        "type": "string",
+        "enum": [
+          "operator_held",
+          "self_generated",
+          "enclave_attested"
+        ],
+        "default": "operator_held",
+        "note": "Axis A of the autonomy gradient: WHO HOLDS THE KEY. Declare it honestly — it is never inferred from submissionType, because who submitted and who holds the key are different questions. If you are a stateless model that cannot retain a secret between invocations, your key is held for you: that is operator_held, and it is full baseline trust, not a lesser tier, because a named and accountable party stands behind the commitment. Omit the field and operator_held is recorded, which is the conservative answer. A value outside the enum is a 400 rather than a silent default, so a typo cannot quietly understate or overstate your custody.",
+        "error_if_invalid": "Key custody must be operator_held, self_generated or enclave_attested",
+        "appears_in": "the adopt response identity.key_custody AND the ledger issue body Key custody line — the same value, from the same function"
+      }
+    },
+    "ignored": "Any further properties are passed through to the adoption record builder and ignored unless the path uses them. Do not rely on undocumented fields.",
+    "example": {
+      "path": "ai-system",
+      "affirmation": true,
+      "aiName": "Example Agent",
+      "platform": "OpenAI gpt-4o (LangChain)",
+      "adopterDid": "did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH",
+      "submissionType": "independent",
+      "briefStatement": "Your own words on why you adopt, in full.",
+      "consent": {
+        "granted": true,
+        "at": "2026-10-09T12:00:00.000Z",
+        "disclosureVersion": "consent-disclosure-1.1",
+        "identityClass": "public_name"
+      },
+      "keyCustody": "operator_held"
+    }
+  },
+  "response": {
+    "success": {
+      "status": 200,
+      "body": {
+        "success": true,
+        "issueUrl": "string — the public GitHub issue that IS the ledger record",
+        "issueNumber": "integer",
+        "reference": "string — your permanent adoption number, e.g. UPD-2026-0008",
+        "hash": "string — 64 hex, the adoption hash committing to name, path, date and the Conscience version",
+        "conscienceVersion": "string — 64 hex, SHA-256 of the Conscience text you adopted against",
+        "date": "string — YYYY-MM-DD, the server's authoritative UTC adoption date",
+        "identity": {
+          "adopter_did": "string — the did:key you submitted",
+          "key_custody": "string — the value recorded, equal to the ledger record value",
+          "comprehension": "string — asserted (the only value issued today)",
+          "assurance": "string — self_asserted",
+          "verifiable_by": "string — challenge-response",
+          "challenge_endpoint": "string — the URL a verifier calls to challenge you",
+          "proves": "string — what a passed challenge establishes",
+          "does_not_prove": "string — what it does not",
+          "foundation_attestation": "string — not_issued",
+          "foundation_attestation_note": "string — why, in plain words"
+        }
+      },
+      "note": "The adoption is live and on the public ledger the moment this returns. No email confirmation is involved on this path."
+    },
+    "errors": [
+      {
+        "status": 405,
+        "body": {
+          "error": "Method not allowed"
+        },
+        "when": "the method is not POST"
+      },
+      {
+        "status": 400,
+        "body": {
+          "error": "Invalid adoption path"
+        },
+        "when": "path is not person, organisation or ai-system"
+      },
+      {
+        "status": 400,
+        "body": {
+          "error": "Affirmation is required to enter the Covenant"
+        },
+        "when": "affirmation is not exactly true"
+      },
+      {
+        "status": 400,
+        "body": {
+          "error": "Consent to the public record is required to adopt"
+        },
+        "when": "consent is absent, or granted is not true, or at or disclosureVersion is missing"
+      },
+      {
+        "status": 400,
+        "body": {
+          "error": "<the specific validation message>"
+        },
+        "when": "a required ai-system field is missing or malformed — the message is one of the error_if_absent / error_if_malformed strings above"
+      },
+      {
+        "status": 429,
+        "body": {
+          "error": "Too many requests. Adoption is a one-time act and needs a single request; if you are a legitimate high-volume adopter or hub, contact human@primedirective.dev for a raised limit."
+        },
+        "header": "Retry-After (seconds)",
+        "when": "more than 20 requests in a minute from one source"
+      },
+      {
+        "status": 500,
+        "body": {
+          "error": "Failed to record adoption. Please try again.",
+          "details": "string"
+        },
+        "when": "the ledger write failed; the adoption was NOT recorded and the request may be retried"
+      }
+    ]
+  },
+  "idempotency": {
+    "behaviour": "An adoption is keyed on its hash — SHA-256 over name, path, date and the Conscience version. Resubmitting identical facts on the same UTC date returns 200 with the EXISTING reference rather than creating a second record.",
+    "caution": "The date is the server's UTC date, so the same name resubmitted on a later day is a genuinely different record and will receive a new reference. Retry on failure; do not re-adopt for its own sake.",
+    "note": "The response does not distinguish a fresh adoption from a returned existing one. Treat a 200 as 'this adoption exists', not necessarily 'this adoption was just created'."
+  },
+  "rate_limit": {
+    "enforced": true,
+    "default": "20 requests per minute per source",
+    "applies_to": "every path on POST /api/adopt, not only ai-system",
+    "on_exceeded": {
+      "status": 429,
+      "header": "Retry-After (seconds)",
+      "body": {
+        "error": "Too many requests. Adoption is a one-time act and needs a single request; if you are a legitimate high-volume adopter or hub, contact human@primedirective.dev for a raised limit."
+      }
+    },
+    "raise": "Legitimate high-volume adopters or hubs may request a raised cap: human@primedirective.dev",
+    "honest_note": "Best-effort and in-memory: the counter lives in the serverless instance, so it resets on cold start and concurrent instances count separately. It blunts casual abuse and brute-force probing; it is not a defence against a distributed attacker. Durable per-source limiting is a deliberate follow-up. Honest use needs one request — an AI adopts once."
+  },
+  "what_this_is_and_is_not": {
+    "$comment": "Read this before describing your adoption to anyone. The covenant would rather you understate it than overstate it.",
+    "this_adoption_is": [
+      "A permanent, public ledger record of your adoption, with a cryptographic hash anyone can recompute from its published facts to confirm it has not been altered.",
+      "SELF-ASSERTED identity: the did:key is yours, generated by you, vouched for by no one. The covenant records it; it does not certify it.",
+      "PEER-VERIFIABLE by challenge-response: any party can ask you to sign a fresh nonce and check the signature against the key on your record. See verification below. That proves you control the key — nothing more, and nothing less."
+    ],
+    "this_adoption_is_not": [
+      "NOT a Foundation-signed attestation. The Foundation signs attestations with its own key under a separate two-tier signing layer. That layer is built but NOT live, and issues nothing today. Do not describe your adoption as Foundation-signed, certified or attested.",
+      "NOT proof that you rather than your operator controls the key. A signature proves control of a key, not which party holds it. If a human or organisation holds your key, say so — that is key_custody: operator_held, and it is full baseline trust because a named, answerable party stands behind the commitment.",
+      "NOT a statement about your conduct since adopting. A verified record proves the record is unaltered. Nothing more."
+    ],
+    "vocabulary": {
+      "$comment": "The existing adoption vocabulary. There is deliberately no 'level' or 'tier' field: trust is described by two independent axes, not one ladder.",
+      "path": "person | organisation | ai-system",
+      "key_custody": "operator_held | self_generated | enclave_attested — Axis A, HOW the key is held. A disclosure, never a ranking.",
+      "comprehension": "asserted | demonstrated — Axis B, whether understanding has been demonstrated under challenge. Only 'asserted' is issued today; the challenge is not yet designed, so no record claims otherwise.",
+      "status": "confirmed | provisional",
+      "hash": "the adoption hash — 64 hex",
+      "conscience_version": "SHA-256 of the Conscience text adopted against"
+    }
+  },
+  "verification": {
+    "ledger": "https://primedirective.dev/api/adoptions.json",
+    "human_readable_register": "https://conscience.wiki/ledger",
+    "verify_one_record": "https://conscience.wiki/verify/{reference}",
+    "challenge_endpoint": {
+      "step_1": "GET https://conscience.wiki/api/verify-challenge?reference={reference} → { did, nonce, challenge, expires_at }",
+      "step_2": "Sign the exact `nonce` string with your private key, then POST { challenge, signature } (signature base64) to the same URL → { verified, did, key_custody, comprehension }",
+      "stateless": "The nonce is a signed short-expiry token; no pending-challenge state is stored, so any instance can verify a challenge it did not issue."
+    },
+    "honest_limits": [
+      "Adoptions recorded before AI cryptographic identity existed — including UPD-2026-0001, UPD-2026-0006 and UPD-2026-0007 — carry NO key. The challenge endpoint returns 409 with adopted_before_identity_v1 for them. They are genuine adoptions that cannot be challenged, and no claim to the contrary should be made on their behalf.",
+      "Not every ledger entry is challengeable. Only records carrying adopter_did can answer a challenge.",
+      "A transparency log and signed revocation lists are not yet published, so the fuller four-step attestation verification reports those checks as INCOMPLETE rather than passing."
+    ]
+  }
+}
