@@ -2163,7 +2163,6 @@ function FooterSection() {
 import DonatePage from './DonatePage.jsx';
 import ProposalForm from './ProposalForm.jsx';
 import InteractiveSeal from './InteractiveSeal.jsx';
-import RegisterAI from './RegisterAI.jsx';
 import Organizations from './Organizations.jsx';
 import RegisterHuman from './RegisterHuman.jsx';
 import Adopt from './Adopt.jsx';
@@ -2235,9 +2234,14 @@ export default function App({ ssrPath, ssrIsWiki } = {}) {
     return <DonatePage />;
   }
 
-  // Route to AI registration
+  // /register-ai is RETIRED (Step 3). It was an unlinked page posting to an
+  // endpoint that created a human-review issue, never an adoption — nothing
+  // submitted there could reach the ledger. vercel.json redirects this path
+  // server-side in production; this covers `vite dev`, where vercel.json does
+  // not apply, so the path behaves the same in both.
   if (path === '/register-ai') {
-    return <RegisterAI />;
+    if (typeof window !== 'undefined') window.location.replace('/adopt');
+    return null;
   }
 
   // Route to Organizations page

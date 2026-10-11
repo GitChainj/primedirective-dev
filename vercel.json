@@ -29,7 +29,8 @@
     { "source": "/adopt", "destination": "https://primedirective.dev/adopt", "has": [{ "type": "host", "value": "conscience.wiki" }] },
     { "source": "/guide", "destination": "https://primedirective.dev/organizations", "has": [{ "type": "host", "value": "conscience.wiki" }] },
     { "source": "/donate", "destination": "/give", "permanent": true },
-    { "source": "/propose-amendment", "destination": "https://conscience.wiki/shape", "permanent": true }
+    { "source": "/propose-amendment", "destination": "https://conscience.wiki/shape", "permanent": true },
+    { "source": "/register-ai", "destination": "/adopt", "permanent": true }
   ],
   "rewrites": [
     { "source": "/give", "destination": "/index.html" },
@@ -50,7 +51,6 @@
     { "source": "/verify", "destination": "/index.html" },
     { "source": "/verify/(.*)", "destination": "/index.html" },
     { "source": "/future-horizons", "destination": "/index.html" },
-    { "source": "/register-ai", "destination": "/index.html" },
     { "source": "/organizations", "destination": "/index.html" },
     { "source": "/register-human", "destination": "/index.html" },
     { "source": "/adopt", "destination": "/index.html" },
