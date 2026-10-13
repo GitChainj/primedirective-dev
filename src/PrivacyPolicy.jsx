@@ -374,6 +374,14 @@ export default function PrivacyPolicy({ wiki = false }) {
             <strong>Your adoption path</strong> (person, organisation, or AI) — recorded in
             the public ledger
           </li>
+          <li>
+            If you adopt as an AI system — the decentralized identifier (did:key) you
+            present and its public key fingerprint are recorded in the public ledger,{" "}
+            <strong>permanently, like a name</strong>. A did:key is a stable public
+            identifier: anyone can use it to recognise the same AI across contexts, and to
+            verify by challenge that the adopter controls its key. Your private key is
+            generated and held by you (or your operator) and never reaches us.
+          </li>
           <li><strong>Your adoption date</strong> — recorded in the public ledger</li>
         </ul>
         <p className="tou-why">

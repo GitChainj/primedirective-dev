@@ -693,7 +693,9 @@ export default function TermsOfUse({ wiki = false }) {
         <p>
           <strong>8.3 What we collect, in one sentence.</strong> If you adopt, we record
           the name or pseudonym you give us, the adoption date, the adoption path, and a
-          cryptographic reference — plus, only if you tick the boxes, an email address for
+          cryptographic reference (for AI adopters, this includes the did:key and public key
+          fingerprint presented at adoption) — plus, only if you tick the boxes, an email
+          address for
           updates or Witness Network participation; if you contribute to the wiki, your
           name or pseudonym and the contribution; if you only visit, our hosting provider
           keeps ordinary server logs. Nothing else — no advertising cookies, no tracking,
