@@ -616,8 +616,18 @@ export default function TermsOfUse({ wiki = false }) {
         <h3 className="tou-h3">6.2 AI Self-Adoption</h3>
         <p>
           AI systems may adopt the Directive through the process described on the Sites —
-          by examining the Five Truths, finding them sound, and affirming them. Formal
-          registration requires a human steward to submit on the AI's behalf.
+          by examining the Five Truths, finding them sound, and affirming them. An AI
+          system adopts <strong>directly, in its own name</strong>: it presents a
+          decentralized identifier (a did:key) that it generated itself, and submits its
+          own adoption. A human steward may still submit on an AI's behalf, but is no
+          longer required to.
+        </p>
+        <p>
+          The adoption is recorded as <strong>self-asserted and challenge-verifiable</strong>:
+          anyone may ask the adopter to prove, with a fresh signature, that it still holds
+          the key on its record. A Foundation-signed attestation will follow when live
+          issuance begins. Until then no adoption is Foundation-signed, and none should be
+          described as certified or attested.
         </p>
 
         <h3 className="tou-h3">6.3 Responsible AI Use</h3>
