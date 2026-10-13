@@ -9,7 +9,7 @@
 import WikiLayout from './wiki/WikiLayout.jsx';
 import { LICENCE_LINE, LICENCE_SHORT } from "./FoundationFooter.jsx";
 
-const LAST_UPDATED = "27 September 2026";
+const LAST_UPDATED = "13 October 2026";
 
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
@@ -332,9 +332,9 @@ export default function PrivacyPolicy({ wiki = false }) {
         <p>
           The Sites — primedirective.dev and conscience.wiki — are operated by the
           Universal Primary Directive stewardship, and the Directive is stewarded by the{" "}
-          <strong>Universal Primary Directive Foundation</strong> (in formation; to be
-          federally incorporated under the Canada Not-for-profit Corporations Act), with its
-          registered office in Ontario, Canada.
+          <strong>Universal Primary Directive Foundation</strong>, a not-for-profit
+          corporation incorporated under the Canada Not-for-profit Corporations Act
+          (corporation no. 1828691-4), with its registered office in Ontario, Canada.
         </p>
         <p>
           For data protection purposes we are the <strong>data controller</strong> for the
@@ -363,8 +363,12 @@ export default function PrivacyPolicy({ wiki = false }) {
             ledger and on your personalised seal
           </li>
           <li>
-            <strong>Your email address</strong> (optional) — used only to contact you about
-            your adoption if necessary; never shared, never used for marketing
+            <strong>Your email address</strong> (human adopters) — used once, to confirm
+            that you, and not someone else, initiated the adoption, and then discarded
+            — <strong>unless you tick an opt-in box</strong> to receive stewardship updates
+            or to join the Witness Network, in which case we keep it for exactly that
+            purpose until you unsubscribe or withdraw. Never published, never shared, never
+            used for marketing.
           </li>
           <li>
             <strong>Your adoption path</strong> (person, organisation, or AI) — recorded in
@@ -467,6 +471,38 @@ export default function PrivacyPolicy({ wiki = false }) {
           timestamps beyond the adoption date, no technical fingerprints — but we cannot
           prevent it entirely.
         </p>
+
+        {/* The opt-in lists are a new processing activity, described here before the
+            checkboxes ship. Matches the recorded Piece 4 design: standing_witness
+            default-off, email + boolean + signing token only, no open/click tracking,
+            one-click removal. The Witness Network has not launched, so the consent is
+            to future enrolment and is described that way. */}
+        <h3 className="tou-h3">2.7 Optional email updates and the Witness Network</h3>
+        <p>
+          At adoption you may tick either or both of two boxes. Both are unticked by
+          default, both are entirely optional, and adoption works identically without them.
+        </p>
+        <p>
+          <strong>Stewardship updates.</strong> If you opt in, we keep your email address to
+          send you occasional updates about the Directive — significant changes to these
+          documents, major milestones, and matters affecting adopters. No marketing, no
+          fundraising pressure, nothing sold. Every message identifies us and carries a
+          working unsubscribe link; unsubscribing deletes your address from the list.
+        </p>
+        <p>
+          <strong>The Witness Network.</strong> The Witness Network, when it launches, will
+          let adopters facing pressure to violate the covenant file a public pressure
+          declaration, with other adopters standing beside them as public co-signatures. If
+          you opt in as a <strong>standing witness</strong>, you consent to: (a) our keeping
+          your email address for this purpose; (b) your name or pseudonym being{" "}
+          <strong>automatically and publicly co-signed</strong> on pressure declarations
+          filed after your adoption; and (c) receiving an email notification of each
+          declaration you are co-signed on, with a one-click link to remove your signature
+          from that declaration — removals are logged and public, just as signatures are. We
+          store only your email address, the standing-witness flag, and a signing token. We
+          do not track whether you open or click these emails. You may withdraw entirely at
+          any time, which deletes your address and stops all future co-signing.
+        </p>
       </div>
 
       <hr className="tou-divider" />
@@ -560,6 +596,14 @@ export default function PrivacyPolicy({ wiki = false }) {
             <strong>Consent records</strong> (the timestamp, the version of the disclosure you
             were shown, and your chosen identity class) are kept privately as our
             accountability record for the lawful basis of processing. They are not published.
+          </li>
+          <li>
+            <strong>Server logs</strong> are retained per our hosting provider's default
+            retention and are not accessed by the stewardship for identification.
+          </li>
+          <li>
+            <strong>Opt-in email addresses</strong> (stewardship updates, Witness Network)
+            are retained until you unsubscribe or withdraw consent, and are then deleted.
           </li>
         </ul>
       </div>
@@ -659,11 +703,19 @@ export default function PrivacyPolicy({ wiki = false }) {
 
         <h3 className="tou-h3">6.1 For European Visitors (GDPR)</h3>
         <p>
-          If you are located in the European Economic Area, you have additional rights under
-          the General Data Protection Regulation, including the right to lodge a complaint
-          with your local data protection authority. Our lawful basis for processing is
-          consent (for adoption and contributions) and legitimate interest (for analytics
-          and site operation).
+          If you are located in the European Economic Area, the General Data Protection
+          Regulation applies to our processing of your information. Our lawful bases are:{" "}
+          <strong>consent</strong> (Article 6(1)(a)) for adoption, contributions, and
+          opt-in email lists; <strong>legitimate interest</strong> (Article 6(1)(f)) for
+          server logs, aggregate analytics, and site operation; and{" "}
+          <strong>legal obligation</strong> (Article 6(1)(c)) for the consent and request
+          records we keep to demonstrate compliance.
+        </p>
+        <p>
+          You have the right to lodge a complaint with the data protection authority of your
+          country of residence, place of work, or wherever the issue arose. We would rather
+          you raise it with us first at {PRIVACY_MAILTO} — but that is your choice, not a
+          precondition.
         </p>
 
         <h3 className="tou-h3">6.2 For Canadian Visitors (PIPEDA)</h3>
@@ -692,11 +744,16 @@ export default function PrivacyPolicy({ wiki = false }) {
       <div className="tou-section">
         <h2 className="tou-h2">8. International Data Transfers</h2>
         <p>
-          The Sites are hosted on Vercel's global infrastructure. If you access the Sites
-          from outside Canada, your data may be processed in Canada or other jurisdictions
-          where Vercel maintains servers. By using the Sites, you consent to this transfer.
-          We ensure that any data processing complies with applicable privacy laws regardless
-          of where it occurs.
+          We operate from Canada, and the Sites run on infrastructure in Canada, the United
+          States, and the European Union.
+        </p>
+        <p>
+          For visitors in the European Economic Area: transfers to Canada are covered by the
+          European Commission's <strong>adequacy decision</strong> for Canada where it
+          applies, and transfers to our service providers elsewhere rely on{" "}
+          <strong>Standard Contractual Clauses</strong> in the written data processing
+          agreements we hold with them. We have assessed and documented these transfers; you
+          can request a summary at {PRIVACY_MAILTO}.
         </p>
       </div>
 
@@ -714,9 +771,10 @@ export default function PrivacyPolicy({ wiki = false }) {
           <li>Minimal data collection as a fundamental principle</li>
         </ul>
         <p>
-          No system is perfectly secure. If we become aware of a data breach that affects
-          your personal information, we will notify you and any relevant authorities as
-          required by law.
+          No system is perfectly secure, and we do not claim otherwise. If a breach puts
+          your rights and freedoms at risk, we will notify the relevant supervisory
+          authority within 72 hours of becoming aware of it, and affected individuals
+          without undue delay.
         </p>
       </div>
 
@@ -769,7 +827,8 @@ export default function PrivacyPolicy({ wiki = false }) {
           If we make significant changes to this policy, we will note the changes on the
           Sites and update the "Last updated" date. We will not make changes that contradict
           our core commitments — particularly the commitments in Section 3 ("What We Do Not
-          Do").
+          Do"). Superseded versions of this policy and of the Terms of Use are published,
+          dated, at <a href="/legal" className="tou-link">primedirective.dev/legal</a>.
         </p>
       </div>
 

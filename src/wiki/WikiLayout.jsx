@@ -7,7 +7,6 @@
 import {
   LICENCE_SHORT,
   FOUNDATION_NAME,
-  FOUNDATION_STATUS,
   FOUNDATION_JURISDICTION,
   GENERAL_EMAIL,
   PRIVACY_EMAIL,
@@ -236,7 +235,7 @@ export default function WikiLayout({ title, tagline, activeNav, children }) {
           <a href="https://primedirective.dev/adopt">Adopt the Directive →</a>
         </div>
         <div className="wiki-footer-row">
-          {FOUNDATION_NAME} ({FOUNDATION_STATUS}) · {FOUNDATION_JURISDICTION} ·{" "}
+          {FOUNDATION_NAME} · {FOUNDATION_JURISDICTION} ·{" "}
           <a href={`mailto:${GENERAL_EMAIL}`}>{GENERAL_EMAIL}</a>
         </div>
         <div className="wiki-footer-row">

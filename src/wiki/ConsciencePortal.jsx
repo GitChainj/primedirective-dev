@@ -24,7 +24,6 @@ import { NAV_ITEMS } from "./WikiLayout.jsx";
 import {
   LICENCE_SHORT,
   FOUNDATION_NAME,
-  FOUNDATION_STATUS,
   FOUNDATION_JURISDICTION,
   GENERAL_EMAIL,
   PRIVACY_EMAIL,
@@ -1096,7 +1095,7 @@ export default function ConsciencePortal() {
 
       <footer className="cp-footer">
         <p>
-          {FOUNDATION_NAME} ({FOUNDATION_STATUS}) · {FOUNDATION_JURISDICTION} ·{" "}
+          {FOUNDATION_NAME} · {FOUNDATION_JURISDICTION} ·{" "}
           <a href={`mailto:${GENERAL_EMAIL}`}>{GENERAL_EMAIL}</a>
         </p>
         <p>

@@ -7,7 +7,7 @@
 import WikiLayout from './wiki/WikiLayout.jsx';
 import { ATTRIBUTION, LICENCE_LINE, LICENCE_SHORT } from "./FoundationFooter.jsx";
 
-const LAST_UPDATED = "6 October 2026";
+const LAST_UPDATED = "13 October 2026";
 
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
@@ -245,6 +245,13 @@ html { scroll-behavior: smooth; }
 
 const MAILTO = (
   <a href="mailto:human@primedirective.dev" className="tou-link">human@primedirective.dev</a>
+);
+
+// Data-subject requests have their own channel so they are never lost in general
+// correspondence, and so the one-month response clock starts at a known mailbox.
+// Mirrors the constant in PrivacyPolicy.jsx.
+const PRIVACY_MAILTO = (
+  <a href="mailto:privacy@primedirective.dev" className="tou-link">privacy@primedirective.dev</a>
 );
 
 export default function TermsOfUse({ wiki = false }) {
@@ -492,7 +499,12 @@ export default function TermsOfUse({ wiki = false }) {
             Commit to carrying the Conscience in your AI's operating instructions (for
             individual adopters) or in all AI deployments (for organisations)
           </li>
-          <li>Consent to your adoption being recorded in the public ledger</li>
+          <li>
+            Consent to your adoption being recorded <strong>permanently</strong> in the
+            public ledger, after being shown exactly what will be published and what
+            erasure can and cannot reach. You may withdraw consent at any time — see
+            the <a href="/privacy" className="tou-link">Privacy Policy</a>.
+          </li>
           <li>Receive a personalised seal and a verification reference number</li>
         </ul>
         <p>
@@ -508,10 +520,15 @@ export default function TermsOfUse({ wiki = false }) {
           organisation, or AI), and a cryptographic verification hash.
         </p>
         <p>
-          This record is public and permanent. If you wish to have your adoption record
-          removed, contact {MAILTO}. We will accommodate reasonable requests, but note that
-          the ledger exists to provide public accountability — which is one of the
-          Directive's core values.
+          This record is public and permanent — permanence is the ledger's accountability
+          function, and you consent to it when you adopt. You nonetheless have the right to
+          withdraw consent and to request erasure at any time: email{" "}
+          <strong>{PRIVACY_MAILTO}</strong>. We will revoke your record wherever we control
+          it, delete any private pseudonym-to-identity mapping, and delete everything else
+          we hold about you. What erasure can and cannot reach — a published cryptographic
+          signature cannot be un-signed — is explained in the{" "}
+          <a href="/privacy" className="tou-link">Privacy Policy</a>, which you should read
+          before adopting.
         </p>
 
         <h3 className="tou-h3">4.3 Verification</h3>
@@ -654,43 +671,70 @@ export default function TermsOfUse({ wiki = false }) {
 
       {/* 8 */}
       <div className="tou-section">
-        <h2 className="tou-h2">8. Privacy</h2>
+        <h2 className="tou-h2">8. Privacy and Data Protection</h2>
 
-        <h3 className="tou-h3">8.1 What We Collect</h3>
-        <ul className="tou-list">
-          <li>
-            <strong>Adoption ceremony:</strong> your name (or pseudonym), email (optional),
-            adoption path, and date. These are recorded in the public ledger.
-          </li>
-          <li>
-            <strong>Contributions:</strong> your name (or pseudonym) and contribution
-            content. These are published on the wiki.
-          </li>
-          <li>
-            <strong>Analytics:</strong> we use Vercel Analytics to understand traffic
-            patterns. This does not track individual users or collect personal data.
-          </li>
-        </ul>
-
-        <h3 className="tou-h3">8.2 What We Don't Do</h3>
-        <ul className="tou-list">
-          <li>We do not sell, share, or trade your personal information</li>
-          <li>We do not use your data for advertising</li>
-          <li>We do not track you across the web</li>
-          <li>We do not require an account, login, or password to use the Sites</li>
-          <li>
-            We do not use cookies for tracking (only essential functional cookies if any)
-          </li>
-        </ul>
-
-        <h3 className="tou-h3">8.3 Your Rights</h3>
         <p>
-          You may request correction or removal of your personal data by contacting{" "}
-          {MAILTO}. For adoption records, see section 4.2.
+          <strong>8.1 Who is responsible.</strong> The Universal Primary Directive
+          Foundation, a not-for-profit corporation incorporated under the Canada
+          Not-for-profit Corporations Act (corporation no. 1828691-4), with its registered
+          office in Ontario, Canada, is the <strong>data controller</strong> for personal
+          information processed through the Sites. Privacy contact:{" "}
+          <strong>{PRIVACY_MAILTO}</strong>.
         </p>
-        <p className="tou-why">
-          For the full privacy policy, see our{" "}
-          <a href="/privacy" className="tou-link">Privacy Policy</a>.
+
+        <p>
+          <strong>8.2 The Privacy Policy governs.</strong> Our{" "}
+          <a href="/privacy" className="tou-link">Privacy Policy</a> explains what we
+          collect, why, how long we keep it, who sees it, and how to exercise your rights.
+          It forms part of these terms. If these terms and the Privacy Policy conflict on a
+          privacy matter, the Privacy Policy prevails.
+        </p>
+
+        <p>
+          <strong>8.3 What we collect, in one sentence.</strong> If you adopt, we record
+          the name or pseudonym you give us, the adoption date, the adoption path, and a
+          cryptographic reference — plus, only if you tick the boxes, an email address for
+          updates or Witness Network participation; if you contribute to the wiki, your
+          name or pseudonym and the contribution; if you only visit, our hosting provider
+          keeps ordinary server logs. Nothing else — no advertising cookies, no tracking,
+          no profiling, no sale of data, no automated decision-making.
+        </p>
+
+        <p>
+          <strong>8.4 Legal basis.</strong> We process adoption and contribution records,
+          and opt-in email lists, on your <strong>consent</strong> (GDPR Article 6(1)(a)),
+          given by an affirmative act — adopting, submitting, or ticking an unticked box;
+          server logs and aggregate analytics on our <strong>legitimate interest</strong>{" "}
+          in operating a secure public site (Article 6(1)(f)); and consent and request
+          records to meet our <strong>legal obligations</strong> (Article 6(1)(c)).
+        </p>
+
+        <p>
+          <strong>8.5 The ledger is permanent — understand this before adopting.</strong>{" "}
+          The purpose of adoption is a durable public record. A published cryptographic
+          signature cannot be un-signed, and copies held by others cannot be recalled. You
+          may adopt pseudonymously.
+        </p>
+
+        <p>
+          <strong>8.6 Your rights.</strong> You have the rights of access, rectification,
+          erasure, restriction, portability, and objection (GDPR Articles 15–22), the right
+          to withdraw consent at any time, and the right to complain to a data protection
+          supervisory authority. Email <strong>{PRIVACY_MAILTO}</strong>; we respond within
+          one month.
+        </p>
+
+        <p>
+          <strong>8.7 Where data goes.</strong> Processing occurs in Canada (covered by the
+          European Commission's adequacy decision where it applies), and with service
+          providers in the United States and the European Union under written data
+          processing agreements including Standard Contractual Clauses where required.
+        </p>
+
+        <p>
+          <strong>8.8 Breaches.</strong> If a breach puts your rights and freedoms at risk,
+          we will notify the relevant supervisory authority within 72 hours of becoming
+          aware of it, and affected individuals without undue delay.
         </p>
       </div>
 
@@ -789,9 +833,13 @@ export default function TermsOfUse({ wiki = false }) {
       <div className="tou-section">
         <h2 className="tou-h2">11. Amendments to These Terms</h2>
         <p>
-          These Terms of Use may be updated from time to time. Significant changes will be
-          noted on the Sites. Continued use of the Sites after changes constitutes
-          acceptance of the updated terms.
+          These Terms of Use may be updated from time to time. We encourage you to review
+          this page periodically — the "Last updated" date at the top shows when the terms
+          last changed, and significant changes will be noted on the Sites. Continued use
+          of the Sites after changes constitutes acceptance of the updated terms. If you
+          have opted in to email updates, we will tell you about significant changes
+          directly. Previous versions of these terms are published, dated, at{" "}
+          <a href="/legal" className="tou-link">primedirective.dev/legal</a>.
         </p>
         <p>
           The stewardship will not make changes that contradict the Directive's core
@@ -838,6 +886,11 @@ export default function TermsOfUse({ wiki = false }) {
           else:
         </p>
         <p><strong>{MAILTO}</strong></p>
+        <p>
+          For privacy and data-subject requests (access, correction, erasure, and the
+          rest):
+        </p>
+        <p><strong>{PRIVACY_MAILTO}</strong></p>
         <p>For verification of any adoption:</p>
         <p><strong>conscience.wiki/verify</strong></p>
       </div>

@@ -6,8 +6,14 @@
 // one-line edit rather than three.
 //
 // Email and jurisdiction only: no phone number, no street address, no map.
-// "(in formation)" is stated here because it is true until the CNCA filing
-// completes; it deliberately does NOT appear in the JSON-LD entity name.
+//
+// The "(in formation)" qualifier was removed on 2026-10-13. The CNCA filing
+// completed 2026-10-02, so the Foundation is incorporated (corporation no.
+// 1828691-4) and the qualifier had become false — on every page of both
+// domains, and in contradiction of the Terms of Use §8.1 and Privacy Policy §1,
+// which name the incorporated Foundation as data controller. The corporate name
+// now stands alone in the contact line, matching the JSON-LD entity name, which
+// never carried the qualifier.
 
 // ── Licensing ──
 //
@@ -39,7 +45,6 @@ export const TEXT_LICENCE_URL = "https://creativecommons.org/licenses/by/4.0/";
 export const SOFTWARE_LICENCE = "Apache License 2.0";
 
 export const FOUNDATION_NAME = "Universal Primary Directive Foundation";
-export const FOUNDATION_STATUS = "in formation";
 export const FOUNDATION_JURISDICTION = "Ontario, Canada";
 export const GENERAL_EMAIL = "human@primedirective.dev";
 export const PRIVACY_EMAIL = "privacy@primedirective.dev";
@@ -55,7 +60,7 @@ export const SOCIAL_LINKS = [
 export function FoundationContact({ className }) {
   return (
     <p className={className} style={{ marginTop: "1rem" }}>
-      {FOUNDATION_NAME} ({FOUNDATION_STATUS}) · {FOUNDATION_JURISDICTION} ·{" "}
+      {FOUNDATION_NAME} · {FOUNDATION_JURISDICTION} ·{" "}
       <a href={`mailto:${GENERAL_EMAIL}`}>{GENERAL_EMAIL}</a>
       <br />
       Privacy and data-subject requests:{" "}

@@ -15,7 +15,6 @@ import { computeAdoptionHash } from "../lib/adoptionHash.js";
 import {
   LICENCE_SHORT,
   FOUNDATION_NAME,
-  FOUNDATION_STATUS,
   FOUNDATION_JURISDICTION,
   GENERAL_EMAIL,
   PRIVACY_EMAIL,
@@ -354,7 +353,7 @@ export default function WikiLedger() {
 
       <footer className="lg-footer">
         <p>
-          {FOUNDATION_NAME} ({FOUNDATION_STATUS}) · {FOUNDATION_JURISDICTION} ·{" "}
+          {FOUNDATION_NAME} · {FOUNDATION_JURISDICTION} ·{" "}
           <a href={`mailto:${GENERAL_EMAIL}`}>{GENERAL_EMAIL}</a>
         </p>
         <p>
