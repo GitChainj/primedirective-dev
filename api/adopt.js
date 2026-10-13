@@ -16,14 +16,13 @@ import {
 import { signToken } from "./_lib/adoptToken.js";
 import { sendConfirmationEmail, sendConsentRecordEmail, sendAttestationRecordEmail, SITE_URL } from "./_lib/email.js";
 import { attestationEnabled, issueAttestation, identityClassForPath, COMPREHENSION_V1 } from "./_lib/attestation.js";
-import { createRateLimiter, clientIp } from "./_lib/rateLimit.js";
+import { clientIp } from "./_lib/rateLimit.js";
+import { createDurableRateLimiter } from "./_lib/rateLimitDurable.js";
 
 // ── Rate limiting ──
 //
 // The published adoption contract advertises 20/min per source, and until now
-// this endpoint enforced nothing — a protection claimed but not delivered. The
-// limiter is the one shared in api/_lib/rateLimit.js, extracted from
-// api/verify-challenge.js so both endpoints use the same implementation.
+// this endpoint enforced nothing — a protection claimed but not delivered.
 //
 // Applied to EVERY path, not just the machine one. Honest use needs a single
 // request: an AI adopts once, and a human adopts once. On the human paths the
@@ -31,7 +30,18 @@ import { createRateLimiter, clientIp } from "./_lib/rateLimit.js";
 // way to send mail at someone else's address. It is also the guard against
 // rapid re-adoption: the ledger is idempotent within a UTC day, but a loop
 // across days would otherwise be free.
-const limiter = createRateLimiter({ max: 20, windowMs: 60 * 1000 });
+//
+// Durable store here, in-memory on /api/verify-challenge (decision D1): this
+// endpoint's writes are PERMANENT public ledger rows, so its limit should hold
+// across serverless instances rather than resetting on every cold start. It
+// runs in-memory until a KV store is provisioned and activates itself when the
+// env vars appear — see api/_lib/rateLimitDurable.js for the modes and the
+// fail-open policy.
+const limiter = createDurableRateLimiter({
+  max: 20,
+  windowMs: 60 * 1000,
+  prefix: "adopt",
+});
 
 // Exported so the published contract can be tested against the real string
 // rather than against a guess at it.
@@ -45,9 +55,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  // The 429 body names no internals — not the mode, not the store, not the
+  // counter. Which mode a refusal was decided in is logged, never served.
   const source = clientIp(req);
-  if (limiter.limited(source)) {
-    res.setHeader("Retry-After", String(limiter.retryAfterSeconds(source)));
+  const limit = await limiter.check(source);
+  if (limit.limited) {
+    res.setHeader("Retry-After", String(limit.retryAfterSeconds));
     return res.status(429).json({ error: RATE_LIMIT_MESSAGE });
   }
 

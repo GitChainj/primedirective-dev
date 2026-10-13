@@ -96,9 +96,12 @@ test("the did:key pattern the contract publishes is the one the validator enforc
 test("the rate limit the contract advertises is actually enforced", () => {
   assert.strictEqual(CONTRACT.rate_limit.enforced, true);
   // A limiter must exist in the handler, not merely be promised in the doc.
-  assert.match(HANDLER, /createRateLimiter\(\{\s*max:\s*20,\s*windowMs:\s*60 \* 1000\s*\}\)/,
-    "adopt.js must construct a 20-per-minute limiter");
-  assert.match(HANDLER, /limiter\.limited\(/, "and must actually call it");
+  // Since D1 this is the durable limiter (api/_lib/rateLimitDurable.js), which
+  // falls back to the in-memory one until a KV store is provisioned — so the
+  // advertised 20/min is enforced in either mode.
+  assert.match(HANDLER, /createDurableRateLimiter\(\{[\s\S]*?max:\s*20,[\s\S]*?windowMs:\s*60 \* 1000,/,
+    "adopt.js must construct a 20-per-minute durable limiter");
+  assert.match(HANDLER, /await limiter\.check\(/, "and must actually await it");
   assert.match(HANDLER, /status\(429\)/, "and return 429");
   assert.match(CONTRACT.rate_limit.default, /20 requests per minute/);
   // The documented 429 body must be the message the handler sends.
