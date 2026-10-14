@@ -32,7 +32,7 @@ import { createHash, createPublicKey } from "node:crypto";
 import { isDidKey, rawPublicKeyFromDidKey, spkiPemFromRawPublicKey } from "../../src/lib/didKey.js";
 // Axis B from the leaf module. Imported, not re-exported: one definition and one
 // import path, so no consumer can reach it by two routes.
-import { COMPREHENSION_V1 } from "./autonomyGradient.js";
+import { COMPREHENSION_V1, keyCustodyFrom } from "./autonomyGradient.js";
 
 const V2_SCHEMA = "https://primedirective.dev/schemas/ai-conscience/v2";
 const TIMEOUT_MS = 6000;
@@ -126,13 +126,17 @@ export function fingerprintFromDid(did) {
 
 // ── The autonomy gradient ──
 //
-// Axis A, key custody, is a DISCLOSURE and not a ranking: a steward-submitted
-// adoption is operator_held, which is full baseline trust because a named,
-// answerable party stands behind the commitment. An AI that generated and holds
-// its own key is self_generated. enclave_attested is designed for, not built.
-export function keyCustodyFor(submissionType) {
-  return submissionType === "independent" ? "self_generated" : "operator_held";
-}
+// Axis A, key custody, is a DISCLOSURE and not a ranking: an adoption whose key
+// is held for it by a named, answerable party is operator_held, which is full
+// baseline trust. An AI that generated and holds its own key is self_generated.
+// enclave_attested is designed for, not built.
+//
+// It is read from the adopter's DECLARATION via keyCustodyFrom(), the same
+// function the ledger issue body and the adopt response use, so a signed
+// statement cannot claim a different custody than the public record it refers
+// to. It is never inferred from submissionType: that was keyCustodyFor(), which
+// answered "who submitted?" and reported it as "who holds the key?" — two
+// independent axes. Retired 2026-10-14, before this layer was ever activated.
 
 // Server-side mirror of identityClassFor in src/AdoptConsent.jsx. Duplicated
 // rather than imported because api/ cannot import a client .jsx module. Used
@@ -152,16 +156,20 @@ export function identityClassForPath(adoptionPath) {
 // the flag is off this is only ever exercised against a test instance, and a
 // successful result is recorded privately rather than published, so no document
 // naming a 404 is ever handed to an adopter.
-export function buildUnsignedAttestation({
-  reference,
-  adopterName,
-  adoptionDate,
-  adoptionPath,
-  identityClass,
-  adopterDid,
-  submissionType,
-  siteUrl = "https://conscience.wiki",
-}) {
+// facts carries keyCustody — the adopter's own declaration, as submitted and as
+// written to the ledger. submissionType is deliberately NOT destructured here:
+// nothing in this payload derives from it, and leaving it unread is what stops
+// the retired inference creeping back.
+export function buildUnsignedAttestation(facts) {
+  const {
+    reference,
+    adopterName,
+    adoptionDate,
+    adoptionPath,
+    identityClass,
+    adopterDid,
+    siteUrl = "https://conscience.wiki",
+  } = facts;
   if (!pathSupported(adoptionPath)) throw new Error(`unsupported adoption path: ${adoptionPath}`);
   // An AI adoption without a key cannot be attested: v2 requires the fingerprint
   // for this path, and a record that cannot answer a challenge cannot take part
@@ -174,7 +182,7 @@ export function buildUnsignedAttestation({
     ? {
         adopter_public_key_fingerprint: fingerprintFromDid(adopterDid),
         adopter_did: String(adopterDid).trim(),
-        key_custody: keyCustodyFor(submissionType),
+        key_custody: keyCustodyFrom(facts),
         comprehension: COMPREHENSION_V1,
       }
     : {};

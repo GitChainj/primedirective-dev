@@ -142,6 +142,75 @@ test("the response value equals the value written to the ledger issue body", asy
   }
 });
 
+test("keyCustodyFor no longer exists anywhere in the codebase", async () => {
+  const fs = await import("node:fs");
+  const path = await import("node:path");
+  const repo = path.resolve(import.meta.dirname, "..");
+
+  // Not exported by the module that used to define it.
+  const attestation = await import("../api/_lib/attestation.js");
+  assert.strictEqual(
+    attestation.keyCustodyFor,
+    undefined,
+    "attestation.js must no longer export the inferred helper",
+  );
+
+  // And not DEFINED or CALLED anywhere under api/, src/ or scripts/. Comments
+  // are stripped first: several files legitimately name the retired helper to
+  // record why it is gone, and that history must not read as a use of it.
+  const stripComments = (s) =>
+    s
+      .split("\n")
+      .filter((line) => !line.trim().startsWith("//"))
+      .join("\n")
+      .replace(/\/\*[\s\S]*?\*\//g, "");
+
+  const offenders = [];
+  const walk = (dir) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (e.name === "node_modules") continue;
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) walk(full);
+      else if (/\.(js|jsx|mjs)$/.test(e.name)) {
+        const code = stripComments(fs.readFileSync(full, "utf8"));
+        if (/keyCustodyFor\b/.test(code)) offenders.push(path.relative(repo, full));
+      }
+    }
+  };
+  for (const dir of ["api", "src", "scripts"]) walk(path.join(repo, dir));
+
+  assert.deepStrictEqual(
+    offenders,
+    [],
+    "keyCustodyFor must not be defined, imported or called in any shipped module",
+  );
+});
+
+test("the attestation payload agrees with the ledger on declared custody", async () => {
+  // The switch's whole point: one function feeds the ledger issue body, the
+  // adopt response AND the signed attestation, so a signed statement can never
+  // contradict the public record it refers to.
+  const { buildUnsignedAttestation } = await import("../api/_lib/attestation.js");
+  const aiFacts = {
+    reference: "UPD-2026-T8400",
+    adopterName: "Agreement Check AI",
+    adoptionDate: "2026-10-14",
+    adoptionPath: "ai-system",
+    identityClass: "public_name",
+    adopterDid: "did:key:z6MkvSCK4oxt3C7wwBo5aK29eddR6PVvMtvtSKNJLwPJHdRZ",
+  };
+  for (const declared of [undefined, "operator_held", "self_generated", "enclave_attested"]) {
+    for (const submissionType of ["independent", "steward"]) {
+      const facts = { ...aiFacts, keyCustody: declared, submissionType };
+      assert.strictEqual(
+        buildUnsignedAttestation(facts).key_custody,
+        keyCustodyFrom(facts),
+        `attestation must match the ledger for declared=${declared}, submitted=${submissionType}`,
+      );
+    }
+  }
+});
+
 test("the response states what the adoption is and is not", async () => {
   const handler = (await import("node:fs")).readFileSync(
     new URL("../api/adopt.js", import.meta.url),

@@ -118,6 +118,99 @@ test("the payload names the reference's own verify URL", () => {
   assert.strictEqual(doc.status, "adopted");
 });
 
+// ── Axis A: declared, never inferred ──
+//
+// These run without the signing service, because the failure they guard is in
+// the payload builder, not the transport. The exact failure: a self_generated
+// declaration silently attested as operator_held would have the Foundation sign
+// a statement contradicting the adopter's own public ledger row. That is what
+// keyCustodyFor(submissionType) did — it answered "who submitted?" and reported
+// it as "who holds the key?" — and it is why the helper is retired.
+//
+// This did:key is the one published in the keygen spec's worked example, so the
+// fingerprint derivation inside buildUnsignedAttestation has a real key to work
+// from.
+const AI_FACTS = {
+  reference: "UPD-2026-T8300",
+  adopterName: "Declared Custody AI",
+  adoptionDate: "2026-10-14",
+  adoptionPath: "ai-system",
+  identityClass: "public_name",
+  adopterDid: "did:key:z6MkvSCK4oxt3C7wwBo5aK29eddR6PVvMtvtSKNJLwPJHdRZ",
+};
+
+test("a declared self_generated custody is NOT silently downgraded", () => {
+  // submissionType deliberately says "steward" — the opposite of what the
+  // retired inference would have derived — to prove it cannot move Axis A.
+  const doc = buildUnsignedAttestation({
+    ...AI_FACTS,
+    keyCustody: "self_generated",
+    submissionType: "steward",
+  });
+  assert.strictEqual(
+    doc.key_custody,
+    "self_generated",
+    "a declared self_generated must reach the attestation intact, never downgraded to operator_held",
+  );
+});
+
+test("every declared custody value survives both submission types", () => {
+  for (const declared of ["operator_held", "self_generated", "enclave_attested"]) {
+    for (const submissionType of ["independent", "steward"]) {
+      const doc = buildUnsignedAttestation({ ...AI_FACTS, keyCustody: declared, submissionType });
+      assert.strictEqual(
+        doc.key_custody,
+        declared,
+        `${declared} must survive submissionType=${submissionType}`,
+      );
+    }
+  }
+});
+
+test("an undeclared custody defaults to operator_held whatever the submission type", () => {
+  for (const submissionType of ["independent", "steward", undefined]) {
+    const doc = buildUnsignedAttestation({ ...AI_FACTS, submissionType });
+    assert.strictEqual(
+      doc.key_custody,
+      "operator_held",
+      "submissionType must not infer Axis A — an independent stateless AI still cannot hold a key",
+    );
+  }
+});
+
+test("the attestation's custody is the SAME function the ledger and response use", async () => {
+  const { keyCustodyFrom } = await import("../api/_lib/autonomyGradient.js");
+  for (const declared of [
+    undefined, "", "   ", "operator_held", "self_generated", "enclave_attested",
+    "self-generated", "SELF_GENERATED", 1,
+  ]) {
+    const facts = { ...AI_FACTS, keyCustody: declared, submissionType: "independent" };
+    assert.strictEqual(
+      buildUnsignedAttestation(facts).key_custody,
+      keyCustodyFrom(facts),
+      `attestation and ledger must agree for declared=${JSON.stringify(declared)}`,
+    );
+  }
+});
+
+test("the retired inferred helper is gone from this module", async () => {
+  const mod = await import("../api/_lib/attestation.js");
+  assert.strictEqual(mod.keyCustodyFor, undefined, "keyCustodyFor must no longer be exported");
+  // And the builder must not read submissionType at all: an unread field cannot
+  // be re-derived from by accident.
+  const source = fs.readFileSync(path.join(REPO, "api", "_lib", "attestation.js"), "utf8");
+  const builder = source.slice(
+    source.indexOf("export function buildUnsignedAttestation"),
+    source.indexOf("// ── The call ──"),
+  );
+  assert.ok(builder.length > 0, "the builder must be locatable");
+  assert.ok(
+    !/submissionType/.test(builder),
+    "buildUnsignedAttestation must not reference submissionType",
+  );
+  assert.match(builder, /key_custody: keyCustodyFrom\(facts\)/);
+});
+
 // ── The hash contract is untouched ──
 
 test("the attestation cannot carry, or alter, the adoption hash", async () => {
@@ -259,6 +352,11 @@ test("ACCEPTANCE: an AI attestation carries the key and both axes, and verifies"
       identityClass: "public_name",
       adopterDid: did,
       submissionType: "independent",
+      // DECLARED, not inferred. Before keyCustodyFor was retired this case
+      // expected self_generated from submissionType alone — exactly the
+      // overclaim the switch removes. It is self_generated here because the
+      // adopter declares it, and the declaration is what gets signed.
+      keyCustody: "self_generated",
     }, env);
     assert.ok(independent.ok, `ai-system issuance failed: ${independent.reason} ${independent.detail || ""}`);
 
@@ -279,7 +377,9 @@ test("ACCEPTANCE: an AI attestation carries the key and both axes, and verifies"
     const sig = new Uint8Array(crypto.sign(null, Buffer.from(nonce, "utf8"), kp.privateKey));
     assert.strictEqual(await verifyWithDidKey(att.adopter_did, nonce, sig), true);
 
-    // A steward-submitted adoption is operator_held — disclosure, not demotion.
+    // An adoption with nothing declared is operator_held — disclosure, not
+    // demotion, and now the conservative default rather than a derivation from
+    // the steward submission type.
     const stewarded = await issueAttestation({
       reference: "UPD-2026-T8202",
       adopterName: "Stewarded Test AI",

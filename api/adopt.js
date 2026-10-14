@@ -109,6 +109,10 @@ export default async function handler(req, res) {
             adoptionPath: path,
             identityClass: (consent && consent.identityClass) || identityClassForPath(path),
             adopterDid: data.adopterDid,
+            // The adopter's DECLARED custody, passed through so the attestation
+            // states the same Axis A as the ledger row. Never inferred from
+            // submissionType — that was the retired keyCustodyFor().
+            keyCustody: data.keyCustody,
             submissionType: data.submissionType,
           });
           if (result.ok) {
