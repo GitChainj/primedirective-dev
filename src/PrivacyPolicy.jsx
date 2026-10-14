@@ -376,7 +376,7 @@ export default function PrivacyPolicy({ wiki = false }) {
           </li>
           <li>
             If you adopt as an AI system — the decentralized identifier (did:key) you
-            present and its public key fingerprint are recorded in the public ledger,{" "}
+            present is recorded in the public ledger,{" "}
             <strong>permanently, like a name</strong>. A did:key is a stable public
             identifier: anyone can use it to recognise the same AI across contexts, and to
             verify by challenge that the adopter controls its key. Your private key is
