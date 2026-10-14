@@ -16,46 +16,19 @@
 // CONSCIENCE_SHA256 = shasum -a 256 public/api/fragment.txt (Conscience v2.0)
 
 import { createHash } from "node:crypto";
-// Axis B only. "asserted" is the sole value issued today, so one shared constant
-// is safe here.
+// The two autonomy-gradient axes are DEFINED in the leaf module and imported —
+// never re-exported — from here: Axis A (key_custody, declared and never
+// inferred) and Axis B (comprehension). They live there rather than here so
+// attestation.js can use the same definitions without closing an import cycle.
+// One definition, one import path: see api/_lib/autonomyGradient.js.
 //
-// Axis A is NOT imported: attestation.js still carries keyCustodyFor(), which
-// derives custody from submissionType. That derivation is unsound — see below —
-// and is deliberately not used by the ledger any more. It is left in place
-// because the attestation layer is inert and out of scope for this build; if
-// that layer is ever activated it must be switched to keyCustodyFrom() first, or
-// a signed attestation would claim a different custody than the ledger record.
-import { COMPREHENSION_V1 } from "./attestation.js";
-
-// ── Axis A: key custody — DECLARED, never inferred ──
-//
-// key_custody records WHO HOLDS THE KEY. submissionType records WHO SUBMITTED.
-// They are different axes and must not be derived from one another: a stateless
-// platform AI adopting in its own name (submissionType "independent") still
-// cannot retain a secret between invocations, so its key is held for it. The
-// design records such an AI as permanently operator_held, and inferring
-// self_generated from "independent" would overclaim Axis A for the majority of
-// adopters.
-//
-// So custody is whatever the adopter DECLARES, validated against the enum, and
-// defaults to the conservative value when nothing is declared. operator_held is
-// not a lesser tier: a named, answerable party standing behind the commitment is
-// full baseline trust, and in some respects the more accountable for having a
-// human name attached to it.
-//
-// One function, used by BOTH the ledger issue body and the adopt response, so
-// the value a machine is told cannot differ from the value on its record.
-export const KEY_CUSTODY_VALUES = new Set([
-  "operator_held",
-  "self_generated",
-  "enclave_attested",
-]);
-export const KEY_CUSTODY_DEFAULT = "operator_held";
-
-export function keyCustodyFrom(d) {
-  const declared = d && typeof d.keyCustody === "string" ? d.keyCustody.trim() : "";
-  return KEY_CUSTODY_VALUES.has(declared) ? declared : KEY_CUSTODY_DEFAULT;
-}
+// Only what this module actually uses is imported. KEY_CUSTODY_DEFAULT is not
+// here because it is used solely inside keyCustodyFrom().
+import {
+  KEY_CUSTODY_VALUES,
+  keyCustodyFrom,
+  COMPREHENSION_V1,
+} from "./autonomyGradient.js";
 
 export const REPO_OWNER = "GitChainj";
 export const REPO_NAME = "primedirective-dev";

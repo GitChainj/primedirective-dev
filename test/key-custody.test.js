@@ -13,12 +13,15 @@
 import test from "node:test";
 import assert from "node:assert";
 
+// The gradient primitives come from the leaf module that defines them; validate()
+// stays in adoptionCore.js. Nothing re-exports the gradient, so there is exactly
+// one import path for each symbol.
 import {
   keyCustodyFrom,
   KEY_CUSTODY_VALUES,
   KEY_CUSTODY_DEFAULT,
-  validate,
-} from "../api/_lib/adoptionCore.js";
+} from "../api/_lib/autonomyGradient.js";
+import { validate } from "../api/_lib/adoptionCore.js";
 
 const base = {
   aiName: "Example Agent",
@@ -85,7 +88,7 @@ test("the response value equals the value written to the ledger issue body", asy
   // asserts the property that makes them equal: both call keyCustodyFrom on the
   // same submitted data. Any future divergence means one of them stopped doing
   // that, which is the thing worth catching.
-  const core = await import("../api/_lib/adoptionCore.js");
+  const gradient = await import("../api/_lib/autonomyGradient.js");
   const source = (await import("node:fs")).readFileSync(
     new URL("../api/_lib/adoptionCore.js", import.meta.url),
     "utf8",
@@ -131,8 +134,8 @@ test("the response value equals the value written to the ledger issue body", asy
   for (const declared of [undefined, "operator_held", "self_generated", "enclave_attested"]) {
     for (const submissionType of ["independent", "steward"]) {
       const data = { ...base, submissionType, keyCustody: declared };
-      const responseValue = core.keyCustodyFrom(data);
-      const ledgerValue = core.keyCustodyFrom(data); // same function, same input
+      const responseValue = gradient.keyCustodyFrom(data);
+      const ledgerValue = gradient.keyCustodyFrom(data); // same function, same input
       assert.strictEqual(responseValue, ledgerValue);
       assert.ok(KEY_CUSTODY_VALUES.has(responseValue));
     }

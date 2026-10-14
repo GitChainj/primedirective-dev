@@ -30,6 +30,9 @@
 
 import { createHash, createPublicKey } from "node:crypto";
 import { isDidKey, rawPublicKeyFromDidKey, spkiPemFromRawPublicKey } from "../../src/lib/didKey.js";
+// Axis B from the leaf module. Imported, not re-exported: one definition and one
+// import path, so no consumer can reach it by two routes.
+import { COMPREHENSION_V1 } from "./autonomyGradient.js";
 
 const V2_SCHEMA = "https://primedirective.dev/schemas/ai-conscience/v2";
 const TIMEOUT_MS = 6000;
@@ -130,12 +133,6 @@ export function fingerprintFromDid(did) {
 export function keyCustodyFor(submissionType) {
   return submissionType === "independent" ? "self_generated" : "operator_held";
 }
-
-// Axis B, comprehension. v1 only ever writes "asserted": the field exists for
-// forward-compatibility, and "demonstrated" waits on the comprehension-challenge
-// design. Claiming a capability before it is built would be the one dishonesty
-// this whole path is meant to avoid.
-export const COMPREHENSION_V1 = "asserted";
 
 // Server-side mirror of identityClassFor in src/AdoptConsent.jsx. Duplicated
 // rather than imported because api/ cannot import a client .jsx module. Used

@@ -11,11 +11,13 @@
 
 import { Octokit } from "@octokit/rest";
 import {
-  VALID_PATHS, CONSCIENCE_SHA256, validate, createAdoptionIssue, keyCustodyFrom,
+  VALID_PATHS, CONSCIENCE_SHA256, validate, createAdoptionIssue,
 } from "./_lib/adoptionCore.js";
+// Both gradient axes come straight from the leaf module that defines them.
+import { keyCustodyFrom, COMPREHENSION_V1 } from "./_lib/autonomyGradient.js";
 import { signToken } from "./_lib/adoptToken.js";
 import { sendConfirmationEmail, sendConsentRecordEmail, sendAttestationRecordEmail, SITE_URL } from "./_lib/email.js";
-import { attestationEnabled, issueAttestation, identityClassForPath, COMPREHENSION_V1 } from "./_lib/attestation.js";
+import { attestationEnabled, issueAttestation, identityClassForPath } from "./_lib/attestation.js";
 import { clientIp } from "./_lib/rateLimit.js";
 import { createDurableRateLimiter } from "./_lib/rateLimitDurable.js";
 
