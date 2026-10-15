@@ -9,8 +9,9 @@
 
 import { Octokit } from "@octokit/rest";
 import {
-  CONSCIENCE_SHA256, createAdoptionIssue, displayName, isRegisteredOrgType,
+  createAdoptionIssue, displayName, isRegisteredOrgType,
 } from "./_lib/adoptionCore.js";
+import { CONSCIENCE_SHA256 } from "../src/lib/conscienceVersion.js";
 import { verifyToken } from "./_lib/adoptToken.js";
 import { registryLink } from "./_lib/registries.js";
 import { sendStewardEmail, sendConsentRecordEmail, sendAttestationRecordEmail } from "./_lib/email.js";

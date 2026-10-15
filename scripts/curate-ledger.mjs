@@ -39,7 +39,8 @@ import { dirname, join } from "node:path";
 
 // Canonical algorithm — reuse the exact string-builder and Conscience anchor the
 // browser verifier uses, so a hash curated here is the hash verify recomputes.
-import { buildAdoptionString, CONSCIENCE_SHA256 } from "../src/lib/adoptionHash.js";
+import { buildAdoptionString } from "../src/lib/adoptionHash.js";
+import { CONSCIENCE_SHA256 } from "../src/lib/conscienceVersion.js";
 
 const REPO = "GitChainj/primedirective-dev";
 const ADOPTION_LABELS = new Set(["adoption-person", "adoption-organisation", "adoption-ai-system"]);

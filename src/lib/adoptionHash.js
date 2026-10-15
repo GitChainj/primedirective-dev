@@ -12,52 +12,17 @@
 
 // ── The Conscience version anchor ──
 //
-// SHA-256 of the canonical Conscience text (public/api/fragment.txt, v2.0).
-// Derived with:
+// The anchor and its validator live in src/lib/conscienceVersion.js — one
+// definition, one import path, imported and NOT re-exported. A consumer that
+// needs CONSCIENCE_SHA256 imports it from there, not from here.
 //
-//   shasum -a 256 public/api/fragment.txt
-//
-// This constant is the anchor for adoptions made RIGHT NOW. It is the value to
-// record on a new adoption; it is NOT the value to verify an old one with.
-//
-// ── Why the anchor is an argument and not a default ──
-//
-// Every adoption hash commits to the Conscience version it was made under, and
-// each ledger row records that version in its `conscience_version` field. To
-// verify a row you must hash it against ITS OWN recorded anchor — not against
-// whatever this constant happens to say today. Until 2026-10-15 these functions
-// read the constant directly, so the first revision of the covenant text would
-// have broken verification of every past adoption: the promise that "past
-// adoptions remain verifiable against the version they were made under" was
-// made in this file and not kept by it.
-//
-// So conscienceVersion is REQUIRED and absence THROWS. It deliberately does not
-// default to CONSCIENCE_SHA256: a default would silently reinstate the bug for
-// any caller that forgot to pass it, and when this was fixed four of the five
-// call sites had forgotten. A loud failure is the point.
-export const CONSCIENCE_SHA256 =
-  "b2b16b00498530ef4a5b5af39d7a2d3316416447e298a0b5cfb506b36023abb7";
+// conscienceVersion is a REQUIRED argument to the builders below and absence
+// throws. See conscienceVersion.js for why it does not default to the constant.
+import { requireConscienceVersion } from "./conscienceVersion.js";
 
 // The version prefix binds the hash format to a covenant version, so a future
 // format change cannot collide with existing adoption hashes.
 const ADOPTION_PREFIX = "UPD-COVENANT-v1";
-
-// A 64-char lowercase hex SHA-256. Checking the shape (not just presence) also
-// catches a truncated display value — "b2b16b0049…" pasted from a UI would
-// otherwise hash cleanly and verify nothing.
-const SHA256_HEX = /^[0-9a-f]{64}$/;
-
-export const CONSCIENCE_VERSION_REQUIRED =
-  "conscienceVersion is required: pass the record's own conscience_version to " +
-  "verify an existing adoption, or CONSCIENCE_SHA256 to mint a new one. It must " +
-  "be a 64-character lowercase hex SHA-256.";
-
-function requireConscienceVersion(v) {
-  if (typeof v !== "string" || !SHA256_HEX.test(v)) {
-    throw new Error(CONSCIENCE_VERSION_REQUIRED);
-  }
-  return v;
-}
 
 // Normalise the name for hash stability: trim surrounding whitespace and
 // lowercase, so "John Strand", " john strand " and "JOHN STRAND" all verify

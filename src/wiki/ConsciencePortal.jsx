@@ -30,7 +30,8 @@ import {
   SOCIAL_LINKS,
 } from "../FoundationFooter.jsx";
 import PersonalisedSeal from "../PersonalisedSeal.jsx";
-import { computeAdoptionHash, CONSCIENCE_SHA256 } from "../lib/adoptionHash.js";
+import { computeAdoptionHash } from "../lib/adoptionHash.js";
+import { CONSCIENCE_SHA256 } from "../lib/conscienceVersion.js";
 import {
   verifyAttestation,
   versionOf,

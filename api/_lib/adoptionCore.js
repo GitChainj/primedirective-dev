@@ -29,14 +29,20 @@ import {
   keyCustodyFrom,
   COMPREHENSION_V1,
 } from "./autonomyGradient.js";
+// The Conscience anchor and its validator, likewise DEFINED in one leaf and
+// imported — never re-exported — so the browser and the functions cannot hold
+// two copies of a hash constant that must agree byte-for-byte. Revising the
+// covenant text is now one edit, not two kept in step by hand.
+import {
+  CONSCIENCE_SHA256,
+  requireConscienceVersion,
+} from "../../src/lib/conscienceVersion.js";
 
 export const REPO_OWNER = "GitChainj";
 export const REPO_NAME = "primedirective-dev";
 
 export const VALID_PATHS = new Set(["person", "organisation", "ai-system"]);
 
-export const CONSCIENCE_SHA256 =
-  "b2b16b00498530ef4a5b5af39d7a2d3316416447e298a0b5cfb506b36023abb7";
 const ADOPTION_PREFIX = "UPD-COVENANT-v1";
 
 // The label a steward adds by hand once an organisation's registration has been
@@ -64,23 +70,6 @@ export const isRegisteredOrgType = (t) =>
 
 function normaliseName(name) {
   return String(name == null ? "" : name).trim().toLowerCase();
-}
-
-// conscienceVersion is REQUIRED and absence throws — the server mirror of the
-// rule in src/lib/adoptionHash.js. Verify a row against its own recorded
-// conscience_version; pass CONSCIENCE_SHA256 only when minting a new adoption.
-const SHA256_HEX = /^[0-9a-f]{64}$/;
-
-export const CONSCIENCE_VERSION_REQUIRED =
-  "conscienceVersion is required: pass the record's own conscience_version to " +
-  "verify an existing adoption, or CONSCIENCE_SHA256 to mint a new one. It must " +
-  "be a 64-character lowercase hex SHA-256.";
-
-function requireConscienceVersion(v) {
-  if (typeof v !== "string" || !SHA256_HEX.test(v)) {
-    throw new Error(CONSCIENCE_VERSION_REQUIRED);
-  }
-  return v;
 }
 
 export function buildAdoptionString({ name, path, date, conscienceVersion }) {

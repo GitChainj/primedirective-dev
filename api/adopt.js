@@ -11,8 +11,9 @@
 
 import { Octokit } from "@octokit/rest";
 import {
-  VALID_PATHS, CONSCIENCE_SHA256, validate, createAdoptionIssue,
+  VALID_PATHS, validate, createAdoptionIssue,
 } from "./_lib/adoptionCore.js";
+import { CONSCIENCE_SHA256 } from "../src/lib/conscienceVersion.js";
 // Both gradient axes come straight from the leaf module that defines them.
 import { keyCustodyFrom, COMPREHENSION_V1 } from "./_lib/autonomyGradient.js";
 import { signToken } from "./_lib/adoptToken.js";

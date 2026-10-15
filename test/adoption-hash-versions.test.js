@@ -29,13 +29,17 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 
+import { buildAdoptionString, computeAdoptionHash } from "../src/lib/adoptionHash.js";
+// The anchor and its validator come from the leaf that defines them. Neither
+// adoptionHash.js nor adoptionCore.js re-exports them, so this is the only
+// import path — which is the property the single-source commit established.
 import {
-  buildAdoptionString,
-  computeAdoptionHash,
   CONSCIENCE_SHA256,
   CONSCIENCE_VERSION_REQUIRED,
-} from "../src/lib/adoptionHash.js";
+  requireConscienceVersion,
+} from "../src/lib/conscienceVersion.js";
 import * as core from "../api/_lib/adoptionCore.js";
+import * as hash from "../src/lib/adoptionHash.js";
 
 const REPO = path.resolve(import.meta.dirname, "..");
 const read = (...p) => fs.readFileSync(path.join(REPO, ...p), "utf8");
@@ -179,7 +183,91 @@ test("the browser module and the server mirror agree, anchor included", () => {
     () => core.buildAdoptionString({ name: "x", path: "person", date: "2026-01-01" }),
     /conscienceVersion is required/,
   );
-  assert.strictEqual(core.CONSCIENCE_VERSION_REQUIRED, CONSCIENCE_VERSION_REQUIRED);
+});
+
+test("the anchor has ONE definition and ONE import path", () => {
+  // Defined only in the leaf. If either module re-exported it, a consumer could
+  // reach it by two paths and the two could drift — the hazard this closes.
+  assert.strictEqual(
+    hash.CONSCIENCE_SHA256,
+    undefined,
+    "adoptionHash.js must not re-export the anchor",
+  );
+  assert.strictEqual(
+    core.CONSCIENCE_SHA256,
+    undefined,
+    "adoptionCore.js must not re-export the anchor",
+  );
+  assert.strictEqual(hash.CONSCIENCE_VERSION_REQUIRED, undefined);
+  assert.strictEqual(core.CONSCIENCE_VERSION_REQUIRED, undefined);
+
+  // Exactly one `export const CONSCIENCE_SHA256` in the shipped source, so
+  // revising the covenant text is a one-line edit and cannot half-land.
+  const dirs = ["src", "api", "scripts"];
+  const found = [];
+  const walk = (dir) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (e.name === "node_modules") continue;
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) walk(full);
+      else if (/\.(js|jsx|mjs)$/.test(e.name)) {
+        if (/export const CONSCIENCE_SHA256/.test(fs.readFileSync(full, "utf8"))) {
+          found.push(path.relative(REPO, full));
+        }
+      }
+    }
+  };
+  for (const d of dirs) walk(path.join(REPO, d));
+  assert.deepStrictEqual(
+    found,
+    ["src/lib/conscienceVersion.js"],
+    "the anchor must be defined in exactly one file",
+  );
+
+  // And the leaf is a leaf: pure, no crypto, no local imports — which is what
+  // lets it cross the src/ <-> api/ boundary safely.
+  const leaf = read("src", "lib", "conscienceVersion.js");
+  const code = leaf
+    .split("\n")
+    .filter((l) => !l.trim().startsWith("//"))
+    .join("\n");
+  assert.ok(!/^\s*import\s/m.test(code), "the leaf must import nothing");
+  assert.ok(!/crypto|createHash|subtle/.test(code), "the leaf must contain no crypto");
+});
+
+test("both modules enforce the SAME validator, over the full near-miss battery", () => {
+  // One validator, reached through both builders. Asserted over every rejection
+  // case so the two can never disagree about what a valid anchor is.
+  const facts = { name: "Example", path: "person", date: "2026-01-01" };
+  const bad = [
+    undefined, null, "", "   ", 0, 1, {}, [], true,
+    "b2b16b0049…",
+    ROW_0001_ANCHOR.slice(0, 63),
+    ROW_0001_ANCHOR + "a",
+    ROW_0001_ANCHOR.toUpperCase(),
+    " " + ROW_0001_ANCHOR,
+  ];
+  for (const v of bad) {
+    for (const [label, build] of [
+      ["adoptionHash.js", buildAdoptionString],
+      ["adoptionCore.js", core.buildAdoptionString],
+      ["the leaf itself", (f) => requireConscienceVersion(f.conscienceVersion)],
+    ]) {
+      assert.throws(
+        () => build({ ...facts, conscienceVersion: v }),
+        /conscienceVersion is required/,
+        `${label} must reject ${JSON.stringify(v)}`,
+      );
+    }
+  }
+  // And both accept every valid anchor identically.
+  for (const good of [ROW_0001_ANCHOR, FUTURE_ANCHOR, CONSCIENCE_SHA256]) {
+    assert.strictEqual(
+      buildAdoptionString({ ...facts, conscienceVersion: good }),
+      core.buildAdoptionString({ ...facts, conscienceVersion: good }),
+    );
+  }
+  assert.match(CONSCIENCE_VERSION_REQUIRED, /64-character lowercase hex/);
 });
 
 test("minting uses the current constant; verification never does", () => {
