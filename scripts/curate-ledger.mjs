@@ -85,8 +85,14 @@ const DRY_RUN = process.argv.includes("--dry-run");
 
 // SHA-256 hex of the canonical adoption string. Matches the Web Crypto output
 // used in the browser (same input string, same algorithm).
-function computeHash({ name, path, date }) {
-  return createHash("sha256").update(buildAdoptionString({ name, path, date })).digest("hex");
+// Verifies against the row's OWN recorded conscience_version, which parseIssue
+// reads out of the issue's Verification block. Not against the current
+// CONSCIENCE_SHA256: an adoption made under an earlier covenant text must keep
+// verifying after the text is revised.
+function computeHash({ name, path, date, conscience_version }) {
+  return createHash("sha256")
+    .update(buildAdoptionString({ name, path, date, conscienceVersion: conscience_version }))
+    .digest("hex");
 }
 
 // Pull the display name from the issue title: "Adoption (<path>): <name>".

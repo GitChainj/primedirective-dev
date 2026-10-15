@@ -667,7 +667,16 @@ export default function ConsciencePortal() {
       if (!match) { setRecord(null); setState("notfound"); return; }
       setRecord(match);
       setState("checking");
-      computeAdoptionHash({ name: match.name, path: match.path, date: match.date })
+      // Against the record's OWN conscience_version — the value displayed below
+      // as the version this adoption was made under. Verifying against the
+      // current constant instead would break every past row the first time the
+      // covenant text is revised.
+      computeAdoptionHash({
+        name: match.name,
+        path: match.path,
+        date: match.date,
+        conscienceVersion: match.conscience_version,
+      })
         .then((hash) => {
           if (cancelled) return;
           setComputedHash(hash);

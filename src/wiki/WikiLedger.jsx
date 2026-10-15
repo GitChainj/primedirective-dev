@@ -255,6 +255,11 @@ export default function WikiLedger() {
         try {
           const recomputed = await computeAdoptionHash({
             name: record.name, path: record.path, date: record.date,
+            // The row's own anchor, not the current constant — "from the row's
+            // own public facts" includes which covenant version it was made
+            // under. A row missing it throws into the catch below and shows as
+            // an error, never as verified.
+            conscienceVersion: record.conscience_version,
           });
           if (cancelled) return;
           record.__recomputed = recomputed;

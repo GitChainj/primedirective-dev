@@ -66,19 +66,36 @@ function normaliseName(name) {
   return String(name == null ? "" : name).trim().toLowerCase();
 }
 
-export function buildAdoptionString({ name, path, date }) {
+// conscienceVersion is REQUIRED and absence throws — the server mirror of the
+// rule in src/lib/adoptionHash.js. Verify a row against its own recorded
+// conscience_version; pass CONSCIENCE_SHA256 only when minting a new adoption.
+const SHA256_HEX = /^[0-9a-f]{64}$/;
+
+export const CONSCIENCE_VERSION_REQUIRED =
+  "conscienceVersion is required: pass the record's own conscience_version to " +
+  "verify an existing adoption, or CONSCIENCE_SHA256 to mint a new one. It must " +
+  "be a 64-character lowercase hex SHA-256.";
+
+function requireConscienceVersion(v) {
+  if (typeof v !== "string" || !SHA256_HEX.test(v)) {
+    throw new Error(CONSCIENCE_VERSION_REQUIRED);
+  }
+  return v;
+}
+
+export function buildAdoptionString({ name, path, date, conscienceVersion }) {
   return [
     ADOPTION_PREFIX,
     normaliseName(name),
     String(path == null ? "" : path).trim(),
     String(date == null ? "" : date).trim(),
-    CONSCIENCE_SHA256,
+    requireConscienceVersion(conscienceVersion),
   ].join("|");
 }
 
-export function computeAdoptionHash({ name, path, date }) {
+export function computeAdoptionHash({ name, path, date, conscienceVersion }) {
   return createHash("sha256")
-    .update(buildAdoptionString({ name, path, date }), "utf8")
+    .update(buildAdoptionString({ name, path, date, conscienceVersion }), "utf8")
     .digest("hex");
 }
 
@@ -323,7 +340,16 @@ async function findExistingByHash(octokit, hash) {
 export async function createAdoptionIssue(octokit, { path, data, adoptionDate }) {
   const adoptionYear = adoptionDate.slice(0, 4);
   const adopterName = displayName(path, data);
-  const adoptionHash = computeAdoptionHash({ name: adopterName, path, date: adoptionDate });
+  // THE MINTING SITE: a new adoption is made against the covenant text as it
+  // stands today, so this is the one place the constant is passed explicitly.
+  // The value is then recorded on the row as conscience_version, and every
+  // later verification uses that recorded value rather than this constant.
+  const adoptionHash = computeAdoptionHash({
+    name: adopterName,
+    path,
+    date: adoptionDate,
+    conscienceVersion: CONSCIENCE_SHA256,
+  });
 
   const existing = await findExistingByHash(octokit, adoptionHash);
   if (existing) {

@@ -220,7 +220,15 @@ test("the attestation cannot carry, or alter, the adoption hash", async () => {
 
   // The hash implementation and its two mirrors are untouched by B2.
   const { computeAdoptionHash } = await import("../src/lib/adoptionHash.js");
-  const anchor = await computeAdoptionHash({ name: "John Strand", path: "person", date: "2026-05-03" });
+  // UPD-2026-0001's OWN recorded conscience_version, as a literal — deliberately
+  // NOT CONSCIENCE_SHA256. The constant moves whenever the covenant text is
+  // revised; this row's recorded anchor never does. Coupling this assertion to
+  // the constant would make it pass today and fail after the next text change,
+  // which is precisely the version-drift defect this hash contract removes.
+  const anchor = await computeAdoptionHash({
+    name: "John Strand", path: "person", date: "2026-05-03",
+    conscienceVersion: "b2b16b00498530ef4a5b5af39d7a2d3316416447e298a0b5cfb506b36023abb7",
+  });
   assert.strictEqual(
     anchor,
     "1033c76b87d97cfa89f8e535de51ca7872a771df1f52797f6d838327462383c3",
