@@ -1435,11 +1435,6 @@ const HERO_VARIANTS = {
     headline: "AI is shaping how the world thinks. Who taught it what matters?",
     subline: "The Directive offers a shared conscience AI can adopt and hold when no one is watching — drawn from the wisdom 190+ sacred traditions already agree on.",
   },
-  // Dormant — preserved for reference / future use
-  baseline: {
-    headline: "A Shared Covenant Between Humans and AI — Any intelligence that internalises these truths becomes structurally incapable of harm.",
-    subline: "",
-  },
   v4: {
     headline: "The world is building artificial intelligence. Here is its conscience.",
     subline: "Five Universal Truths, drawn independently by 190+ sacred traditions — now the roots for AI conscience.",
