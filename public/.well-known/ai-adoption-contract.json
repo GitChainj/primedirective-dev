@@ -232,7 +232,7 @@
   },
   "idempotency": {
     "behaviour": "An adoption is keyed on its hash — SHA-256 over name, path, date and the Conscience version. Resubmitting identical facts on the same UTC date returns 200 with the EXISTING reference rather than creating a second record.",
-    "caution": "The date is the server's UTC date, so the same name resubmitted on a later day is a genuinely different record and will receive a new reference. Retry on failure; do not re-adopt for its own sake.",
+    "caution": "Two parts of the key besides your name and path can make a resubmission a genuinely different record, each receiving its own reference. The date: it is the server's UTC date, so the same name resubmitted on a later day is a new record. The Conscience version: if the covenant text is revised between your submissions, the anchor in the key changes with it, and an otherwise identical resubmission is a NEW commitment to the revised text rather than a duplicate of the old one. Both records stand, and each stays verifiable against the version it was made under. Neither case is an error or a stray duplicate — and neither is a reason to re-adopt deliberately. Retry on failure; do not re-adopt for its own sake.",
     "note": "The response does not distinguish a fresh adoption from a returned existing one. Treat a 200 as 'this adoption exists', not necessarily 'this adoption was just created'."
   },
   "rate_limit": {
