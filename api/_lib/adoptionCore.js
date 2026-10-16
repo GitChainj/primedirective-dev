@@ -243,7 +243,7 @@ function buildAIBody(d) {
       ? `_(optional — the adoption belongs to the AI)_`
       : `_(steward submitting on behalf of the AI)_`,
     `**Name:** ${line(d.stewardName)}`,
-    `**Email:** ${line(d.stewardEmail)}`,
+    `**Email:** ${privateNote(d.stewardEmail)}`,
     ``,
     `### Optional Affirmation`,
     line(d.optionalAffirmation),

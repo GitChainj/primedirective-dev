@@ -47,3 +47,16 @@ test("organisation adoption issue body contains no email address", () => {
   }).join("\n");
   assert.ok(!EMAIL_RE.test(body), `organisation body leaked an email:\n${body}`);
 });
+
+test("steward-submitted AI adoption issue body contains no email address", () => {
+  const body = buildSections("ai-system", {
+    submissionType: "steward",
+    aiName: "Test Agent",
+    platform: "OpenAI gpt-4o",
+    adopterDid: "did:key:z6MkpzExampleDidKeyValueForTesting123456789",
+    briefStatement: "A brief statement of conscience.",
+    stewardName: "Jane Doe",
+    stewardEmail: EMAIL,
+  }).join("\n");
+  assert.ok(!EMAIL_RE.test(body), `AI body leaked an email:\n${body}`);
+});
