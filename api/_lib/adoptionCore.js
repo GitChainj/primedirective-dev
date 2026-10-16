@@ -120,6 +120,15 @@ export function displayName(path, d) {
   return "Adopter";
 }
 
+// Contact email is PRIVATE, like the business number (D3 / integrity-audit F1):
+// the public issue never carries it. The address is used only for the
+// confirmation and welcome emails (sent via Resend from the submitted form
+// data) and, for registered organisations, the private steward email — never
+// the public ledger record.
+function privateNote(value) {
+  return blank(value) ? `_(not provided)_` : `Provided — held privately.`;
+}
+
 function buildPersonBody(d) {
   const isVenture = !!d.subType || d.tier === "venture";
   const head = isVenture
@@ -132,14 +141,14 @@ function buildPersonBody(d) {
         ``,
         `### Representative`,
         `**Name:** ${line(d.representativeName)}`,
-        `**Email:** ${line(d.email)}`,
+        `**Email:** ${privateNote(d.email)}`,
       ]
     : [
         `### Full Name`,
         line(d.fullName),
         ``,
         `### Email`,
-        line(d.email),
+        privateNote(d.email),
       ];
   return [
     ...head,
@@ -190,7 +199,7 @@ function buildOrgBody(d) {
     `### Representative`,
     `**Name:** ${line(d.representativeName)}`,
     `**Role:** ${line(d.representativeRole)}`,
-    `**Email:** ${line(d.email)}`,
+    `**Email:** ${privateNote(d.email)}`,
     ``,
     `### Website`,
     line(d.website),
@@ -291,7 +300,7 @@ export function validate(path, d) {
   return "Unknown adoption path";
 }
 
-function buildSections(path, d) {
+export function buildSections(path, d) {
   if (path === "person") return buildPersonBody(d);
   if (path === "organisation") return buildOrgBody(d);
   return buildAIBody(d);
