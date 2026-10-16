@@ -18,6 +18,11 @@
 //
 // conscienceVersion is a REQUIRED argument to the builders below and absence
 // throws. See conscienceVersion.js for why it does not default to the constant.
+//
+// NOTE: an adoption hash is NOT a conscience hash. This module produces the
+// former — a hash of one record's facts, with a conscience hash as its final
+// field. See the "FOUR HASHES, TWO KINDS" note in ./conscienceVersion.js if you
+// are trying to tell four 64-hex values apart.
 import { requireConscienceVersion } from "./conscienceVersion.js";
 
 // The version prefix binds the hash format to a covenant version, so a future

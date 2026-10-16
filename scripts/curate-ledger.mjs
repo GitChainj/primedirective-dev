@@ -60,7 +60,9 @@ import { dirname, join } from "node:path";
 // The anchor constant is deliberately NOT imported here: this script only ever
 // verifies existing records, and every one of them carries its own recorded
 // conscience_version. A curator that reached for the current constant would be
-// the version-drift bug all over again.
+// the version-drift bug all over again. For what the various 64-hex values in
+// this project are, see the "FOUR HASHES, TWO KINDS" note in
+// src/lib/conscienceVersion.js.
 import { buildAdoptionString } from "../src/lib/adoptionHash.js";
 
 const REPO = "GitChainj/primedirective-dev";

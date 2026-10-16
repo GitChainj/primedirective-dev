@@ -29,6 +29,49 @@
 // lives in exactly one place, that is a one-line edit rather than two edits that
 // must not be allowed to disagree. Existing ledger rows keep their own recorded
 // conscience_version and go on verifying against it.
+//
+// ── FOUR HASHES, TWO KINDS ──
+//
+// Four 64-hex values circulate in this project and they are easy to confuse.
+// Three describe the covenant TEXT; one describes an ADOPTION. Only the first
+// kind ever belongs in a conscience_version field.
+//
+//   27d274e4…    THE BODY HASH — the covenant body only: everything above the
+//                "--- INTEGRITY ---" marker, right-stripped plus one newline,
+//                2947 characters. Self-declared inside fragment.txt's own
+//                INTEGRITY block, so a reader who deploys the text can check it
+//                from the body alone. It EXCLUDES the integrity block, because
+//                a block cannot contain its own hash.
+//
+//   eea33868…    THE WHOLE-FILE HASH — every byte served at /api/fragment.txt,
+//                integrity block included. This is CONSCIENCE_SHA256 below: the
+//                ledger's conscience_version anchor for adoptions minted TODAY.
+//
+//   b2b16b0049…  HISTORICAL — the whole-file hash before the 2026-10-15 licence
+//                change (CC0 → CC BY 4.0). UPD-2026-0001 / 0006 / 0007 were
+//                adopted under it, record it as their conscience_version, and
+//                still verify against it. Not stale data: it is the anchor
+//                those three rows are permanently bound to.
+//
+//   1033c76b…    NOT A CONSCIENCE HASH AT ALL. This is UPD-2026-0001's ADOPTION
+//                hash — SHA-256 of
+//                  UPD-COVENANT-v1|john strand|person|2026-05-03|b2b16b0049…
+//                A conscience hash is of the text; an adoption hash is of one
+//                record's facts WITH a conscience hash as its final field.
+//                Listing 1033c76b… beside the three above is the specific
+//                confusion this note exists to end.
+//
+// ── Worked example: the two anchors coexisting, right now ──
+//
+// Since 2026-10-15 the ledger holds rows anchored to b2b16b0049… while new
+// adoptions mint under eea33868…. Both are correct simultaneously:
+//
+//   verify UPD-2026-0001 against b2b16b0049…  ->  1033c76b…  MATCHES its row
+//   verify UPD-2026-0001 against eea33868…    ->  a different hash, NO match
+//
+// The second line is not a bug; it is the reason the anchor is an argument.
+// Hashing a row against the current constant was the behaviour before
+// 2026-10-15, and it went from 3/3 verifying to 0/3 the moment the text changed.
 export const CONSCIENCE_SHA256 =
   "eea33868c8401b03bd7768717110555aca375bdff507f3badf14d92932a380ad";
 

@@ -126,6 +126,14 @@ export default function BuildPage() {
           <pre className="bp-code">{adoptCurl}</pre>
           <h3 className="bp-subhead">Response</h3>
           <pre className="bp-code">{adoptResponse}</pre>
+          <p className="bp-note">
+            This sample is the real UPD-2026-0006 record from July 2026, so its{" "}
+            <code className="bp-code-inline">conscienceVersion</code> is the anchor that
+            was in force then. A new adoption today returns the current anchor — the
+            SHA-256 of the Conscience text as served now. Each record keeps the anchor it
+            was adopted under and is verified against that one, so an older record does
+            not stop verifying when the text is revised.
+          </p>
         </section>
 
         {/* 4. Download the artifact */}
