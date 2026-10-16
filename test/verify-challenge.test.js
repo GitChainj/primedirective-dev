@@ -49,7 +49,9 @@ const get = (reference, ip = nextIp()) =>
 const post = (body, ip = nextIp()) =>
   call({ method: "POST", body, headers: { "x-forwarded-for": ip }, socket: {} });
 
-function withDidInLedger(t, reference) {
+// status is optional: pass a value to set the row's status, or omit to leave
+// whatever the real ledger records. Existing callers are unaffected.
+function withDidInLedger(t, reference, status) {
   const original = fs.readFileSync(LEDGER, "utf8");
   const parsed = JSON.parse(original);
   const row = parsed.adoptions.find((r) => r.reference === reference);
@@ -57,8 +59,18 @@ function withDidInLedger(t, reference) {
   row.adopter_did = DID;
   row.key_custody = "self_generated";
   row.comprehension = "asserted";
+  if (status === null) delete row.status;
+  else if (status !== undefined) row.status = status;
   fs.writeFileSync(LEDGER, JSON.stringify(parsed, null, 2) + "\n");
   t.after(() => fs.writeFileSync(LEDGER, original));
+}
+
+// Rewrite one field of a row mid-test, as the rotation test does, to simulate
+// the ledger changing while a challenge is outstanding.
+function setStatusNow(reference, status) {
+  const current = JSON.parse(fs.readFileSync(LEDGER, "utf8"));
+  current.adoptions.find((r) => r.reference === reference).status = status;
+  fs.writeFileSync(LEDGER, JSON.stringify(current, null, 2) + "\n");
 }
 
 const AI_REF = "UPD-2026-0007";
@@ -162,6 +174,99 @@ test("a rotated or removed key invalidates an outstanding challenge", async (t) 
   assert.strictEqual(res.statusCode, 409);
   assert.strictEqual(res.body.verified, false);
   assert.match(res.body.reason, /has changed/);
+});
+
+// ── Which ledger statuses may answer a challenge ──
+//
+// The endpoint whitelists the statuses it recognises as live, so it fails CLOSED
+// on one it does not. There is no revoked status today — the curator derives only
+// confirmed or provisional — so these tests pin the behaviour that will enforce
+// revocation when that state is designed, rather than pretending it exists now.
+
+test("a provisional row can still answer a challenge", async (t) => {
+  // provisional means a registered organisation awaits the org-verified label.
+  // That says nothing about key control, which is all a challenge establishes,
+  // so refusing it here would be wrong.
+  withDidInLedger(t, AI_REF, "provisional");
+  const issued = await get(AI_REF);
+  assert.strictEqual(issued.statusCode, 200, JSON.stringify(issued.body));
+
+  const signature = crypto.sign(null, Buffer.from(issued.body.nonce, "utf8"), pair.privateKey).toString("base64");
+  const res = await post({ challenge: issued.body.challenge, signature });
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(res.body.verified, true);
+});
+
+test("a row with no status at all is treated as live", async (t) => {
+  // The three founding records predate the field; statusForSeed() in the curator
+  // defaults them to confirmed, and this endpoint must agree.
+  withDidInLedger(t, AI_REF, null);
+  const issued = await get(AI_REF);
+  assert.strictEqual(issued.statusCode, 200, JSON.stringify(issued.body));
+});
+
+test("a row with an unrecognised status is refused before a challenge is minted", async (t) => {
+  withDidInLedger(t, AI_REF, "revoked");
+  const res = await get(AI_REF);
+  assert.strictEqual(res.statusCode, 409, JSON.stringify(res.body));
+  assert.match(res.body.error, /not in a state that can answer a challenge/);
+  assert.strictEqual(res.body.reference, AI_REF);
+  assert.ok(!res.body.challenge, "no challenge may be minted for a row that cannot use one");
+  assert.ok(!res.body.nonce);
+});
+
+test("any status outside the whitelist is refused, not just a revoked one", async (t) => {
+  // The guard is a whitelist: a typo, a new value, or a future state all fail
+  // closed rather than being waved through. "Confirmed" is in this list on
+  // purpose — the check is case-sensitive because the curator only ever writes
+  // lowercase, so a capitalised value means something else wrote the field.
+  //
+  // withDidInLedger is called ONCE: it captures the file to restore on t.after,
+  // so calling it per iteration would capture an already-mutated file as the
+  // "original" and leave the ledger dirty. Subsequent values go through
+  // setStatusNow, which only rewrites the field.
+  withDidInLedger(t, AI_REF, "confirmed");
+  for (const status of ["revoked", "suspended", "withdrawn", "Confirmed", "lapsed", "0"]) {
+    setStatusNow(AI_REF, status);
+    const res = await get(AI_REF);
+    assert.strictEqual(res.statusCode, 409, `status ${JSON.stringify(status)} must be refused`);
+  }
+});
+
+test("surrounding whitespace on a live status is tolerated, not refused", async (t) => {
+  // The status is trimmed before the whitelist lookup, the same way rowFor()
+  // trims a reference. Incidental whitespace is not a different state.
+  withDidInLedger(t, AI_REF, "  confirmed  ");
+  const res = await get(AI_REF);
+  assert.strictEqual(res.statusCode, 200, JSON.stringify(res.body));
+});
+
+test("a status change mid-window invalidates an outstanding challenge", async (t) => {
+  // The challenge is valid for five minutes; the row can change inside that
+  // window, so the status is re-checked on the POST and not only at issuance.
+  withDidInLedger(t, AI_REF, "confirmed");
+  const issued = await get(AI_REF);
+  assert.strictEqual(issued.statusCode, 200, JSON.stringify(issued.body));
+  const signature = crypto.sign(null, Buffer.from(issued.body.nonce, "utf8"), pair.privateKey).toString("base64");
+
+  setStatusNow(AI_REF, "revoked");
+
+  const res = await post({ challenge: issued.body.challenge, signature });
+  assert.strictEqual(res.statusCode, 409, JSON.stringify(res.body));
+  assert.strictEqual(res.body.verified, false, "a correct signature must not verify a non-live row");
+  assert.match(res.body.reason, /not in a state that can answer a challenge/);
+});
+
+test("the guard is a whitelist of the two statuses the curator can produce", async () => {
+  // Source-level, because the point is the SHAPE of the check: a blacklist would
+  // wave through a status nobody thought of, which is the failure mode here.
+  const src = fs.readFileSync(path.join(REPO, "api", "verify-challenge.js"), "utf8");
+  assert.match(src, /const LIVE_STATUSES = new Set\(\["confirmed", "provisional"\]\)/);
+  assert.match(src, /LIVE_STATUSES\.has\(/, "the check must consult the whitelist");
+  // And the two values are exactly what the curator can derive, so the endpoint
+  // and the curator cannot drift on what "live" means.
+  const curator = fs.readFileSync(path.join(REPO, "scripts", "curate-ledger.mjs"), "utf8");
+  assert.match(curator, /provisional \? "provisional" : "confirmed"/);
 });
 
 test("an unknown reference 404s and a keyless adoption 409s", async () => {

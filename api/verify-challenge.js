@@ -112,6 +112,36 @@ function rowFor(reference) {
   return ledgerRows().find((r) => String(r.reference).trim().toUpperCase() === upper) || null;
 }
 
+// ── Which ledger statuses may answer a challenge ──
+//
+// A WHITELIST, so this fails CLOSED on a status it does not recognise.
+//
+// Both current values are live. `provisional` must pass: it means a registered
+// organisation is still awaiting the Steward's org-verified label, which says
+// nothing about whether the adopter controls its key — and key control is the
+// only thing a challenge establishes.
+//
+// The point of a whitelist rather than a blacklist is the status that does not
+// exist yet. An adoption cannot presently be marked revoked: the curator only
+// ever derives `confirmed` or `provisional`, so there is no revoked state to
+// detect and nothing here can check for one. When adoption-level revocation is
+// designed, a row carrying the new status will be refused by this endpoint
+// automatically, without anyone having to remember this file. That is the whole
+// reason it is written this way.
+const LIVE_STATUSES = new Set(["confirmed", "provisional"]);
+
+// A row with no status at all is treated as confirmed, matching
+// statusForSeed() in scripts/curate-ledger.mjs — the three founding records
+// predate the field.
+function statusIsLive(row) {
+  const status = row && row.status;
+  if (status === undefined || status === null || status === "") return true;
+  return LIVE_STATUSES.has(String(status).trim());
+}
+
+const NOT_LIVE_REASON =
+  "the adoption record for this reference is not in a state that can answer a challenge";
+
 export default async function handler(req, res) {
   if (req.method !== "GET" && req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -146,6 +176,11 @@ export default async function handler(req, res) {
         adopted_before_identity_v1: true,
       });
     }
+    // Refuse before minting a challenge, so no challenge ever exists for a row
+    // that could not be used to answer one.
+    if (!statusIsLive(row)) {
+      return res.status(409).json({ error: NOT_LIVE_REASON, reference: row.reference });
+    }
 
     const nonce = b64url(randomBytes(32));
     const exp = Date.now() + CHALLENGE_TTL_MS;
@@ -171,13 +206,28 @@ export default async function handler(req, res) {
 
   const { reference, did, nonce } = opened.body;
   const row = rowFor(reference);
-  // The DID is re-read from the ledger rather than trusted from the challenge:
-  // a revoked or rotated record must not be verifiable against a stale key.
+  // The DID is re-read from the ledger rather than trusted from the challenge,
+  // so an outstanding challenge cannot be answered against a key the ledger no
+  // longer records. Precisely what that covers:
+  //
+  //   ROTATED  — the row's adopter_did differs from the one in the challenge
+  //   REMOVED  — the row is gone from the ledger entirely
+  //   NOT LIVE — the row carries a status this endpoint does not recognise
+  //
+  // It does NOT cover revocation, because an adoption cannot be marked revoked
+  // today — see LIVE_STATUSES above. The whitelist is what will enforce it when
+  // that state exists; until then there is nothing to detect and this comment
+  // claims nothing it does not do.
   if (!row || row.adopter_did !== did) {
     return res.status(409).json({
       verified: false,
       reason: "the key recorded for this reference has changed — request a fresh challenge",
     });
+  }
+  // Re-checked here and not only at issuance: the row can change status during
+  // the five minutes a challenge is valid for.
+  if (!statusIsLive(row)) {
+    return res.status(409).json({ verified: false, reason: NOT_LIVE_REASON });
   }
 
   let signature;
