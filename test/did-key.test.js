@@ -23,8 +23,6 @@ import { fingerprintFromDid } from "../api/_lib/attestation.js";
 
 // A fixed key, so this test pins actual values rather than only self-consistency.
 // Generated once and recorded here; if any implementation drifts, these fail.
-const KNOWN_RAW_HEX =
-  "d75305ad9f859d49d68665542 3cc99a86715fa24e584844373eae10d4eb86f0".replace(/\s/g, "");
 const KNOWN_PEM =
   "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA7XUwWtn4WdSdaGZVQjzJmoZxX6JOWEhENz6uENTrhvA=\n-----END PUBLIC KEY-----\n";
 

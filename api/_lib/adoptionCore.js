@@ -4,16 +4,24 @@
 // api/adopt.js (AI self-adoption — direct create) and api/adopt-confirm.js
 // (human paths — created after email confirmation). Files under api/_lib are
 // NOT treated as routes by Vercel; they are bundled into the functions that
-// import them, so this stays self-contained.
+// import them.
+//
+// This module is NOT self-contained, and deliberately so. It imports the two
+// autonomy-gradient axes from ./autonomyGradient.js and the Conscience anchor
+// and its validator from ../../src/lib/conscienceVersion.js, rather than
+// defining either here — one definition per thing, reachable by one import
+// path. Crossing from api/ into src/lib/ is an established pattern in this
+// deployment — api/_lib/attestation.js has imported ../../src/lib/didKey.js
+// since AI cryptographic identity v1 (6a1398a) — and Vercel bundles the whole
+// import graph into the function.
 //
 // ── Adoption hash ──
 // This MIRRORS src/lib/adoptionHash.js exactly and is verified to produce
 // identical output (scratch-tested against the Part-1 anchor value for
 // {John Strand, person, 2026-05-03} = 1033c76b…462383c3). If the
 // canonicalisation here ever changes, it MUST change in src/lib/adoptionHash.js
-// too, or public verification will break.
-//
-// CONSCIENCE_SHA256 = shasum -a 256 public/api/fragment.txt (Conscience v2.0)
+// too, or public verification will break. Both read the anchor from the shared
+// leaf, so they cannot disagree about which Conscience version is current.
 
 import { createHash } from "node:crypto";
 // The two autonomy-gradient axes are DEFINED in the leaf module and imported —

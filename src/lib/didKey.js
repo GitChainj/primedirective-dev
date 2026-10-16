@@ -20,9 +20,22 @@
 // exactly one DER encoding of a given Ed25519 public key, so both routes agree
 // by construction rather than by coincidence.
 //
-// test/did-key.test.js asserts agreement across all three implementations on a
-// known key. Treat drift here with the same gravity as drift in the adoption
-// hash: it breaks verification silently.
+// test/did-key.test.js asserts agreement across all FOUR implementations of the
+// fingerprint rule on a known key:
+//
+//   1. this module                  — fingerprintFromRawPublicKey / …FromDidKey
+//   2. src/lib/fingerprint.js       — fingerprintOf, the browser copy of the
+//                                     signing service's rule. It imports
+//                                     nothing at all, so it is a genuinely
+//                                     independent second opinion rather than a
+//                                     re-export of this module
+//   3. api/_lib/attestation.js      — fingerprintFromDid, the node:crypto path
+//                                     used when building an attestation payload
+//   4. the signing service's rule   — replicated inline in the test as
+//                                     SHA-256(SPKI DER).slice(0, 16)
+//
+// Treat drift here with the same gravity as drift in the adoption hash: it
+// breaks verification silently.
 //
 // Works in the browser and in Node (Web Crypto: globalThis.crypto.subtle).
 
