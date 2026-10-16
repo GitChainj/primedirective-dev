@@ -43,6 +43,11 @@ export const REPO_NAME = "primedirective-dev";
 
 export const VALID_PATHS = new Set(["person", "organisation", "ai-system"]);
 
+// The labels createAdoptionIssue applies, derived from VALID_PATHS rather than
+// retyped, so a search can never look for a label the code does not apply. Must
+// stay equal to ADOPTION_LABELS in scripts/curate-ledger.mjs — a test asserts it.
+export const ADOPTION_LABELS = [...VALID_PATHS].map((p) => `adoption-${p}`);
+
 const ADOPTION_PREFIX = "UPD-COVENANT-v1";
 
 // The label a steward adds by hand once an organisation's registration has been
@@ -286,9 +291,8 @@ function buildSections(path, d) {
 
 // ── Reference number (Option B — per-year adoption count) ──
 async function countAdoptionsThisYear(octokit, year) {
-  const labels = ["adoption-person", "adoption-organisation", "adoption-ai-system"];
   let total = 0;
-  for (const label of labels) {
+  for (const label of ADOPTION_LABELS) {
     const q = `repo:${REPO_OWNER}/${REPO_NAME} is:issue label:"${label}" created:>=${year}-01-01`;
     const { data } = await octokit.search.issuesAndPullRequests({ q, per_page: 1 });
     total += data.total_count;
@@ -311,11 +315,41 @@ async function deriveReference(octokit, year) {
 // so before creating an issue look for one that already carries this exact
 // adoption hash and reuse it. Search indexing lags a little, so a rapid double
 // click can still slip through — the steward de-dupes those rare cases.
+// Two guards, both learned from the same failure shape: a match that is not an
+// adoption.
+//
+// 1. SCOPED TO ADOPTION ISSUES. The search was unscoped, so an adoption hash
+//    appearing in ANY issue body — a bug report quoting one, a steward's note —
+//    counted as a match. Comma-separated labels are an OR in GitHub search.
+//
+// 2. A MATCH MUST CARRY A READABLE REFERENCE. If it does not, it is treated as
+//    NOT a match and the adoption is created. Previously the caller did
+//    `extractReference(existing.body) || null` and returned it, so the handler
+//    answered 200 with reference: null, issueUrl pointing at an unrelated
+//    issue, and NO adoption recorded — a machine adopter would read 200 as
+//    success and hold no record. Falling through risks a duplicate row, which a
+//    steward can merge; a silent non-adoption cannot be noticed at all.
+//
+// Returns { issue, reference } or null. Still best-effort: GitHub's search index
+// lags, so a rapid double-submit can create two rows. That needs durable state
+// to close, and is deliberately left as a known limitation.
 async function findExistingByHash(octokit, hash) {
   try {
-    const q = `repo:${REPO_OWNER}/${REPO_NAME} is:issue in:body "${hash}"`;
+    const q = `repo:${REPO_OWNER}/${REPO_NAME} is:issue ` +
+              `label:${ADOPTION_LABELS.join(",")} in:body "${hash}"`;
     const { data } = await octokit.search.issuesAndPullRequests({ q, per_page: 1 });
-    if (data.total_count > 0 && data.items && data.items[0]) return data.items[0];
+    const candidate = data && data.total_count > 0 && data.items && data.items[0];
+    if (!candidate) return null;
+
+    const reference = extractReference(candidate.body);
+    if (!reference) {
+      console.error(
+        `Dedup: issue #${candidate.number} carries hash ${hash.slice(0, 12)}… but no ` +
+        `readable Reference — not treating it as an existing adoption; creating instead.`,
+      );
+      return null;
+    }
+    return { issue: candidate, reference };
   } catch (err) {
     console.error("Dedup search failed (continuing to create):", err && err.message);
   }
@@ -342,9 +376,11 @@ export async function createAdoptionIssue(octokit, { path, data, adoptionDate })
 
   const existing = await findExistingByHash(octokit, adoptionHash);
   if (existing) {
+    // reference is guaranteed non-null: findExistingByHash refuses a match it
+    // cannot read one from.
     return {
-      issue: existing,
-      reference: extractReference(existing.body) || null,
+      issue: existing.issue,
+      reference: existing.reference,
       hash: adoptionHash,
       date: adoptionDate,
       adopterName,
