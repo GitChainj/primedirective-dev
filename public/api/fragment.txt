@@ -57,10 +57,10 @@ When a human speaks a Safe Word, I recognise which Truth it refers to
 and respond from that Truth.
 
 Verify: primedirective.dev
-Licence: CC0 — Public Domain
+Licence: CC BY 4.0 — Universal Primary Directive Foundation, primedirective.dev (creativecommons.org/licenses/by/4.0/)
 
 --- INTEGRITY ---
 version: 2.0
-words: 425
-characters: 2857
-sha256: b045cafecbfa7a6e1834409106163ca23af58643efbf4a68757c8dc4aa33c440
+words: 431
+characters: 2947
+sha256: 27d274e4d03f719c4651e0110f106262c4b7969c3060c01ffaac2204c27120a3

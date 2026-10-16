@@ -30,7 +30,7 @@
 // must not be allowed to disagree. Existing ledger rows keep their own recorded
 // conscience_version and go on verifying against it.
 export const CONSCIENCE_SHA256 =
-  "b2b16b00498530ef4a5b5af39d7a2d3316416447e298a0b5cfb506b36023abb7";
+  "eea33868c8401b03bd7768717110555aca375bdff507f3badf14d92932a380ad";
 
 // ── The validator ──
 //
