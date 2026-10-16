@@ -2,12 +2,30 @@
 // scripts/curate-ledger.mjs
 //
 // Steward-run tooling (NOT CI) to curate public/api/adoptions.json from the
-// public GitHub adoption issues. It parses each adoption issue's Verification
-// block, independently recomputes the adoption hash with the project's canonical
-// algorithm, and REFUSES any row whose recomputed hash does not match the hash
-// recorded in the issue. Only complete, self-consistent, hash-verifying records
-// are curated. Rows already in the ledger that have no corresponding issue
-// (e.g. the founding UPD-2026-0001) are preserved untouched.
+// public GitHub adoption issues.
+//
+// ── What is verified, and what happens on failure ──
+// EVERY row is independently re-hashed with the project's canonical algorithm,
+// against THAT ROW'S OWN recorded conscience_version — never against the current
+// CONSCIENCE_SHA256, so an adoption made under an earlier covenant text keeps
+// verifying after the text is revised.
+//
+// The two cases differ in consequence, deliberately:
+//
+//   INBOUND ISSUE  — parsed from the issue's Verification block. A hash mismatch
+//                    is REFUSED: the row is not added. Nothing is lost by
+//                    declining to admit an unverifiable record.
+//
+//   EXISTING ROW   — already in the ledger. A hash mismatch is WARNED and the
+//                    row is KEPT. The founding records (UPD-2026-0001 / 0006 /
+//                    0007) have no adoption issue to re-derive them from, so
+//                    dropping one would silently delete a founding record —
+//                    worse than surfacing it loudly for the Steward.
+//
+// So: no row enters the ledger unverified, and no row leaves it unannounced.
+// Every run prints "Ledger rows re-verified: n/m". Before 2026-10-15 existing
+// rows were seeded without being re-checked while this header claimed otherwise;
+// that gap is what the re-verification above closes.
 //
 // The ledger schema is six HASHED fields — reference, name, path, date, hash,
 // conscience_version — plus two NON-HASHED fields: status, and adopter_did (the
@@ -39,8 +57,11 @@ import { dirname, join } from "node:path";
 
 // Canonical algorithm — reuse the exact string-builder and Conscience anchor the
 // browser verifier uses, so a hash curated here is the hash verify recomputes.
+// The anchor constant is deliberately NOT imported here: this script only ever
+// verifies existing records, and every one of them carries its own recorded
+// conscience_version. A curator that reached for the current constant would be
+// the version-drift bug all over again.
 import { buildAdoptionString } from "../src/lib/adoptionHash.js";
-import { CONSCIENCE_SHA256 } from "../src/lib/conscienceVersion.js";
 
 const REPO = "GitChainj/primedirective-dev";
 const ADOPTION_LABELS = new Set(["adoption-person", "adoption-organisation", "adoption-ai-system"]);
@@ -66,6 +87,38 @@ function deriveStatus(issue) {
 // require a live issue to read.
 function statusForSeed(r) {
   return r.status || "confirmed";
+}
+
+// Re-verify a row that is already in the ledger, against ITS OWN recorded
+// conscience_version.
+//
+// WARN, never refuse. An inbound issue that fails is refused because nothing is
+// lost by declining to add it. A row already in the ledger is different: the
+// three founding records (UPD-2026-0001 / 0006 / 0007) have no corresponding
+// adoption issue to re-derive them from, so dropping one on a hash mismatch
+// would silently delete a founding record — a far worse outcome than printing a
+// loud warning and leaving it in place for the Steward to investigate.
+//
+// Returns { ok, detail } — ok:false never means "discard", only "say so".
+function verifySeededRow(r) {
+  if (!r || typeof r.hash !== "string") {
+    return { ok: false, detail: "row has no hash field" };
+  }
+  let recomputed;
+  try {
+    recomputed = computeHash(r);
+  } catch (err) {
+    // Thrown when conscience_version is absent or malformed: such a row cannot
+    // be verified at all, which is itself worth surfacing.
+    return { ok: false, detail: `cannot verify (${err && err.message})` };
+  }
+  if (recomputed !== String(r.hash).toLowerCase()) {
+    return {
+      ok: false,
+      detail: `hash mismatch (ledger ${String(r.hash).slice(0, 12)}… vs recomputed ${recomputed.slice(0, 12)}…)`,
+    };
+  }
+  return { ok: true };
 }
 
 // Write a result line for a GitHub Actions runner, if one is present.
@@ -173,12 +226,28 @@ function main() {
   // that has no corresponding issue, e.g. the founding UPD-2026-0001). Rows
   // without a status yet are defaulted (confirmed); a matching issue may update
   // the status below (never the hashed fields).
+  //
+  // Every seeded row is RE-VERIFIED here against its own recorded
+  // conscience_version. Until 2026-10-15 seeded rows were trusted verbatim while
+  // this file's header claimed every curated row hash-verifies — true of inbound
+  // issues, not of rows already present. A mismatch warns and the row stays.
   const byRef = new Map();
+  let seedOk = 0;
+  const seedWarnings = [];
   for (const r of existingRows) {
     const seeded = orderedRow(r);
     seeded.status = statusForSeed(r);
+    const verdict = verifySeededRow(r);
+    if (verdict.ok) {
+      seedOk++;
+    } else {
+      seedWarnings.push(r.reference);
+      console.warn(`  WARNING  ${r.reference}: ${verdict.detail} — row KEPT, not dropped. Investigate before trusting it.`);
+    }
     byRef.set(r.reference, seeded);
   }
+  console.error(`Ledger rows re-verified: ${seedOk}/${existingRows.length} ` +
+                `${seedWarnings.length ? `| FAILED: ${seedWarnings.join(", ")}` : "| all pass"}`);
 
   const issues = fetchAdoptionIssues();
   let verified = 0, refused = 0, skipped = 0;
