@@ -245,6 +245,26 @@ async function verifyV2(doc, rootPem) {
     steps.push(step(4, "Recorded in the transparency log, chain intact", status, detail));
   }
 
+  // ── "verified" is currently UNREACHABLE for v2, by design ──
+  //
+  // This computation requires every step to PASS. Step 3 cannot: its clean case
+  // returns INCOMPLETE, not PASS, because confirming an attestation is not
+  // revoked needs TWO lists and only one of them exists. The attestation-level
+  // list is named by the document; the intermediate-level list must be signed by
+  // the ROOT, and no root-signed revocation list is published yet — an
+  // intermediate is never trusted to report its own revocation, so its own list
+  // cannot stand in. So the best v2 verdict available today is "incomplete".
+  //
+  // THE GATE: a published root-signed revocation list. When one exists and step 3
+  // can PASS, this computation starts returning "verified" on its own — no change
+  // is needed here. Nothing about it is special-cased or stubbed.
+  //
+  // This is deliberate and it fails in the SAFE direction: the cap can only make
+  // the verdict weaker than the truth, never stronger. A document cannot be
+  // reported verified because a check was skipped — which is the failure mode
+  // that would matter. test/attestation-verify-v2.test.js pins step 3's cap and
+  // the absence of a false PASS; v1 is unaffected (it is root-signed directly,
+  // has no certificate and no lists, and reaches "verified" normally).
   const overall = steps.some((s) => s.status === FAIL) ? "failed"
     : steps.some((s) => s.status === INCOMPLETE) ? "incomplete"
     : "verified";
