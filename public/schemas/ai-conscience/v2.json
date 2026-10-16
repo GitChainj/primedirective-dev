@@ -62,7 +62,7 @@
     "truths_version_hash": {
       "type": "string",
       "pattern": "^sha256:[0-9a-f]{16}$",
-      "description": "Optional. Byte-exact fingerprint of the Five Truths text in force at signing: 'sha256:' plus the first 8 bytes of the SHA-256 of that section of the canonical covenant, lowercase hex. The tamper anchor — a verifier recomputes it; truths_version records the Steward's substantive-amendment judgment, which a hash cannot express."
+      "description": "Optional. Byte-exact fingerprint of the Five Truths text in force at signing: 'sha256:' plus the first 8 bytes of the SHA-256 of that section of the canonical covenant, lowercase hex. A version anchor that records exactly which text was in force; its integrity is covered by the attestation's Ed25519 signature, which signs this field with the rest of the document. truths_version records the Steward's substantive-amendment judgment, which a hash cannot express."
     },
     "articles_version": {
       "type": "string",
@@ -71,7 +71,7 @@
     "articles_version_hash": {
       "type": "string",
       "pattern": "^sha256:[0-9a-f]{16}$",
-      "description": "Optional. Byte-exact fingerprint of the Seven Articles text in force at signing, in the same form as truths_version_hash."
+      "description": "Optional. Byte-exact fingerprint of the Seven Articles text in force at signing, in the same form as truths_version_hash: a version anchor whose integrity is covered by the attestation's Ed25519 signature."
     },
     "adoption_path": {
       "type": "string",
