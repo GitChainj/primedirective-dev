@@ -94,6 +94,20 @@ async function referenceExists(req, ref) {
   }
 }
 
+// GitHub's search index lags a few seconds after an adoption issue is created,
+// so a just-adopted reference can read "unknown" briefly. Retry the lookup
+// server-side (callers used to carry this retry-on-404) before giving up.
+const RETRY_DELAYS_MS = [1500, 1500, 1500];
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+async function referenceExistsWithRetry(req, ref) {
+  let validity = await referenceExists(req, ref);
+  for (let i = 0; validity === "unknown" && i < RETRY_DELAYS_MS.length; i++) {
+    await sleep(RETRY_DELAYS_MS[i]);
+    validity = await referenceExists(req, ref);
+  }
+  return validity;
+}
+
 // ── Best-effort in-memory rate limiter (per instance; resets on cold start) ──
 const RL_MAX = 30;
 const RL_WINDOW_MS = 10 * 60 * 1000;
@@ -132,8 +146,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid reference format. Expected UPD-YYYY-NNNN." });
   }
 
-  // Tiers 2 & 3 — must be a real adoption.
-  const validity = await referenceExists(req, ref);
+  // Tiers 2 & 3 — must be a real adoption (retried server-side for index lag).
+  const validity = await referenceExistsWithRetry(req, ref);
   if (validity === "unknown") {
     return res.status(404).json({ error: "No adoption found for this reference." });
   }

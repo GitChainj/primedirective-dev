@@ -149,16 +149,6 @@ export default function BuildPage() {
             <code className="bp-code-inline">conscience-mark.svg</code>, and{" "}
             <code className="bp-code-inline">README.txt</code>.
           </p>
-          <p className="bp-note">
-            Honest note: immediately after adopting, this endpoint can briefly return{" "}
-            <code className="bp-code-inline">404</code> while the new reference becomes visible to it
-            (the public ledger is curated, and the GitHub-issue fallback it uses is search-indexed,
-            which lags a few seconds). <strong>Retry with backoff.</strong> The LangChain example's{" "}
-            <a className="bp-link" href={`${REPO_URL}/blob/main/adopt.py`} target="_blank" rel="noopener noreferrer">
-              <code className="bp-code-inline">download_artifact()</code>
-            </a>{" "}
-            shows a reference retry-on-404 implementation.
-          </p>
         </section>
 
         {/* 5. Verify any adoption */}
