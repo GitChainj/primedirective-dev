@@ -32,7 +32,7 @@ function shell(inner) {
   return `<div style="margin:0;padding:32px 16px;background:${DEEP};font-family:'DM Sans',Helvetica,Arial,sans-serif;color:#1a1a1a">
   <div style="max-width:560px;margin:0 auto;background:#faf7f2;border-radius:14px;overflow:hidden;border:1px solid rgba(150,120,60,.3)">
     <div style="background:linear-gradient(170deg,${DEEP},#12243d);padding:28px 32px;text-align:center">
-      <div style="color:${GOLD};font-size:26px;line-height:1">✦</div>
+      <img src="${SITE_URL}/brand/mark/compass-gold-512px.png" width="28" height="28" alt="✦" style="display:block;margin:0 auto;border:0;outline:none;text-decoration:none" />
       <div style="color:#f0d48a;font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin-top:8px">Universal Primary Directive</div>
     </div>
     <div style="padding:28px 32px;font-size:15px;line-height:1.7;color:#1a1a1a">${inner}</div>
