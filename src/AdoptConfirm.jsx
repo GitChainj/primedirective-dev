@@ -255,6 +255,10 @@ export default function AdoptConfirm() {
                   </a>
                 </p>
               )}
+              <p>
+                The Directive is free and always will be. If it's of value to you,
+                you're welcome to help keep it so — <a href="/give">Give</a>.
+              </p>
             </div>
 
             <div className="ac-email-status">

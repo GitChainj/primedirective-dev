@@ -107,6 +107,7 @@ export function welcomeEmailHtml({ adopterName, reference, issueUrl }) {
     </div>` : ""}
     <p style="margin:0 0 20px">The AI Conscience is yours to carry &mdash; paste it into any AI's system prompt. Download it any time at <a href="${SITE_URL}/adopt" style="color:#2e6b9e;text-decoration:none">primedirective.dev/adopt</a>.</p>
     ${issueUrl ? `<p style="margin:0 0 8px">${button(issueUrl, "View your ledger entry →")}</p>` : ""}
+    <p style="margin:18px 0 0;font-size:14px;color:#6b7280">The Directive is free and always will be. If it's of value to you, you're welcome to help keep it so &mdash; <a href="${SITE_URL}/give" style="color:#2e6b9e;text-decoration:none">Give</a>.</p>
   `);
 }
 
