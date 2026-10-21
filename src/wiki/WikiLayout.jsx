@@ -181,6 +181,14 @@ html { scroll-behavior: smooth; }
 }
 `;
 
+// Preserve the ?portal=1 preview flag across wiki navigation. On the real
+// conscience.wiki host no flag is needed; off-host (local/preview) the page is
+// in wiki mode only because ?portal=1 is present, so carry it on every internal
+// wiki link. Mirrors ConsciencePortal's navSuffix().
+const onWikiHost = () =>
+  typeof window !== "undefined" && window.location.hostname.includes("conscience.wiki");
+const navSuffix = () => (onWikiHost() ? "" : "?portal=1");
+
 export const NAV_ITEMS = [
   { key: "truths", label: "Truths", href: "/truths" },
   { key: "ledger", label: "Ledger", href: "/ledger" },
@@ -196,7 +204,7 @@ export default function WikiLayout({ title, tagline, activeNav, children }) {
       <style>{css}</style>
 
       <header className="wiki-header">
-        <a href="/" className="wiki-home-link">▲ conscience.wiki</a>
+        <a href={`/${navSuffix()}`} className="wiki-home-link">▲ conscience.wiki</a>
         <div className="wiki-mark">▲</div>
         <div className="wiki-sitename">conscience.wiki</div>
         <div className="wiki-motto">Built by everyone. Owned by no one.</div>
@@ -208,7 +216,7 @@ export default function WikiLayout({ title, tagline, activeNav, children }) {
         {NAV_ITEMS.map((item) => (
           <a
             key={item.key}
-            href={item.href}
+            href={`${item.href}${navSuffix()}`}
             className={activeNav === item.key ? "is-active" : undefined}
           >
             {item.label}
@@ -222,10 +230,10 @@ export default function WikiLayout({ title, tagline, activeNav, children }) {
         <div className="wiki-footer-mark">▲</div>
         <div className="wiki-footer-row">conscience.wiki · {LICENCE_SHORT}</div>
         <div className="wiki-footer-row">
-          <a href="/contributors">Contributors</a> · <a href="/terms">Terms of Use</a>
+          <a href={`/contributors${navSuffix()}`}>Contributors</a> · <a href={`/terms${navSuffix()}`}>Terms of Use</a>
         </div>
         <div className="wiki-footer-row">
-          <a href="/privacy">Privacy</a> · <a href="/certification-licence">Certification Licence</a>
+          <a href={`/privacy${navSuffix()}`}>Privacy</a> · <a href={`/certification-licence${navSuffix()}`}>Certification Licence</a>
         </div>
         <div className="wiki-footer-row">
           The standard:{" "}
