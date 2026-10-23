@@ -9,6 +9,7 @@ import test from "node:test";
 import assert from "node:assert";
 import fs from "node:fs";
 import path from "node:path";
+import { validate, VALID_PATHS } from "../api/_lib/adoptionCore.js";
 
 const REPO = path.resolve(import.meta.dirname, "..");
 const read = (...p) => fs.readFileSync(path.join(REPO, ...p), "utf8");
@@ -148,4 +149,59 @@ test("the contract does not claim a Foundation attestation", () => {
   // And the pre-v1 records are named as un-challengeable.
   assert.match(text, /UPD-2026-0001/);
   assert.match(text, /adopted_before_identity_v1/);
+});
+
+test("every ai-system validator error the handler can emit is documented", () => {
+  // The forward direction (documented → emitted) is checked above. This is the
+  // reverse: derive the errors validate() can return for an ai-system adoption
+  // by probing it — never retyping the list — and require each to appear in the
+  // contract, so a new required field cannot slip in undocumented.
+  const did = "did:key:z6MkvSCK4oxt3C7wwBo5aK29eddR6PVvMtvtSKNJLwPJHdRZ";
+  const complete = {
+    independent: {
+      aiName: "Example Agent", platform: "OpenAI gpt-4o", adopterDid: did,
+      submissionType: "independent", briefStatement: "why I adopt",
+    },
+    steward: {
+      aiName: "Example Agent", platform: "OpenAI gpt-4o", adopterDid: did,
+      submissionType: "steward", stewardName: "A Steward", stewardEmail: "steward@example.org",
+    },
+  };
+
+  const emitted = new Set();
+  for (const mode of ["independent", "steward"]) {
+    const base = complete[mode];
+    assert.ok(!validate("ai-system", base), `the ${mode} control body must validate clean`);
+    for (const field of Object.keys(base)) {
+      const probe = { ...base };
+      delete probe[field];
+      const err = validate("ai-system", probe);
+      if (err) emitted.add(err);
+    }
+    // A malformed did:key reaches a branch a field removal does not.
+    const bad = validate("ai-system", { ...base, adopterDid: "not-a-did" });
+    assert.ok(bad, "a malformed did:key must be rejected");
+    emitted.add(bad);
+  }
+
+  const text = JSON.stringify(CONTRACT);
+  assert.ok(emitted.size >= 6, "probing should surface the validator's ai-system messages");
+  for (const message of emitted) {
+    assert.ok(
+      text.includes(message),
+      `validate() can emit "${message}" but the contract does not document it`,
+    );
+  }
+});
+
+test("the contract's endpoint method and ai-system path value match the handler", () => {
+  assert.strictEqual(CONTRACT.endpoint.method, "POST");
+  assert.match(HANDLER, /req\.method\s*!==\s*"POST"/, "the handler must enforce POST-only");
+  assert.match(CONTRACT.endpoint.url, /\/api\/adopt$/, "the documented URL must be /api/adopt");
+
+  assert.strictEqual(CONTRACT.request.required.path.const, "ai-system");
+  assert.ok(
+    VALID_PATHS.has(CONTRACT.request.required.path.const),
+    "the documented ai-system path must be one the validator accepts",
+  );
 });
