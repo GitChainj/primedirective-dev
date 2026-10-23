@@ -189,6 +189,11 @@ export default function BuildPage() {
             <li>A signed <code className="bp-code-inline">/.well-known/ai-conscience.json</code> file</li>
             <li>A DNS TXT record at <code className="bp-code-inline">_ai-conscience.&lt;domain&gt;</code></li>
           </ul>
+          <p className="bp-note">
+            Serve the <code className="bp-code-inline">/.well-known/ai-conscience.json</code> file with an{" "}
+            <code className="bp-code-inline">Access-Control-Allow-Origin: *</code> response header, so any origin's
+            browser can fetch and verify it directly — the Foundation serves its own file that way.
+          </p>
           <p>
             Full formats and examples are on the integration guide:{" "}
             <a className="bp-link" href="/integrate">/integrate</a>.

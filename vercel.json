@@ -6,7 +6,18 @@
   "headers": [
     {
       "source": "/.well-known/ai-conscience-root.pem",
-      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/.well-known/ai-conscience.json",
+      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
+    },
+    {
+      "source": "/.well-known/ai-conscience-root.json",
+      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
     },
     {
       "source": "/(.*)",

@@ -42,6 +42,7 @@ import {
   FAIL,
   INCOMPLETE,
 } from "../lib/attestationVerify.js";
+import { discoverAttestation } from "../lib/actp.js";
 
 const PATH_LABELS = {
   person: "Person",
@@ -160,6 +161,10 @@ function classify(raw) {
   if (!value) return { kind: "empty" };
   const upper = value.toUpperCase();
   if (REFERENCE_PATTERN.test(upper)) return { kind: "reference", reference: upper };
+  // A domain: no whitespace, contains a dot, and not a pasted JSON document.
+  if (!/\s/.test(value) && value.includes(".") && !value.startsWith("{") && !value.startsWith("[")) {
+    return { kind: "domain", domain: value };
+  }
   try {
     const doc = JSON.parse(value);
     if (doc && typeof doc === "object" && !Array.isArray(doc)) return { kind: "attestation", doc };
@@ -195,6 +200,10 @@ const STEP_LABEL = {
   [PASS]: "PASS",
   [FAIL]: "FAIL",
   [INCOMPLETE]: "INCOMPLETE",
+  PASS: "PASS",
+  FAIL: "FAIL",
+  INCOMPLETE: "INCOMPLETE",
+  SKIPPED: "SKIPPED",
 };
 
 const css = `
@@ -444,6 +453,14 @@ const css = `
 .verify-step-status.pass { color: #1b5e20; background: rgba(27,94,32,0.1); }
 .verify-step-status.fail { color: #b3261e; background: rgba(178,38,30,0.1); }
 .verify-step-status.incomplete { color: #8a6116; background: rgba(212,168,83,0.16); }
+.verify-step-status.PASS { color: #1b5e20; background: rgba(27,94,32,0.1); }
+.verify-step-status.FAIL { color: #b3261e; background: rgba(178,38,30,0.1); }
+.verify-step-status.INCOMPLETE { color: #8a6116; background: rgba(212,168,83,0.16); }
+.verify-step-status.SKIPPED { color: #5a5a5a; background: rgba(90,90,90,0.12); }
+.verify-proves { margin-top: 1rem; }
+.verify-proves-label { font-weight: 600; margin: 0 0 0.25rem; }
+.verify-proves ul { margin: 0 0 0.5rem 1.1rem; padding: 0; }
+.verify-proves li { margin: 0.15rem 0; }
 .verify-step-name { font-size: 0.95rem; color: var(--text); }
 .verify-step-detail {
   grid-column: 2;
@@ -621,6 +638,7 @@ export default function ConsciencePortal() {
   const [record, setRecord] = useState(null);
   const [computedHash, setComputedHash] = useState("");
   const [attestation, setAttestation] = useState(null); // { doc, result }
+  const [discovery, setDiscovery] = useState(null); // ACTP verification-result for a domain
   const fieldRef = useRef(null);
 
   // Load the public ledger once.
@@ -663,6 +681,7 @@ export default function ConsciencePortal() {
 
     if (parsed.kind === "reference") {
       setAttestation(null);
+      setDiscovery(null);
       if (ledger === null) { setState("checking"); return; }
       const match = findByReference(ledger, parsed.reference);
       if (!match) { setRecord(null); setState("notfound"); return; }
@@ -687,8 +706,22 @@ export default function ConsciencePortal() {
       return () => { cancelled = true; };
     }
 
+    if (parsed.kind === "domain") {
+      setRecord(null);
+      setAttestation(null);
+      setState("checking");
+      (async () => {
+        // discoverAttestation never throws for an expected condition — a missing
+        // attestation is "not_found", an unreachable host "incomplete".
+        const result = await discoverAttestation(parsed.domain);
+        if (!cancelled) { setDiscovery(result); setState("discovery"); }
+      })();
+      return () => { cancelled = true; };
+    }
+
     // Attestation path.
     setRecord(null);
+    setDiscovery(null);
     if (!versionOf(parsed.doc)) { setState("unrecognised"); setAttestation(null); return; }
     if (rootPem === undefined) { setState("checking"); return; }
     if (rootPem === null) { setState("rootless"); setAttestation(null); return; }
@@ -945,6 +978,39 @@ export default function ConsciencePortal() {
             <StepList steps={result.steps} />
           </div>
         </>
+      )}
+
+      {state === "discovery" && discovery && (
+        discovery.overall === "not_found" ? (
+          <div className="verify-panel">
+            <p>No attestation published at <strong>{discovery.subject}</strong>.</p>
+          </div>
+        ) : (
+          <>
+            <p className="verify-headline">✦ Certified AI Conscience · {discovery.subject}</p>
+            <div className="verify-card">
+              <div className="verify-card-banner">
+                <div className="verify-mark" aria-hidden="true">▲</div>
+                <div className="verify-badge">
+                  {discovery.overall === "verified" ? "✓ Verified"
+                    : discovery.overall === "incomplete" ? "Partly checked"
+                      : "✗ Failed"}
+                </div>
+              </div>
+              <StepList steps={discovery.steps} />
+              {discovery.proves.length > 0 && (
+                <div className="verify-proves">
+                  <p className="verify-proves-label">What this proves</p>
+                  <ul>{discovery.proves.map((p, i) => <li key={i}>{p}</li>)}</ul>
+                </div>
+              )}
+              <div className="verify-proves">
+                <p className="verify-proves-label">What it does not prove</p>
+                <ul>{discovery.does_not_prove.map((p, i) => <li key={i}>{p}</li>)}</ul>
+              </div>
+            </div>
+          </>
+        )
       )}
 
       {state === "mismatch" && record && (
