@@ -31,7 +31,8 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { verifyWithDidKey, isDidKey } from "../src/lib/didKey.js";
-import { createRateLimiter, clientIp } from "./_lib/rateLimit.js";
+import { clientIp } from "./_lib/rateLimit.js";
+import { createDurableRateLimiter } from "./_lib/rateLimitDurable.js";
 
 const CHALLENGE_TTL_MS = 5 * 60 * 1000; // five minutes: ample for a machine, short for an attacker
 const REFERENCE_RE = /^UPD-\d{4}-(?:\d{4}|T\d{1,15})$/;
@@ -42,7 +43,7 @@ const REFERENCE_RE = /^UPD-\d{4}-(?:\d{4}|T\d{1,15})$/;
 // inline version was extracted into so POST /api/adopt could use the same one.
 // 20/min per source: honest verification needs a handful of calls ever, so the
 // cap is invisible to it while blunting brute-force probing.
-const limiter = createRateLimiter({ max: 20, windowMs: 60 * 1000 });
+const limiter = createDurableRateLimiter({ max: 20, windowMs: 60 * 1000, prefix: "verify-challenge" });
 
 // The nonce secret. ADOPT_TOKEN_SECRET already exists for the confirmation-token
 // flow and is the same kind of secret doing the same kind of work; a dedicated
@@ -146,7 +147,9 @@ export default async function handler(req, res) {
   if (req.method !== "GET" && req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-  if (limiter.limited(clientIp(req))) {
+  const limit = await limiter.check(clientIp(req));
+  if (limit.limited) {
+    res.setHeader("Retry-After", String(limit.retryAfterSeconds));
     return res.status(429).json({
       error: "Too many requests. Honest verification needs very few; if you are a high-volume verifier, contact human@primedirective.dev for a raised limit.",
     });

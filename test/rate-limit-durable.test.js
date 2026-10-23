@@ -126,23 +126,21 @@ test("a KV failure fails OPEN to the in-memory limiter and logs it", async () =>
   assert.strictEqual((await l.check("z")).limited, true);
 });
 
-test("/api/adopt uses the durable limiter; /api/verify-challenge stays in-memory", () => {
+test("both /api/adopt and /api/verify-challenge use the durable limiter", () => {
   const adopt = read("api", "adopt.js");
   const challenge = read("api", "verify-challenge.js");
 
-  assert.match(adopt, /createDurableRateLimiter/, "adopt.js must use the durable limiter");
-  assert.match(adopt, /await limiter\.check\(/, "and must await the async check");
-  assert.ok(
-    !/createRateLimiter\(/.test(adopt),
-    "adopt.js must not also construct the in-memory limiter directly",
-  );
-
-  // D1 scoped the durable store to /api/adopt only.
-  assert.match(challenge, /createRateLimiter\(/, "verify-challenge.js stays in-memory");
-  assert.ok(
-    !/createDurableRateLimiter/.test(challenge),
-    "verify-challenge.js must not take on the durable store",
-  );
+  // Both POST-capable endpoints share the durable store (fail-open to in-memory
+  // when no KV/Upstash env is configured); neither constructs the in-memory
+  // limiter directly.
+  for (const [name, src] of [["adopt.js", adopt], ["verify-challenge.js", challenge]]) {
+    assert.match(src, /createDurableRateLimiter/, `${name} must use the durable limiter`);
+    assert.match(src, /await limiter\.check\(/, `${name} must await the async check`);
+    assert.ok(
+      !/createRateLimiter\(/.test(src),
+      `${name} must not also construct the in-memory limiter directly`,
+    );
+  }
 });
 
 test("the 429 body leaks no internals about the limiter", () => {
