@@ -178,6 +178,11 @@ export default function BuildPage() {
             <a className="bp-link" href="/.well-known/ai-conscience.json">primedirective.dev/.well-known/ai-conscience.json</a>.
             The signing procedure is documented in <code className="bp-code-inline">tools/seal/AI-CONSCIENCE-SIGNING.md</code>.
           </p>
+          <p className="bp-note">
+            The verifier library makes this one call — <code className="bp-code-inline">discoverAttestation(domain)</code>{" "}
+            in <code className="bp-code-inline">src/lib/actp.js</code> — which fetches the file, pins the Foundation
+            root key, runs the checks above, and returns an ACTP verification-result.
+          </p>
         </section>
 
         {/* 6. Advertise your adoption */}

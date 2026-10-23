@@ -628,6 +628,19 @@ function StepList({ steps }) {
   );
 }
 
+// The status-token line for a domain discovery. The count excludes the SKIPPED
+// live-key step, so (n/n) reflects the checks that actually ran.
+function discoveryToken(d) {
+  const ran = d.steps.filter((s) => s.status !== "SKIPPED");
+  const passed = ran.filter((s) => s.status === "PASS").length;
+  const total = ran.length;
+  const ref = d.reference || d.subject;
+  const label = d.overall === "verified" ? `verified (${passed}/${total})`
+    : d.overall === "incomplete" ? `partly checked (${passed}/${total})`
+      : "check failed";
+  return `✦ Certified AI Conscience · ${ref} · ${label}`;
+}
+
 export default function ConsciencePortal() {
   const initialQuery = queryFromUrl();
   const [query, setQuery] = useState(initialQuery);
@@ -987,7 +1000,7 @@ export default function ConsciencePortal() {
           </div>
         ) : (
           <>
-            <p className="verify-headline">✦ Certified AI Conscience · {discovery.subject}</p>
+            <p className="verify-headline">{discoveryToken(discovery)}</p>
             <div className="verify-card">
               <div className="verify-card-banner">
                 <div className="verify-mark" aria-hidden="true">▲</div>
@@ -1102,9 +1115,9 @@ export default function ConsciencePortal() {
           of <code>UPD-COVENANT-v1|name|path|date|conscience-hash</code>, which uses no secret
           key, so anyone can recompute it and check it independently. An attestation is checked
           differently — by its detached Ed25519 signature, made with the Foundation's private
-          key. Paste one above and this page runs the first four checks below; the fifth needs
-          the adopter itself to answer, so it runs at the verification endpoint rather than from
-          a pasted document.
+          key. Paste an attestation, or enter a domain, and this page runs the first four checks
+          below under ACTP (the AI Conscience Trust Protocol); the fifth runs when a signed
+          challenge response is supplied, since only the adopter itself can answer it.
         </p>
         <p>
           The first four interrogate a document and can be run offline against published
