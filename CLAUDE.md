@@ -10,7 +10,15 @@ npm run build     # Production build → dist/
 npm run preview   # Preview production build locally
 ```
 
-There is no test suite or linter configured.
+Tests: `node --test test/*.test.js` (129 at HEAD ecdae65). No linter configured.
+
+## Commit & gate discipline
+
+- Author AND committer: John Strand <human@primedirective.dev>. Single-line commit messages. No Co-Authored-By, Claude-Session, or any AI trailer.
+- Stage only named files (`git add <path>`); never `git add -A`, `-u`, or `.`.
+- Show every edit as a diff and wait for approval before writing; no blanket approvals.
+- Gates after every commit: `npm run build` and `node --test test/*.test.js`, both run UNPIPED — never through `| tail`, `| head`, or `| grep`. Piping is for post-failure diagnosis only; a pre-commit pre-check follows the same rule.
+- Stop before `git push`; print `git log --format=fuller origin/main..HEAD` and `git rev-list --count origin/main..HEAD` for reconciliation first.
 
 ## Architecture
 
