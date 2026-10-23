@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://primedirective.dev/schemas/actp/verification-result/v1.json",
+  "title": "ACTP Verification Result v1",
+  "description": "The result of verifying an AI Conscience attestation under the AI Conscience Trust Protocol (ACTP). Emitted by the verifier; not signed. Reports what each check found and, in plain words, what the result proves and does not prove.",
+  "type": "object",
+  "required": ["actp", "subject", "overall", "steps", "proves", "does_not_prove", "checked_at", "verifier"],
+  "additionalProperties": false,
+  "properties": {
+    "actp": { "const": "1.0" },
+    "subject": { "type": "string", "description": "What was verified — a domain, an adoption reference, or an adopter name." },
+    "overall": { "enum": ["verified", "incomplete", "failed", "not_found"] },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["n", "name", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "n": { "type": "integer", "minimum": 1 },
+          "name": { "type": "string" },
+          "status": { "enum": ["PASS", "FAIL", "INCOMPLETE", "SKIPPED"] },
+          "detail": { "type": "string" }
+        }
+      }
+    },
+    "proves": { "type": "array", "items": { "type": "string" } },
+    "does_not_prove": { "type": "array", "items": { "type": "string" } },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "verifier": { "type": "string" },
+    "reference": { "type": "string" },
+    "schema": { "type": "string" },
+    "mark": { "type": "string" },
+    "adopter": { "type": "string" },
+    "adopted_date": { "type": "string" },
+    "key_custody": { "type": "string" },
+    "comprehension": { "type": "string" }
+  }
+}

@@ -285,3 +285,95 @@ export async function verifyAttestation(doc, rootPem) {
   if (version === "v2") return verifyV2(doc, rootPem);
   return null;
 }
+
+// ── ACTP verification-result emitter ──
+//
+// Maps an internal verifyAttestation() result to the published ACTP
+// verification-result/v1 shape, without changing what verifyAttestation
+// returns. Internal status values (pass/fail/incomplete) become the ACTP enum
+// (PASS/FAIL/INCOMPLETE); a live-key step is reported SKIPPED whenever the
+// result does not already carry one, because a document check alone never
+// exercises it. proves / does_not_prove are derived from which steps actually
+// ran and passed — never asserted independently of the steps.
+
+const ACTP_STATUS = { [PASS]: "PASS", [FAIL]: "FAIL", [INCOMPLETE]: "INCOMPLETE" };
+
+function joinNames(names) {
+  if (names.length <= 1) return names[0] || "";
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+}
+
+export function toVerificationResult(internalResult, opts = {}) {
+  const internal = internalResult || {};
+  const overall = internal.overall || "incomplete";
+
+  const steps = (internal.steps || []).map((s) => ({
+    n: s.n,
+    name: s.name,
+    status: ACTP_STATUS[s.status] || "INCOMPLETE",
+    ...(s.detail ? { detail: s.detail } : {}),
+  }));
+
+  // The live-key challenge is step 5 of the five-check model. A document check
+  // never runs it; verifyChallengeResponse() adds it as PASS/FAIL when a signed
+  // response is supplied. Report it SKIPPED when absent rather than silently
+  // dropping the fifth check.
+  if (!steps.some((s) => s.n === 5)) {
+    steps.push({
+      n: 5,
+      name: "Live key challenge",
+      status: "SKIPPED",
+      detail: "Not run — supply a signed challenge response to exercise the fifth check.",
+    });
+  }
+
+  const stepPassed = (n) => steps.some((s) => s.n === n && s.status === "PASS");
+  const incompleteNames = steps.filter((s) => s.status === "INCOMPLETE").map((s) => s.name);
+
+  // proves is built only from checks that actually passed, and only when the
+  // verdict is neither a failure nor a missing attestation.
+  const proves = [];
+  if (overall !== "failed" && overall !== "not_found") {
+    if (stepPassed(1)) {
+      proves.push("the document is unaltered since it was signed by the key it names");
+    }
+    if (stepPassed(2) || (internal.version === "v1" && stepPassed(1))) {
+      proves.push("that key is the Foundation's — the Foundation vouched for this adoption on the stated date");
+    }
+  }
+
+  const does_not_prove = [];
+  if (overall === "not_found") {
+    does_not_prove.push(
+      "that the subject has not adopted the covenant — only that no attestation was published at this address",
+    );
+  }
+  if (incompleteNames.length) {
+    does_not_prove.push(
+      `checks ${joinNames(incompleteNames)} could not complete and are reported as not checked, not as passed`,
+    );
+  }
+  if (!stepPassed(5)) {
+    does_not_prove.push(
+      "that whoever presents this attestation controls the key on record — the live-key check was not run",
+    );
+  }
+  does_not_prove.push(
+    "the adopter's conduct — this is a verified commitment and a public record, nothing more",
+  );
+
+  const out = {
+    actp: "1.0",
+    subject: opts.subject || "unknown",
+    overall,
+    steps,
+    proves,
+    does_not_prove,
+    checked_at: new Date().toISOString(),
+    verifier: opts.verifier || "actp-js/1.0",
+  };
+  for (const k of ["reference", "schema", "mark", "adopter", "adopted_date", "key_custody", "comprehension"]) {
+    if (opts[k] !== undefined && opts[k] !== null) out[k] = opts[k];
+  }
+  return out;
+}
